@@ -5,7 +5,7 @@ function Landing() {
         <div className='  bg-gray-100 w-full h-screen  pt-1'>
 
             <div className='textstructure mt-52 px-20'>
-                {["WE CREATE", "EYE-OPENING", "PRESENTATIONS"].map((item, index) => {
+                {["FIND THE RIGHT", "MENTOR TO GUIDE", "YOUR CAREER PATH"].map((item, index) => {
                     return <div className="master">
                         <div className='  w-fit flex  items-end overflow-hidden'>
                          {index===1 && (   <div className='mr-[0.5vw] w-[7vw]  h-[5vw] bg-red-800 mt-3 rounded-md  relative'></div>)}
@@ -17,11 +17,11 @@ function Landing() {
             </div>
 
             <div className='border-t-[1px] border-zinc-400 mt-20 flex justify-between items-center py-5 px-20'>
-                {["For public and private companies", "From the first pitch to IPO"].map((item, index) =>
+                {["Your future starts with the right guidance!", "Struggling with studies or career choices? "].map((item, index) =>
                     <p className='text-md font-light tracking-tight leading-node'>{item}</p>
                 )}
 
-                <div className='start'><div className='px-5 py-2 border-[1px] border-zinc-700  rounded-full'>START THE PROJECT</div></div>
+                <div className='start'><div className='px-5 py-2 border-[1px] border-zinc-700  rounded-full'>FIND MENTORS</div></div>
             </div>
 
         </div>
