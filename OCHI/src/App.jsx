@@ -5,6 +5,7 @@ import Contact from './components/Contact'
 import LandingPage from './components/LandingPage'
 import About from './components/About'
 import PrivacyPolicy from './components/PrivacyPolicy'
+import ProtectedRoutes from './ProtectedRoutes'
 
 function App() {
   const router = createBrowserRouter(
@@ -16,8 +17,19 @@ function App() {
         <Route element={<Layout />}>
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<About/>}/>
-          <Route path="privacy" element={<PrivacyPolicy/>}/>
+          <Route 
+            path="privacy" 
+            element={
+              <ProtectedRoutes>
+                <PrivacyPolicy/>
+              </ProtectedRoutes>
+            }
+          />
+          
         </Route>
+
+
+        
       </Route>
     )
   )
