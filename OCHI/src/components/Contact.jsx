@@ -1,6 +1,38 @@
 import React from 'react'
 import{Link,NavLink} from 'react-router-dom'
+import { useState } from 'react';
+import emailjs from 'emailjs-com';
 export default function Contact() {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [tel, setTel] = useState('');
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        // Replace with your EmailJS service ID, template ID, and user ID
+        const serviceID = 'service_m4szpl5';
+        const templateID = 'template_z99cx4d';
+        const userID = 'VBoeFOMpFASeYtMWb';
+
+        // Send form data to EmailJS
+        emailjs.send(serviceID, templateID, {
+            from_name: name,
+            from_email: email,
+            phone_number: tel
+        }, userID)
+        .then((response) => {
+            console.log('SUCCESS!', response.status, response.text);
+            setSubmitted(true);
+            setName('');
+            setEmail('');
+            setTel('');
+        }, (error) => {
+            console.log('FAILED...', error);
+        });
+    };
+
     return (
         <div className="relative flex items-top justify-center min-h-[700px] bg-white sm:items-center sm:pt-0">
             <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
@@ -38,7 +70,7 @@ export default function Contact() {
                                     />
                                 </svg>
                                 <div className="ml-4 text-md tracking-wide font-semibold w-40">
-                                    Acme Inc, Street, State, Postal Code
+                                    Comsats University, Defence Road, Lahore, Pakistan
                                 </div>
                             </div>
 
@@ -60,7 +92,7 @@ export default function Contact() {
                                     />
                                 </svg>
                                 <div className="ml-4 text-md tracking-wide font-semibold w-40">
-                                    +44 1234567890
+                                    +92 1234567890
                                 </div>
                             </div>
 
@@ -82,46 +114,54 @@ export default function Contact() {
                                     />
                                 </svg>
                                 <div className="ml-4 text-md tracking-wide font-semibold w-40">
-                                    info@acme.org
+                                    infomentora280@gmail.com
                                 </div>
                             </div>
                         </div>
 
-                        <form className="p-6 flex flex-col justify-center">
+                        <form className="p-6 flex flex-col justify-center" onSubmit={handleSubmit}>
                             <div className="flex flex-col">
-                                <label for="name" className="hidden">
+                                <label htmlFor="name" className="hidden">
                                     Full Name
                                 </label>
                                 <input
-                                    type="name"
+                                    type="text"
                                     name="name"
                                     id="name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     placeholder="Full Name"
                                     className="w-100 mt-2 py-3 px-3 rounded-lg bg-white border border-gray-400 text-gray-800 font-semibold focus:border-orange-500 focus:outline-none"
+                                    required
                                 />
                             </div>
 
                             <div className="flex flex-col mt-2">
-                                <label for="email" className="hidden">
+                                <label htmlFor="email" className="hidden">
                                     Email
                                 </label>
                                 <input
                                     type="email"
                                     name="email"
                                     id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Email"
                                     className="w-100 mt-2 py-3 px-3 rounded-lg bg-white border border-gray-400 text-gray-800 font-semibold focus:border-orange-500 focus:outline-none"
+                                    required
                                 />
                             </div>
 
                             <div className="flex flex-col mt-2">
-                                <label for="tel" className="hidden">
+                                <label htmlFor="tel" className="hidden">
                                     Number
                                 </label>
                                 <input
                                     type="tel"
                                     name="tel"
                                     id="tel"
+                                    value={tel}
+                                    onChange={(e) => setTel(e.target.value)}
                                     placeholder="Telephone Number"
                                     className="w-100 mt-2 py-3 px-3 rounded-lg bg-white border border-gray-400 text-gray-800 font-semibold focus:border-orange-500 focus:outline-none"
                                 />
@@ -133,6 +173,12 @@ export default function Contact() {
                             >
                                 Submit
                             </button>
+
+                            {submitted && (
+                                <div className="mt-4 text-green-600">
+                                    Thank you for contacting us! We'll get back to you soon.
+                                </div>
+                            )}
                         </form>
                     </div>
                 </div>
