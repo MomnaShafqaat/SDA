@@ -1,5 +1,5 @@
 import { FaInstagram, FaFacebookF } from "react-icons/fa";
-
+import { Link,NavLink } from "react-router-dom";
 function Footer() {
   return (
     <footer className="bg-[#004D43] text-white py-10 px-10">
@@ -17,10 +17,22 @@ function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
           <ul className="text-gray-300 space-y-2">
-            <li><a href="#" className="hover:text-gray-200">Home</a></li>
+            <NavLink to="/"
+            className={({isActive}) =>
+              `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+          }>
+                    Home
+                </NavLink>
             <li><a href="#" className="hover:text-gray-200">Our Mentors</a></li>
             <li><a href="#" className="hover:text-gray-200">Chat with Mentor</a></li>
-            <li><a href="#" className="hover:text-gray-200">Contact</a></li>
+             <NavLink
+                to="/contact"
+                className={({isActive}) =>
+                    `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                }
+                >
+                Contact US
+            </NavLink>
           </ul>
         </div>
 
@@ -28,10 +40,24 @@ function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-3">Company</h3>
           <ul className="text-gray-300 space-y-2">
-            <li><a href="#" className="hover:text-gray-200">About Us</a></li>
-            <li><a href="#" className="hover:text-gray-200">How It Works</a></li>
+          <NavLink
+                to="/about"
+                className={({isActive}) =>
+                    `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                }
+                >
+                About Us
+            </NavLink>
+          <li><a href="#" className="hover:text-gray-200">How It Works</a></li>
             <li><a href="#" className="hover:text-gray-200">Testimonials</a></li>
-            <li><a href="#" className="hover:text-gray-200">Privacy Policy</a></li>
+            <NavLink
+                to="/privacy"
+                className={({isActive}) =>
+                    `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                }
+                >
+                Privacy Policy
+            </NavLink>
           </ul>
         </div>
 
