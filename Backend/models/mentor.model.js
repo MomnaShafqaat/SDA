@@ -53,6 +53,7 @@ let mentorSchema = mongoose.Schema({
         count : Number ,
         average : Number ,
         rating :{
+          type : Number ,
           min: 0,
           max: 5,
           default: 0
