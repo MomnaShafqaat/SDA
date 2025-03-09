@@ -41,4 +41,4 @@ let userSchema = mongoose.Schema({
   
   
   let userModel = mongoose.model("User", userSchema);
-  module.exports = studentModel;
+  module.exports = userModel;

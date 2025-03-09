@@ -1,8 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const cors = require('cors');
 const chatbotRoute = require('./src/routes/chatbot');
+const mentorRoutes = require('./src/routes/mentor.routes'); // Import mentor routes
 
 const app = express();
 app.use(cors());
@@ -10,6 +11,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/chatbot', chatbotRoute);
+app.use('/api/mentors', mentorRoutes); // Add mentor routes
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -20,14 +22,14 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-//connection to database
-const CLUSTER = process.env.CLUSTER ;
-let connectionString = `mongodb+srv://${CLUSTER}@vintasycluster.hpn5p.mongodb.net/mentora/`;
+// Connection to database
+const CLUSTER = process.env.CLUSTER;
+const DB_NAME = process.env.DB_NAME || 'mentora'; // Use environment variable for DB name
+const connectionString = `mongodb+srv://${CLUSTER}@vintasycluster.hpn5p.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`;
 
 mongoose
   .connect(connectionString)
-  .then( async () =>
-    {
-      console.log("Connected to Mongo DB Server: " + connectionString);
-    } )
+  .then(async () => {
+    console.log('Connected to Mongo DB Server: ' + connectionString);
+  })
   .catch((error) => console.log(error.message));

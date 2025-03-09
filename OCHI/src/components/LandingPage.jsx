@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { Outlet } from 'react-router'
 import { useAuth0 } from '@auth0/auth0-react'
 import Navbar from './Navbar'

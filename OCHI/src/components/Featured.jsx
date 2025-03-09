@@ -1,6 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import MentorCard from './MentorCard';
 
 function Featured() {
+  const [mentors, setMentors] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch mentors from the backend
+    axios.get('http://localhost:5000/api/mentors')
+      .then((response) => {
+        if (Array.isArray(response.data)) {
+          setMentors(response.data);
+        } else {
+          console.error('Expected an array of mentors, but got:', response.data);
+          setMentors([]);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching mentors:', error);
+        setMentors([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div className="text-center py-20">Loading mentors...</div>;
+  }
+
+  if (mentors.length === 0) {
+    return <div className="text-center py-20">No mentors found.</div>;
+  }
+
   return (
     <div className='w-full py-20'>
       {/* Title Section */}
@@ -11,35 +44,11 @@ function Featured() {
       {/* Cards Grid */}
       <div className='px-20 mt-10'>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10'>
-          
-          {/* Card 1 */}
-          <div className='cardcontainer h-[60vh] w-full rounded-md overflow-hidden'>
-            <div className='w-full card bg-green-600 h-full'>
-              <img className='h-full w-full object-cover' src='https://ochi.design/wp-content/uploads/2023/10/Fyde_Illustration_Crypto_2-663x551.png' alt="Mentor 1" />
+          {mentors.map((mentor) => (
+            <div key={mentor._id} className='cardcontainer h-[60vh] w-full rounded-md overflow-hidden'>
+              <MentorCard mentor={mentor} />
             </div>
-          </div>
-
-          {/* Card 2 */}
-          <div className='cardcontainer h-[60vh] w-full rounded-md overflow-hidden'>
-            <div className='w-full card bg-green-600 h-full'>
-              <img className='h-full w-full object-cover' src='https://ochi.design/wp-content/uploads/2022/09/Vise_front2-663x551.jpg' alt="Mentor 2" />
-            </div>
-          </div>
-
-          {/* Card 3 */}
-          <div className='cardcontainer h-[60vh] w-full rounded-md overflow-hidden'>
-            <div className='w-full card bg-green-600 h-full'>
-              <img className='h-full w-full object-cover' src='https://ochi.design/wp-content/uploads/2023/10/Fyde_Illustration_Crypto_2-663x551.png' alt="Mentor 3" />
-            </div>
-          </div>
-
-          {/* Card 4 */}
-          <div className='cardcontainer h-[60vh] w-full rounded-md overflow-hidden'>
-            <div className='w-full card bg-green-600 h-full'>
-              <img className='h-full w-full object-cover' src='https://ochi.design/wp-content/uploads/2022/09/Vise_front2-663x551.jpg' alt="Mentor 4" />
-            </div>
-          </div>
-
+          ))}
         </div>
       </div>
     </div>
