@@ -6,7 +6,7 @@ function About() {
             <h1 className=' font-["Neue_Montreal"] tracking-tight text-[3vw] leading-[3.5vw]'>
             Our goal is to connect students with mentors for guidance, career insights, and skill-building, bridging the gap between learning and real-world success.            </h1>
 
-            <div className='w-full flex gap-5 border-zinc-500 border-t-[1px] mt-10 pt-5 border-[#CDEA68]'>
+            <div className='w-full flex gap-5 border-t-[1px] mt-10 pt-5 border-[#CDEA68]'>
 
                 <div className='w-1/2'>
                     <h1 className=' text-[4vw]'>Our approach</h1>

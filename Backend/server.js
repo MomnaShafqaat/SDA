@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require("mongoose");
 const cors = require('cors');
 const chatbotRoute = require('./src/routes/chatbot');
+const userRoutes= require("./src/routes/userRoutes");
 
 const app = express();
 app.use(cors());
@@ -10,7 +11,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/chatbot', chatbotRoute);
-
+app.use('/api/user',userRoutes);
 // Error handling
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
@@ -22,7 +23,7 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 //connection to database
 const CLUSTER = process.env.CLUSTER ;
-let connectionString = `mongodb+srv://${CLUSTER}@vintasycluster.hpn5p.mongodb.net/mentora/`;
+let connectionString = `mongodb+srv://${CLUSTER}@vintasycluster.hpn5p.mongodb.net/mentora`;
 
 mongoose
   .connect(connectionString)

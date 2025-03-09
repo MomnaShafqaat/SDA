@@ -6,6 +6,7 @@ import LandingPage from './components/LandingPage'
 import About from './components/About'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import ProtectedRoutes from './ProtectedRoutes'
+import Callback from './Callback'
 
 function App() {
   const router = createBrowserRouter(
@@ -13,6 +14,7 @@ function App() {
       <Route>
         {/* LandingPage as the homepage */}
         <Route index element={<LandingPage />} />
+        <Route path="/callback" element={<Callback/>} />
         {/* All routes that need Layout wrapper */}
         <Route element={<Layout />}>
           <Route path="contact" element={<Contact />} />
