@@ -9,7 +9,10 @@ createRoot(document.getElementById('root')).render(
       <Auth0Provider
     domain='dev-vwgdhd3en1zcwos3.us.auth0.com'
     clientId='F1N1HkFfSwuk2lhSxOxeubBMKBcx2qCw'
-    redirectUrl={window.location.origin}
+    redirectUrl={window.location.origin+"/callback"}
+    //scope= "openid profile email offline_access"
+    useRefreshTokens={true}
+    cacheLocation="localstorage"
     
     >
     <App />
