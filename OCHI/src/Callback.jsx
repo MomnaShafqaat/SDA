@@ -22,19 +22,28 @@ const Callback = () => {
                 email: user.email,
                 name: user.name,
                 role: storedRole,
+                picture: user.picture,
             })
             .then(() => {
                 console.log("User registered successfully"); 
                 return axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
             })
             .then((response) => {
-                const userRole = response.data.role;
-                console.log("Fetched user role:", userRole); 
+                console.log("User Data:", response.data.user);
+
+                const userRole = response.data.user.role; // Get role from backend
+                const picture = response.data.user.picture;
+                console.log("Fetched user role:", userRole);
+                console.log("Fetched Picture:", picture);
+
+                localStorage.setItem("auth0Id", user.sub);
+                localStorage.setItem("profilePicture", picture);
+                localStorage.setItem("user_role", userRole); // Save the actual role from backend
 
                 if (userRole === "mentor") {
-                    navigate("/"); //  Redirect mentor dashboard
+                    navigate("/Dashboard"); 
                 } else {
-                    navigate("/"); //in future redirect to student dashboard
+                    navigate("/"); 
                 }
             })
             .catch((error) => {

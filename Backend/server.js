@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cors = require('cors');
 const chatbotRoute = require('./src/routes/chatbot');
 const userRoutes= require("./src/routes/userRoutes");
-
+const mentorRoutes = require('./src/routes/mentor.routes'); 
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -12,6 +12,7 @@ app.use(express.json());
 // Routes
 app.use('/api/chatbot', chatbotRoute);
 app.use('/api/user',userRoutes);
+app.use('/api/mentors',mentorRoutes);
 // Error handling
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);

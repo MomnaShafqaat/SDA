@@ -7,6 +7,8 @@ import About from './components/About'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import ProtectedRoutes from './ProtectedRoutes'
 import Callback from './Callback'
+import TestDashboard from './components/TestDashboard'
+import Profile from './components/Profile'
 
 function App() {
   const router = createBrowserRouter(
@@ -15,6 +17,8 @@ function App() {
         {/* LandingPage as the homepage */}
         <Route index element={<LandingPage />} />
         <Route path="/callback" element={<Callback/>} />
+        <Route path="/Dashboard"element={<TestDashboard/>}/>
+        <Route path="/profile"element={<Profile/>}/>
         {/* All routes that need Layout wrapper */}
         <Route element={<Layout />}>
           <Route path="contact" element={<Contact />} />
