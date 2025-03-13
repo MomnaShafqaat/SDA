@@ -22,10 +22,8 @@ let messageSchema = mongoose.Schema({
       default: Date.now
     }
 
-  
-    
   });
   
   
-  let userModel = mongoose.model("Student", userSchema);
+  let Message = mongoose.model("message", userSchema);
   module.exports = studentModel;
