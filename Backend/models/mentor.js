@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const User=require("./user.model");
+const User=require("./User.js");
 const MentorSchema = new mongoose.Schema({
     bio: { type: String, default: "" },
     expertise: { type: [String], default: [] },

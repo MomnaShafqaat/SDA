@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const User=require("./user.model");
+const User=require("./User");
 const StudentSchema = new mongoose.Schema({
     mentorList: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
