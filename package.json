@@ -1,0 +1,10 @@
+{
+  "name": "sda",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"cd Backend && node server.js\" \"cd OCHI && npm run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
