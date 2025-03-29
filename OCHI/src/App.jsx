@@ -23,14 +23,9 @@ function App() {
         <Route element={<Layout />}>
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<About/>}/>
-          <Route 
-            path="privacy" 
-            element={
-              <ProtectedRoutes>
-                <PrivacyPolicy/>
-              </ProtectedRoutes>
-            }
-          />
+
+          {/*Proteced route*/}
+          <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>
           
         </Route>
 
