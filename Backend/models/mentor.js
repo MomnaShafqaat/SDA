@@ -21,14 +21,14 @@ const MentorSchema = new mongoose.Schema({
     ],
   
     // Student Relations
-    pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
-    menteeList: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+    pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    menteeList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   
     // Ratings & Reviews
     reviews: [
       {
         review: String,
-        reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "user" }
+        reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
       }
     ],
     ratings: {
@@ -36,11 +36,12 @@ const MentorSchema = new mongoose.Schema({
       average: { type: Number, default: 0 },
       rating: { type: Number, min: 0, max: 5, default: 0 }
     },
-    paymentRecieved :
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "payment"
-        }
+    
+  paymentRecieved :
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "payment"
+  }
   });
   
   const Mentor = User.discriminator("mentor", MentorSchema);

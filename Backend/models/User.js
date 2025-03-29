@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const UserSchema = new mongoose.Schema(
   {
     auth0Id: { type: String, required: true, unique: true },
@@ -13,5 +12,5 @@ const UserSchema = new mongoose.Schema(
   { discriminatorKey: "role", collection: "users" } // Discriminator key tells Mongoose which model to use
 );
 
-const User = mongoose.model("user", UserSchema);
+const User = mongoose.model("User", UserSchema);
 module.exports = User;

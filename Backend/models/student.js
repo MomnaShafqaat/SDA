@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const User=require("./User");
+const User=require("./User.js");
 const StudentSchema = new mongoose.Schema({
-    mentorList: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
-    pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+    mentorList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   
     education: [
       {
@@ -19,6 +19,7 @@ const StudentSchema = new mongoose.Schema({
       ref: "payment"
     }
   });
+  
   
   const Student = User.discriminator("student", StudentSchema);
   module.exports = Student;
