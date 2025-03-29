@@ -1,12 +1,11 @@
 const express = require('express');
  const router = express.Router();
- const Mentor = require('../../models/User.js');
+ const Mentor = require('../../models/mentor.js');
  
  // GET all mentors
  router.get('/', async (req, res) => {
    try {
-    const mentor = await User.findfind().populate();
-    console.log(mentor.expertise);
+    const mentor = await Mentor.find();
     
      res.json(mentor);
    } catch (err) {
