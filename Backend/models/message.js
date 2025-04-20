@@ -21,5 +21,6 @@ let messageScehma=mongoose.Schema({
     default: Date.now,
   }
 })
+
 const Message=mongoose.model("message",messageScehma);
 module.exports=Message;
