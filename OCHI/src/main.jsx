@@ -9,6 +9,11 @@ createRoot(document.getElementById('root')).render(
       <Auth0Provider
     domain='dev-vwgdhd3en1zcwos3.us.auth0.com'
     clientId='F1N1HkFfSwuk2lhSxOxeubBMKBcx2qCw'
+    authorizationParams={{
+      redirect_uri: window.location.origin + '/callback',
+      audience: 'https://mentora.com/api', // 🔥 Replace with your actual API identifier from Auth0
+      scope: 'openid profile email offline_access'
+    }}
     redirectUrl={window.location.origin+"/callback"}
     //scope= "openid profile email offline_access"
     useRefreshTokens={true}

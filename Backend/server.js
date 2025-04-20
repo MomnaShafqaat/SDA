@@ -1,19 +1,34 @@
 require('dotenv').config();
+const { auth } = require("express-oauth2-jwt-bearer");
+
 const express = require('express');
 const mongoose = require("mongoose");
 const cors = require('cors');
 const chatbotRoute = require('./src/routes/chatbot');
 const userRoutes= require("./src/routes/userRoutes");
 const mentorRoutes = require('./src/routes/mentor.routes'); 
+const messageRoutes = require('./src/routes/message.route');
+const jwtCheck =require('./src/middleware/authMiddleware');
 const app = express();
 app.use(cors());
 app.use(express.json());
+// const jwtCheck = auth({
+//   audience: 'Unique Identifier',
+//   issuerBaseURL: 'https://dev-vwgdhd3en1zcwos3.us.auth0.com/',
+//   tokenSigningAlg: 'RS256'
+// });
+
 
 // Routes
 app.use('/api/chatbot', chatbotRoute);
 app.use('/api/user',userRoutes);
-app.use('/api/mentors',mentorRoutes);
+app.use('/api/mentors',jwtCheck, mentorRoutes);
+app.use('/api/messages',jwtCheck,messageRoutes);
+
+//app.use('/api/mentors',mentorRoutes);
 // Error handling
+
+
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
   res.status(500).json({ error: err.message || 'Something went wrong!' });

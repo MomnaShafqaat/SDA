@@ -1,7 +1,7 @@
 import React from 'react';
 
 const MentorCard = ({ mentor }) => {
-  const { profilePictureUrl, name, ratings, skills, isVerified } = mentor;
+  const { picture, name, ratings, skills, isVerified } = mentor;
 
   // Function to render rating stars
   const renderStars = (rating) => {
@@ -20,10 +20,11 @@ const MentorCard = ({ mentor }) => {
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 text-center w-48 shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div className="border border-gray-200 rounded-lg p-4 text-center w-48 shadow-sm hover:shadow-md 
+    transition-shadow duration-200" >
       <img
-        src={profilePictureUrl}
-        alt={name}
+        src={picture}
+        //alt={name}
         className="w-24 h-24 rounded-full object-cover mx-auto mb-3"
       />
       <h3 className="text-lg font-semibold mb-2">{name}</h3>

@@ -12,5 +12,15 @@ const express = require('express');
      res.status(500).json({ message: err.message });
    }
  });
+
+ router.get('/mentor/:auth0Id',async (req,res)=>{
+  try{
+    const mentor=await Mentor.findOne({ auth0Id: req.params.auth0Id });
+    res.json(mentor);
+  }catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+
+ })
  
  module.exports = router;
