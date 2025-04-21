@@ -45,8 +45,8 @@ router.get('/:auth0Id', async (req, res) => {
           { sender: userToChat._id, reciever: myUser._id }
         ]
       })
-      .populate('sender', 'auth0Id name picture role') // Add this
-      .sort({ timestamp: 1 });
+      .populate('sender', 'auth0Id name picture role') // Joins auth0Id,name,picture and role to sender and basically mmakes a sender obj
+      .sort({ timestamp: 1 });                         // which now just instead of authId contains these fields
   
       res.status(200).json(messages);
     } catch (err) {
@@ -66,6 +66,7 @@ router.get('/:auth0Id', async (req, res) => {
       
         console.log("receiever : ",recieverAuth0Id);
         console.log("sender : ",senderAuth0Id)
+
       //to get object id of sender and reciever
       const reciever = await User.findOne({ auth0Id: recieverAuth0Id });
 

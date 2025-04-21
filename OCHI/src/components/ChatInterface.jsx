@@ -121,208 +121,220 @@ const SendButton = styled.button`
 `;
 
 const ChatInterface = () => {
-  const { user, getAccessTokenSilently } = useAuth0();
-  const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
-  const messagesEndRef = useRef(null);
-  const messageContainerRef = useRef(null);
-  useEffect(() => {
-    if (messageContainerRef.current) {
-      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-    }
-  }, [messages, selectedUser]);
-  // Axios interceptor for auth token
-  
-  useEffect(() => {
-    const interceptor = axios.interceptors.request.use(async config => {
-      const token = await getAccessTokenSilently();
-      config.headers.Authorization = `Bearer ${token}`;
-      return config;
-    });
-    
-    return () => axios.interceptors.request.eject(interceptor);
-  }, [getAccessTokenSilently]);
+    const { user, getAccessTokenSilently } = useAuth0();
+    const [users, setUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+    const messagesEndRef = useRef(null);
+    const messageContainerRef = useRef(null);
+
+
+    useEffect(() => {
+        if (messageContainerRef.current) {
+            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+        }
+    }, [messages, selectedUser]);
+    // Axios interceptor for auth token
+    //It Attaches Token to EVery Axios Request.It is Used when all requests needs token
+    //We dont need to send token with every request manually.This Performs that with every request
+    useEffect(() => {
+        const interceptor = axios.interceptors.request.use(async config => {
+            const token = await getAccessTokenSilently();
+            config.headers.Authorization = `Bearer ${token}`;
+            return config;
+        });
+
+        return () => axios.interceptors.request.eject(interceptor);
+    }, [getAccessTokenSilently]);
 
 
 
-  // Fetch users for sidebar
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const { data } = await axios.get(
-          'http://localhost:5000/api/messages/getUsersForSidebar'
-        );
-        setUsers(data);
-      } catch (err) {
-        console.error('Error fetching users:', err);
-      }
+    // Fetch users for sidebar
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const { data } = await axios.get(
+                    'http://localhost:5000/api/messages/getUsersForSidebar'
+                );
+                //Gets user and set them in Users State
+                setUsers(data);
+            } catch (err) {
+                console.error('Error fetching users:', err);
+            }
+        };
+        fetchUsers();
+    }, []);
+
+    //Fetch Messages Function
+
+    const fetchMessages = async () => {
+        if (!selectedUser) return;
+        try {
+            const { data } = await axios.get(
+                `http://localhost:5000/api/messages/${selectedUser.auth0Id}`//SelectedUser is set when clicked on Users at Sidebar
+            );
+            //sets the response in messages state
+            setMessages(data);
+        } catch (err) {
+            console.error('Error fetching messages:', err);
+        }
     };
-    fetchUsers();
-  }, []);
-  const fetchMessages = async () => {
-    if (!selectedUser) return;
-    try {
-      const { data } = await axios.get(
-        `http://localhost:5000/api/messages/${selectedUser.auth0Id}`
-      );
-      setMessages(data);
-    } catch (err) {
-      console.error('Error fetching messages:', err);
-    }
-  };
 
-  // Fetch messages when user is selected
-  useEffect(() => {
-    
-    fetchMessages();
-  }, [selectedUser]);
+    // Fetch messages when user is selected
+    useEffect(() => {
+        fetchMessages();
+    }, [selectedUser]);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !selectedUser) return;
+    //To Handle Send Message
+    const handleSendMessage = async (e) => {
+        //prevents from default submission
+        e.preventDefault();
+        //if message is empty or user is not selected
+        if (!newMessage.trim() || !selectedUser) {return;}
 
-    try {
-      const { data } = await axios.post(
-        `http://localhost:5000/api/messages/send/${selectedUser.auth0Id}`,
-        { content: newMessage }
-      );
-      
-      setMessages([...messages, data]);
-      setNewMessage('');
-      await fetchMessages();
-    } catch (err) {
-      console.error('Error sending message:', err);
-    }
-  };
+        try {
+            const { data } = await axios.post(
+                `http://localhost:5000/api/messages/send/${selectedUser.auth0Id}`,//Sending authId of who you want to chat with.
+                { content: newMessage }
+            );
+            //Sets messages with prev messages first then appends the new message
+            setMessages([...messages, data]);
+            //Set new Message to null after sending message;
+            setNewMessage('');
+            //Refreshing the chat 
+            await fetchMessages();
+        } catch (err) {
+            console.error('Error sending message:', err);
+        }
+    };
 
-  const MessageBubble = ({ message }) => (
-    <div
-      style={{
-        maxWidth: '70%',
-        padding: '12px 16px',
-        borderRadius: '8px',
-        background: message.sender.auth0Id === user.sub ? '#d9fdd3' : 'white',
-        alignSelf: message.sender.auth0Id === user.sub ? 'flex-end' : 'flex-start',
-        boxShadow: '0 1px 0.5px rgba(0,0,0,0.13)',
-        marginBottom: '12px',
-        position: 'relative'
-      }}
-    >
-      {message.sender.auth0Id !== user.sub && (
-        <RoleBadge role={message.sender.role}>
-          {message.sender.role}
-        </RoleBadge>
-      )}
-      <p style={{ margin: '8px 0' }}>{message.content}</p>
-      <TimeStamp>
-        <span>{new Date(message.timestamp).toLocaleTimeString([], { 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        })}</span>
-      </TimeStamp>
-    </div>
-  );
+    const MessageBubble = ({ message }) => (
+        <div
+            style={{
+                maxWidth: '70%',
+                padding: '12px 16px',
+                borderRadius: '8px',
+                background: message.sender.auth0Id === user.sub ? '#d9fdd3' : 'white', /*If (msg is send by you) blue color else white*/
+                alignSelf: message.sender.auth0Id === user.sub ? 'flex-end' : 'flex-start', //if (msg is send by you) place it at right end else left end
+                boxShadow: '0 1px 0.5px rgba(0,0,0,0.13)',
+                marginBottom: '12px',
+                position: 'relative'
+            }}
+        >
+            {message.sender.auth0Id !== user.sub && (
+                <RoleBadge role={message.sender.role}>
+                    {message.sender.role}
+                </RoleBadge>
+            )}
+            <p style={{ margin: '8px 0' }}>{message.content}</p>
+            <TimeStamp>
+                <span>{new Date(message.timestamp).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</span>
+            </TimeStamp>
+        </div>
+    );
 
-  return (
-    <ChatContainer>
-      <Sidebar>
-        <UserList>
-          <h3 style={{ padding: '15px', margin: 0 }}>Chats</h3>
-          {users.map(user => (
-            <UserItem 
-              key={user.auth0Id} 
-              onClick={() => setSelectedUser(user)}
-              active={selectedUser?.auth0Id === user.auth0Id}
-            >
-              <img 
-                src={user.picture} 
-                alt={user.name}
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  marginLeft: '10px'
-                }}
-              />
- <div style={{ marginLeft: '15px', minWidth: 0 }}> 
- <h4 style={{ 
-      margin: 0, 
-      overflowWrap: 'break-word',  // 👈 ADDED
-      wordBreak: 'break-word'      // 👈 ADDED
-    }}>
-      {user.name}
-    </h4>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-      <span style={{ 
-        fontSize: '0.75rem',
-        color: user.role === 'mentor' ? '#2d9cdb' : '#27ae60',
-        fontWeight: 500
-      }}>
-        {user.role.toUpperCase()}
-      </span>
-    </div>
-              </div>
-            </UserItem>
-          ))}
-        </UserList>
-      </Sidebar>
+    return (
+        <ChatContainer>
+            <Sidebar>
+                <UserList>
+                    <h3 style={{ padding: '15px', margin: 0 }}>Chats</h3>
+                    {users.map(user => (
+                        <UserItem
+                            key={user.auth0Id}
+                            onClick={() => setSelectedUser(user)}/*On click,setSelectedUSer=user clicked*/
+                            active={selectedUser?.auth0Id === user.auth0Id} /* */
+                        >
+                            <img
+                                src={user.picture}
+                                alt={user.name}
+                                style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                    marginLeft: '10px'
+                                }}
+                            />
+                            <div style={{ marginLeft: '15px', minWidth: 0 }}>
+                                <h4 style={{
+                                    margin: 0,
+                                    overflowWrap: 'break-word',  
+                                    wordBreak: 'break-word'      
+                                }}>
+                                    {user.name}
+                                </h4>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{
+                                        fontSize: '0.75rem',
+                                        color: user.role === 'mentor' ? '#2d9cdb' : '#27ae60',
+                                        fontWeight: 500
+                                    }}>
+                                        {user.role.toUpperCase()}
+                                    </span>
+                                </div>
+                            </div>
+                        </UserItem>
+                    ))}
+                </UserList>
+            </Sidebar>
 
-      <ChatWindow>
-        {selectedUser ? (
-          <>
-            <MessageHeader>
-              <h3 style={{ margin: 0 }}>{selectedUser.name}</h3>
-            </MessageHeader>
-            
-            <MessageContainer ref={messageContainerRef}>
-              {messages.map(message => (
-                <MessageBubble key={message._id} message={message} />
-              ))}
-            </MessageContainer>
+            <ChatWindow>
+                {selectedUser ? (
+                    <>
+                        <MessageHeader>
+                            <h3 style={{ margin: 0 }}>{selectedUser.name}</h3>
+                        </MessageHeader>
 
-            <InputContainer>
-              <form 
-                onSubmit={handleSendMessage}
-                style={{ display: 'flex', alignItems: 'center' }}
-              >
-                <MessageInput
-                  type="text"
-                  placeholder="Type a message..."
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '14px 16px',
-                    borderRadius: '8px',
-                    fontSize: '15px'
-                  }}
-                />
-                <SendButton type="submit">
-                  Send
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                  </svg>
-                </SendButton>
-              </form>
-            </InputContainer>
-          </>
-        ) : (
-          <div style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#667781'
-          }}>
-            Select a user to start chatting
-          </div>
-        )}
-      </ChatWindow>
-    </ChatContainer>
-  );
+                        <MessageContainer ref={messageContainerRef}>
+                            {messages.map(message => (
+                                <MessageBubble key={message._id} message={message} />
+                            ))}
+                        </MessageContainer>
+
+                        <InputContainer>
+                            <form
+                                onSubmit={handleSendMessage}
+                                style={{ display: 'flex', alignItems: 'center' }}
+                            >
+                                <MessageInput
+                                    type="text"
+                                    placeholder="Type a message..."
+                                    value={newMessage}
+                                    onChange={(e) => setNewMessage(e.target.value)}
+                                    style={{
+                                        flex: 1,
+                                        padding: '14px 16px',
+                                        borderRadius: '8px',
+                                        fontSize: '15px'
+                                    }}
+                                />
+                                <SendButton type="submit">
+                                    Send
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                                    </svg>
+                                </SendButton>
+                            </form>
+                        </InputContainer>
+                    </>
+                ) : (
+                    <div style={{
+                        flex: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#667781'
+                    }}>
+                        Select a user to start chatting
+                    </div>
+                )}
+            </ChatWindow>
+        </ChatContainer>
+    );
 };
 
 export default ChatInterface;
