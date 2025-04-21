@@ -26,28 +26,6 @@ router.get('/getUsersForSidebar',async(req,res)=>{
 })
 
 //To load Chat with a User
-// router.get('/messages/:auth0Id',async(req,res)=>{
-//     try{
-//         const {auth0Id:userToChatId}=req.params;
-//         const myId=req.auth.payload.sub;
-//         console.log("Sender Id :",myId);
-//         const messages= await Message.find({
-//             $or:[
-//                 {sender:myId,reciever:userToChatId},
-//                 {sender:userToChatId,reciever:myId}
-
-//             ]
-//         })
-//         res.status(200).json(messages);
-//     }
-//     catch(err){
-//         console.log("Error in getting messages against id",err.message);
-//         res.status(500).json({error:"Internal server error"});
-//     }
-// })
-
-
-//To load Chat with a User
 router.get('/:auth0Id', async (req, res) => {
     try {
       const { auth0Id: userToChatAuth0Id } = req.params; //get id of the user you want to chat with
@@ -61,13 +39,6 @@ router.get('/:auth0Id', async (req, res) => {
       if (!myUser || !userToChat) {
         return res.status(404).json({ error: "User not found" });
       }
-  
-    //   const messages = await Message.find({
-    //     $or: [
-    //       { sender: myUser._id, reciever: userToChat._id },  //Getting messages 
-    //       { sender: userToChat._id, reciever: myUser._id }
-    //     ]
-    //   }).sort({ timestamp: 1 }); // sort by timestamp ascending
     const messages = await Message.find({
         $or: [
           { sender: myUser._id, reciever: userToChat._id },
