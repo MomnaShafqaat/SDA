@@ -62,12 +62,20 @@ router.get('/:auth0Id', async (req, res) => {
         return res.status(404).json({ error: "User not found" });
       }
   
-      const messages = await Message.find({
+    //   const messages = await Message.find({
+    //     $or: [
+    //       { sender: myUser._id, reciever: userToChat._id },  //Getting messages 
+    //       { sender: userToChat._id, reciever: myUser._id }
+    //     ]
+    //   }).sort({ timestamp: 1 }); // sort by timestamp ascending
+    const messages = await Message.find({
         $or: [
-          { sender: myUser._id, reciever: userToChat._id },  //Getting messages 
+          { sender: myUser._id, reciever: userToChat._id },
           { sender: userToChat._id, reciever: myUser._id }
         ]
-      }).sort({ timestamp: 1 }); // sort by timestamp ascending
+      })
+      .populate('sender', 'auth0Id name picture role') // Add this
+      .sort({ timestamp: 1 });
   
       res.status(200).json(messages);
     } catch (err) {

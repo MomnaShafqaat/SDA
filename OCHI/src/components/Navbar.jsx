@@ -31,8 +31,16 @@ function Navbar() {
                 </NavLink>
             </div>
             <div className="links flex gap-10 items-center">
-                <NavLink to="/contact" className="text-gray-700 hover:text-orange-700">Contact Us</NavLink>
-                <NavLink to="/about" className="text-gray-700 hover:text-orange-700">About Us</NavLink>
+            <NavLink to="/chatInterface" className={({isActive}) =>
+              `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+            }>Chat With Mentor</NavLink>
+                <NavLink to="/contact" className={({isActive}) =>
+              `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+            }>Contact Us</NavLink>
+                <NavLink to="/about" className={({isActive}) =>
+              `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+          }>About Us</NavLink>
+                
 
                 {!isAuthenticated ? (
                     <div className="relative">

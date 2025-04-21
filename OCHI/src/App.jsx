@@ -9,6 +9,11 @@ import ProtectedRoutes from './ProtectedRoutes'
 import Callback from './Callback'
 import TestDashboard from './components/TestDashboard'
 import Profile from './components/Profile'
+import ChatInterface from './components/ChatInterface'
+
+
+
+///IMPORTANT NOTE: POPUP FOR LANDING AND LAYOUT IS DIFFERENT.TO ENABLE AGAIN setShowPopup true in both Layout.jsx and LandingPage.jsx
 
 function App() {
   const router = createBrowserRouter(
@@ -19,6 +24,7 @@ function App() {
         <Route path="/callback" element={<Callback/>} />
         <Route path="/Dashboard"element={<TestDashboard/>}/>
         <Route path="/profile"element={<Profile/>}/>
+        
         {/* All routes that need Layout wrapper */}
         <Route element={<Layout />}>
           <Route path="contact" element={<Contact />} />
@@ -26,9 +32,10 @@ function App() {
 
           {/*Proteced route*/}
           <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>
+          <Route path="/chatInterface" element={ <ProtectedRoutes> <ChatInterface/> </ProtectedRoutes>}/>
           
         </Route>
-
+    
 
         
       </Route>

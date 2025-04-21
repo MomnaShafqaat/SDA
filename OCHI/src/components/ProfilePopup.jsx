@@ -112,7 +112,7 @@ const ProfilePopup = ({ onClose }) => {
     onClose();
     const item = {
       value: 'true',
-      expiry: new Date().getTime() + 100000, // 10 seconds
+      expiry: new Date().getTime() + 10000000, // 10 seconds
     };
     localStorage.setItem('profileReminderDismissed', JSON.stringify(item));
   };

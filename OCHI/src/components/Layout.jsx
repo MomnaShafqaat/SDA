@@ -45,7 +45,7 @@ function Layout() {
         try {
           const response = await axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
           if (!response.data.bio) {
-            setShowProfilePopup(true);
+            setShowProfilePopup(false);
           }
         } catch (error) {
           console.error('Error fetching profile:', error);

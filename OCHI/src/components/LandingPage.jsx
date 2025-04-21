@@ -46,6 +46,7 @@ import Featured from './Featured';
 import Footer from './Footer';
 import Chatbot from './Chatbot';
 import ProfilePopup from './ProfilePopup';
+import ChatInterface from './ChatInterface';
 
 // Styled components
 const PageContentContainer = styled.div`
@@ -83,9 +84,12 @@ function LandingPage() {
         if (dismissed && new Date().getTime() < dismissed.expiry) return;
 
         const response = await axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
-        if (!response.data.bio) {
-          setShowProfilePopup(true);
-        }
+        //Add on which fields you want to show the popup
+        // if (!response.data.bio) {
+        //   setShowProfilePopup(true);
+        // }
+        setShowProfilePopup(false);
+
       } catch (error) {
         console.error('Profile check error:', error);
       } finally {
@@ -122,7 +126,7 @@ function LandingPage() {
             setShowProfilePopup(false);
             const item = {
               value: 'true',
-              expiry: new Date().getTime() + 10000, // 10 seconds
+              expiry: new Date().getTime() + 9000000, // 10 seconds
             };
             localStorage.setItem('profileReminderDismissed', JSON.stringify(item));
           }}
@@ -136,7 +140,7 @@ function LandingPage() {
         <Eyes />
         <Featured />
       </PageContentContainer>
-
+      
       <Chatbot />
       <Footer />
     </>
