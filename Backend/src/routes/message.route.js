@@ -94,9 +94,9 @@ router.get('/:auth0Id', async (req, res) => {
   
       await newMessage.save(); //Saving Message in database
        //Realtime functionality using socket.io;
-        //
-        //
-  
+       
+      
+
       res.status(200).json(newMessage);
     } catch (err) {
       console.log("Error in Sending message Route", err.message);

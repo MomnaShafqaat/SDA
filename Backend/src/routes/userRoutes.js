@@ -2,9 +2,19 @@ const express = require("express");
 const User = require("../../models/User.js");
 const Mentor = require("../../models/mentor.js");
 const Student = require("../../models/student.js");
+const jwtCheck = require("../middleware/authMiddleware.js");
 
 const router = express.Router();
-
+router.get('/me',jwtCheck, async (req, res) => {
+    try {
+        const auth0Id = req.auth.payload.sub;
+        const user = await User.findOne({ auth0Id });
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 // 🔹 Register User
 router.post("/register", async (req, res) => {
     try {

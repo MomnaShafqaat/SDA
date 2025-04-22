@@ -183,7 +183,18 @@ const ChatInterface = () => {
 
     // Fetch messages when user is selected
     useEffect(() => {
+        if (!selectedUser) return;
+    
+        // Fetch messages immediately when user is selected
         fetchMessages();
+    
+        // Set interval to fetch messages every 5 seconds
+        const intervalId = setInterval(() => {
+            fetchMessages();
+        }, 5000); // polling every 5 seconds
+    
+        // Clear interval when component unmounts or selectedUser changes
+        return () => clearInterval(intervalId);
     }, [selectedUser]);
 
     //To Handle Send Message
@@ -204,6 +215,7 @@ const ChatInterface = () => {
             setNewMessage('');
             //Refreshing the chat 
             await fetchMessages();
+            
         } catch (err) {
             console.error('Error sending message:', err);
         }
