@@ -4,14 +4,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Callback = () => {
-    const { isAuthenticated, user } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
     const navigate = useNavigate();
-
+    console.log("Callback component mounted...");
     useEffect(() => {
         console.log("Callback mounted..."); 
 
+       
         if (isAuthenticated && user) {
             console.log("User authenticated:", user); 
+
+            // Access token is now available JWT token to send to backend to authorize requests
+            
 
             const storedRole = localStorage.getItem("user_role"); 
             console.log("Stored Role:", storedRole);
@@ -24,8 +28,11 @@ const Callback = () => {
                 role: storedRole,
                 picture: user.picture,
             })
-            .then(() => {
+            .then((response) => {
                 console.log("User registered successfully"); 
+                const token = response.data ;
+                console.log("Token:", token);
+                localStorage.setItem("jwt_token", token); // Store token in local storage
                 return axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
             })
             .then((response) => {
@@ -52,7 +59,10 @@ const Callback = () => {
         } else {
             console.log("User not authenticated yet."); 
         }
+        
     }, [isAuthenticated, user]);
+
+    
 
     return <div>Loading...</div>;
 };

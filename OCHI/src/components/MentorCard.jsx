@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import studentService from '../services/studentServices'; // Adjust the import path as necessary
+import { useState } from 'react';
 
 const MentorCard = ({ mentor }) => {
   const { picture, name, ratings, skills, isVerified } = mentor;
+  const [sendRequest, setSendRequest] = useState(false);
+
+  const handleRequest = () => {
+    const storedRole = localStorage.getItem("user_role");
+    console.log("Stored Role:", storedRole);
+    console.log("Mentor ID:", mentor._id);
+    studentService.sendRequest(mentor._id) //mentor id is sent
+    setSendRequest(true);
+  };
 
   // Function to render rating stars
   const renderStars = (rating) => {
@@ -19,9 +30,11 @@ const MentorCard = ({ mentor }) => {
     return stars;
   };
 
+
+
   return (
-    <div className="border border-gray-200 rounded-lg p-4 text-center w-48 shadow-sm hover:shadow-md 
-    transition-shadow duration-200" >
+    <div 
+    className="border border-gray-200 rounded-lg p-4 text-center w-48 shadow-sm hover:shadow-md transition-shadow duration-200" >
       <img
         src={picture}
         //alt={name}
@@ -38,9 +51,14 @@ const MentorCard = ({ mentor }) => {
       {isVerified && (
         <span className="text-sm text-green-600">Verified Mentor</span>
       )}
-      <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 mt-2">
-        Get Mentored
-      </button>
+      <button
+  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 mt-2"
+  onClick={handleRequest}
+  disabled={sendRequest}
+>
+  {sendRequest ? 'Request Sent' : 'Get Mentored'}
+</button>
+
     </div>
   );
 };

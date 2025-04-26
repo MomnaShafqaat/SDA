@@ -3,6 +3,8 @@ const User = require("../../models/User.js");
 const Mentor = require("../../models/mentor.js");
 const Student = require("../../models/student.js");
 const jwtCheck = require("../middleware/authMiddleware.js");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 
 const router = express.Router();
 router.get('/me',jwtCheck, async (req, res) => {
@@ -19,10 +21,10 @@ router.get('/me',jwtCheck, async (req, res) => {
 router.post("/register", async (req, res) => {
     try {
         console.log("Incoming Request:", req.body);
-        const { auth0Id, email, name, role, picture } = req.body;
+        const { auth0Id } = req.body;
 
         // 🔹 Check for missing fields
-        if (!auth0Id || !email || !name || !role || !picture) {
+        if (!auth0Id /* || !email || !name || !role || !picture */) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
@@ -37,7 +39,8 @@ router.post("/register", async (req, res) => {
             console.log("User already exists:", user);
         }
 
-        res.status(201).json({ message: "User registered successfully", user });
+        let token = jwt.sign({ id: user._id  , name: user.name , role: user.role }, config.get("jwtPrivateKey") ) ;
+        res.send(token) ;
     } catch (error) {
         console.error("Backend Error:", error);
         res.status(500).json({ error: "Internal Server Error" });

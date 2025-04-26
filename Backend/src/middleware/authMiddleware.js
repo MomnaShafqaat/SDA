@@ -6,5 +6,8 @@ const jwtCheck = auth({
     issuerBaseURL: 'https://dev-vwgdhd3en1zcwos3.us.auth0.com/',
     tokenSigningAlg: 'RS256'
   });
+
+
+
   module.exports=jwtCheck;
   

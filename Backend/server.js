@@ -9,6 +9,7 @@ import mentorRoutes from './src/routes/mentor.routes.js';
 import messageRoutes from './src/routes/message.route.js';
 import jwtCheck from './src/middleware/authMiddleware.js';
 import { app, server } from './src/lib/socket.js';  // Correct the path
+import studentRoutes from './src/routes/student.js';  
 
 // Middleware
 app.use(cors());
@@ -19,6 +20,8 @@ app.use('/api/chatbot', chatbotRoute);
 app.use('/api/user', userRoutes);
 app.use('/api/mentors', jwtCheck, mentorRoutes);
 app.use('/api/messages', jwtCheck, messageRoutes);
+app.use('/api/student', studentRoutes);
+
 
 // Error handling
 app.use((err, req, res, next) => {
