@@ -1,4 +1,5 @@
 import React from 'react'
+import { useEffect, useState } from 'react'; 
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import Layout from './components/Layout'
 import Contact from './components/Contact'
@@ -16,6 +17,20 @@ import ChatInterface from './components/ChatInterface'
 ///IMPORTANT NOTE: POPUP FOR LANDING AND LAYOUT IS DIFFERENT.TO ENABLE AGAIN setShowPopup true in both Layout.jsx and LandingPage.jsx
 
 function App() {
+
+  useEffect(() => {
+    const clearLocalStorage = () => {
+      localStorage.clear(); // or selectively remove specific keys
+    };
+
+    window.addEventListener('unload', clearLocalStorage);
+
+    // Cleanup in case component unmounts
+    return () => {
+      window.removeEventListener('unload', clearLocalStorage);
+    };
+  }, []);
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>

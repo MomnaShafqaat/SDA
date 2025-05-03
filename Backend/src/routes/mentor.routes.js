@@ -1,10 +1,13 @@
 const express = require('express');
  const router = express.Router();
  const Mentor = require('../../models/mentor.js');
+ const jwtCheck = require("../middleware/authjwt.js");
+ const Student = require('../../models/student.js');
  
  // GET all mentors
  router.get('/', async (req, res) => {
    try {
+    console.log('generic route' ) ;
     const mentor = await Mentor.find();
     
      res.json(mentor);
@@ -20,7 +23,29 @@ const express = require('express');
   }catch (err) {
     res.status(500).json({ message: err.message });
   }
+}); 
 
- })
+  router.get('/fetchMentors', jwtCheck, async(req,res)=>{
+    console.log("Fetching mentors..." , req.user.id) ;
+   // Assume this is the logged-in student
+const student = await Student.findById(req.user.id); // studentId should be available
+const pendingRequests = student.pendingRequests.map(id => id.toString());
+
+// Get all mentors
+const mentors = await Mentor.find({});
+
+// Add 'requested' field to each mentor
+const mentorsWithRequestStatus = mentors.map(mentor => {
+  const isRequested = pendingRequests.includes(mentor._id.toString());
+  return {
+    ...mentor.toObject(), // convert Mongoose document to plain JS object
+    requested: isRequested,
+  };
+});
+console.log(mentorsWithRequestStatus) ;
+// Now `mentorsWithRequestStatus` contains mentors with the `requested` field
+res.json(mentorsWithRequestStatus);
+  });
+
  
  module.exports = router;

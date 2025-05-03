@@ -40,6 +40,7 @@ router.post("/register", async (req, res) => {
         }
 
         let token = jwt.sign({ id: user._id  , name: user.name , role: user.role }, config.get("jwtPrivateKey") ) ;
+        console.log("Generated Token:", token);
         res.send(token) ;
     } catch (error) {
         console.error("Backend Error:", error);
