@@ -7,7 +7,7 @@ import mentorService from '../services/mentorServices';
 function Featured() {
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently , isAuthenticated } = useAuth0();
   
   useEffect(() => {
     const fetchMentors = async () => {
@@ -16,7 +16,7 @@ function Featured() {
         // Step 2
           console.log("Token being sent:", token);*/
 
-        const response = await mentorService.getMentors();
+        const response = await mentorService.getMentors(isAuthenticated);
         if(localStorage.getItem("user_role")){
           console.log("User role:", localStorage.getItem("user_role"));
          

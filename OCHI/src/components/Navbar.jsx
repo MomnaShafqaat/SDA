@@ -169,6 +169,9 @@
                                     () => {
                                         logout();
                                         disconnectSocket();
+                                        
+                                        localStorage.clear(); 
+                                          
                                     }
                                     
                                 } 

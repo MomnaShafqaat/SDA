@@ -5,13 +5,16 @@ class MentorService extends GenericService {
         this.baseUrl = 'http://localhost:5000/api/mentors/';
     }
     
-    getMentors = async () =>{
+    getMentors = async (isAuthenticated) =>{
         let token = localStorage.getItem('jwt_token');
         let response ;
         console.log("Token being sent:", token);
-        if(!token)
+        if(localStorage.getItem("user_role" === "mentor")){
+            return null ;
+        }
+        if(!isAuthenticated)
         {
-            response = await this.get(`${this.baseUrl}`, {}, {}) ;
+            response = await this.get(`${this.baseUrl}`, {}) ;
 
         }
             

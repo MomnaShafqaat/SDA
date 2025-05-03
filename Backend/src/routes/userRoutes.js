@@ -21,7 +21,7 @@ router.get('/me',jwtCheck, async (req, res) => {
 router.post("/register", async (req, res) => {
     try {
         console.log("Incoming Request:", req.body);
-        const { auth0Id } = req.body;
+        const { auth0Id, email, name, role, picture } = req.body;
 
         // 🔹 Check for missing fields
         if (!auth0Id /* || !email || !name || !role || !picture */) {
@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
         let user = await User.findOne({ auth0Id });
 
         if (!user) {
-            console.log("🆕 Creating new user...");
+            console.log("Creating new user...");
             user = role === "mentor" ? new Mentor(req.body) : new Student(req.body);
             await user.save();
             console.log("User created:", user);
@@ -44,8 +44,8 @@ router.post("/register", async (req, res) => {
         res.send(token) ;
     } catch (error) {
         console.error("Backend Error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+        res.status(500).json({ error: "Internal Server Error" });
+}
 });
 
 // 🔹 Get User Profile
