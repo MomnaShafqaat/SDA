@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
  function authjwt(req, res, next) {
     const authHeader = req.headers.authorization;
-
+    console.log('jwt authentication middleware' + authHeader) ;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({ error: "Access denied. No token provided." });
     }
@@ -13,6 +13,7 @@ const config = require("config");
     try {
         const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         req.user = decoded; // Attach payload to request
+        console.log("Decoded JWT:", decoded);
         next();
     } catch (ex) {
         res.status(400).json({ error: "Invalid token." });

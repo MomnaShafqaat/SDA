@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MentorCard from './MentorCard';
 import { useAuth0 } from '@auth0/auth0-react';
+import mentorService from '../services/mentorServices';
 
 function Featured() {
   const [mentors, setMentors] = useState([]);
@@ -10,15 +11,12 @@ function Featured() {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const token = await getAccessTokenSilently({ ignoreCache: true });
+        /*const token = await getAccessTokenSilently({ ignoreCache: true });
         // Step 2
-          console.log("Token being sent:", token);
+          console.log("Token being sent:", token);*/
 
-        const response = await axios.get('http://localhost:5000/api/mentors', {
-          headers: {
-            Authorization: `Bearer ${token}` // Step 3
-          }
-        });
+        const response = await mentorService.getMentors();
+        
 
         if (Array.isArray(response.data)) {
           setMentors(response.data);

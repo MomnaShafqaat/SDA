@@ -4,7 +4,10 @@ import { useState } from 'react';
 
 const MentorCard = ({ mentor }) => {
   const { picture, name, ratings, skills, isVerified } = mentor;
-  const [sendRequest, setSendRequest] = useState(false);
+  //initializes to the field in menotr which 
+  //tells if the mentor has already been requested 
+  const [sendRequest, setSendRequest] = useState(mentor?.requested); 
+  
 
   const handleRequest = () => {
     const storedRole = localStorage.getItem("user_role");
@@ -56,7 +59,8 @@ const MentorCard = ({ mentor }) => {
   onClick={handleRequest}
   disabled={sendRequest}
 >
-  {sendRequest ? 'Request Sent' : 'Get Mentored'}
+  { 
+  sendRequest ? 'Request Sent' : 'Get Mentored'}
 </button>
 
     </div>

@@ -34,7 +34,9 @@ class StudentService extends GenericService {
             });
     }
 
+    
+
 }
 
-let studentService = new StudentService
+let studentService = new StudentService ; 
 export default studentService;
