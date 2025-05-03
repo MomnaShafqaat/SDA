@@ -1,15 +1,15 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import chatbotRoute from './src/routes/chatbot.js';  // Ensure these are correct
-import userRoutes from './src/routes/userRoutes.js';
-import mentorRoutes from './src/routes/mentor.routes.js';
-import messageRoutes from './src/routes/message.route.js';
-import jwtCheck from './src/middleware/authMiddleware.js';
-import { app, server } from './src/lib/socket.js';  // Correct the path
-import studentRoutes from './src/routes/student.js';  
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const chatbotRoute = require('./src/routes/chatbot.js');  // Ensure these are correct
+const userRoutes = require('./src/routes/userRoutes.js');
+const mentorRoutes = require('./src/routes/mentor.routes.js');
+const messageRoutes = require('./src/routes/message.route.js');
+const jwtCheck = require('./src/middleware/authMiddleware.js');
+const { app, server } = require('./src/lib/socket.js');  // Correct the path
+const studentRoutes = require('./src/routes/student.js');  
 
 // Middleware
 app.use(cors());
