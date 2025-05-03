@@ -46,7 +46,7 @@ const Callback = () => {
                 localStorage.setItem("auth0Id", user.sub);
                 localStorage.setItem("profilePicture", picture);
                 localStorage.setItem("user_role", userRole); // Save the actual role from backend
-
+                
                 if (userRole === "mentor") {
                     navigate("/"); 
                 } else {

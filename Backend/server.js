@@ -18,7 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/chatbot', chatbotRoute);
 app.use('/api/user', userRoutes);
-app.use('/api/mentors', jwtCheck, mentorRoutes);
+app.use('/api/mentors', mentorRoutes);
 app.use('/api/messages', jwtCheck, messageRoutes);
 app.use('/api/student', studentRoutes);
 

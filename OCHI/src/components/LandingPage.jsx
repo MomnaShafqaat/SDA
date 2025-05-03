@@ -76,6 +76,7 @@ function LandingPage() {
   const { isAuthenticated, user, isLoading } = useAuth0();
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [profileChecked, setProfileChecked] = useState(false);
+ 
 
   const checkProfile = useCallback(async () => {
     if (!isLoading && isAuthenticated && user?.sub) {
@@ -138,7 +139,7 @@ function LandingPage() {
         <Marque />
         <About />
         <Eyes />
-        <Featured />
+        <Featured  />
       </PageContentContainer>
       
       <Chatbot />

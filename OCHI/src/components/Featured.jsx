@@ -8,6 +8,7 @@ function Featured() {
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
   const { getAccessTokenSilently } = useAuth0();
+  
   useEffect(() => {
     const fetchMentors = async () => {
       try {
@@ -16,7 +17,10 @@ function Featured() {
           console.log("Token being sent:", token);*/
 
         const response = await mentorService.getMentors();
-        
+        if(localStorage.getItem("user_role")){
+          console.log("User role:", localStorage.getItem("user_role"));
+         
+        }
 
         if (Array.isArray(response.data)) {
           setMentors(response.data);
@@ -55,7 +59,7 @@ function Featured() {
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10'>
           {mentors.map((mentor) => (
             <div key={mentor._id} className='cardcontainer h-[60vh] w-full rounded-md overflow-hidden'>
-              <MentorCard mentor={mentor} />
+              <MentorCard mentor={mentor}  />
             </div>
           ))}
         </div>

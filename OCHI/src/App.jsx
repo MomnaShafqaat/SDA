@@ -18,7 +18,7 @@ import ChatInterface from './components/ChatInterface'
 
 function App() {
 
-  useEffect(() => {
+  /*useEffect(() => {
     const clearLocalStorage = () => {
       localStorage.clear(); // or selectively remove specific keys
     };
@@ -29,7 +29,7 @@ function App() {
     return () => {
       window.removeEventListener('unload', clearLocalStorage);
     };
-  }, []);
+  }, []);*/
 
   const router = createBrowserRouter(
     createRoutesFromElements(
