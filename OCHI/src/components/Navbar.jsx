@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate} from "react-router-dom";
+
 
 function Navbar() {
     const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -20,6 +22,8 @@ function Navbar() {
             appState: { role }, // Send role to Callback.jsx
         });
     };
+    const userRoles = user?.["https://your-app.com/roles"] || [];
+    const isAdmin = userRoles.includes("admin");
 
     return (
         <div className="fixed z-[999] w-full px-20 py-4 font-['Neue_Montreal'] flex justify-between items-center backdrop-blur-md bg-white/10">
@@ -34,6 +38,24 @@ function Navbar() {
             <div className="links flex gap-10 items-center">
                 <NavLink to="/contact" className="text-gray-700 hover:text-orange-700">Contact Us</NavLink>
                 <NavLink to="/about" className="text-gray-700 hover:text-orange-700">About Us</NavLink>
+
+
+
+      {/* Show Admin Dashboard only for authenticated admin users */}
+      {isAuthenticated && isAdmin && (
+          <button
+            onClick={() => navigate("/admin")}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+          >
+            Admin Dashboard
+          </button>
+        )}
+
+
+
+{/*faltu*/}
+   <button onClick={() => navigate("/admin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >Admin no auth </button>
+{/*faltu*/}
 
                 {/* Authentication Section */}
                 {!isAuthenticated ? (
@@ -60,6 +82,13 @@ function Navbar() {
                                     className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200 text-left"
                                 >
                                     Login as Student
+                                </button>
+
+                                <button 
+                                    onClick={() => handleAuth("admin")} 
+                                    className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200 text-left"
+                                >
+                                    Login as Admin
                                 </button>
                             </div>
                         )}

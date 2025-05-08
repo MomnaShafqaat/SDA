@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Mentor = require('../models/mentor.model');
+const Mentor = require('../models/MentorProfile');
 
 // GET all mentors
 router.get('/', async (req, res) => {
