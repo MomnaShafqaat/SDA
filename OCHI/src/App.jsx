@@ -1,4 +1,5 @@
 import React from 'react'
+import { useEffect, useState } from 'react'; 
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import Layout from './components/Layout'
 import Contact from './components/Contact'
@@ -10,6 +11,20 @@ import Callback from './Callback'
 import AdminPage from './pages/AdminPage'
 
 function App() {
+
+  /*useEffect(() => {
+    const clearLocalStorage = () => {
+      localStorage.clear(); // or selectively remove specific keys
+    };
+
+    window.addEventListener('unload', clearLocalStorage);
+
+    // Cleanup in case component unmounts
+    return () => {
+      window.removeEventListener('unload', clearLocalStorage);
+    };
+  }, []);*/
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
@@ -22,17 +37,13 @@ function App() {
         <Route element={<Layout />}>
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<About/>}/>
-          <Route 
-            path="privacy" 
-            element={
-              <ProtectedRoutes>
-                <PrivacyPolicy/>
-              </ProtectedRoutes>
-            }
-          />
+
+          {/*Proteced route*/}
+          <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>
+          <Route path="/chatInterface" element={ <ProtectedRoutes> <ChatInterface/> </ProtectedRoutes>}/>
           
         </Route>
-
+    
 
         
       </Route>

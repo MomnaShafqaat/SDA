@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import studentService from '../services/studentServices'; // Adjust the import path as necessary
+import { useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
-const MentorCard = ({ mentor }) => {
-  const { profilePictureUrl, name, ratings, skills, isVerified } = mentor;
+const MentorCard = ({ mentor  }  ) => {
+  const { picture, name, ratings, skills, isVerified } = mentor;
+  //initializes to the field in menotr which 
+  //tells if the mentor has already been requested 
+  const [sendRequest, setSendRequest] = useState(mentor?.requested); 
+  const { isAuthenticated } = useAuth0();
+
+
+  const handleRequest = () => {
+    const storedRole = localStorage.getItem("user_role");
+    console.log("Stored Role:", storedRole);
+    console.log("Mentor ID:", mentor._id);
+    studentService.sendRequest(mentor._id) //mentor id is sent
+    setSendRequest(true);
+  };
 
   // Function to render rating stars
   const renderStars = (rating) => {
@@ -19,11 +35,14 @@ const MentorCard = ({ mentor }) => {
     return stars;
   };
 
+
+
   return (
-    <div className="border border-gray-200 rounded-lg p-4 text-center w-48 shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div 
+    className="border border-gray-200 rounded-lg p-4 text-center w-48 shadow-sm hover:shadow-md transition-shadow duration-200" >
       <img
-        src={profilePictureUrl}
-        alt={name}
+        src={picture}
+        //alt={name}
         className="w-24 h-24 rounded-full object-cover mx-auto mb-3"
       />
       <h3 className="text-lg font-semibold mb-2">{name}</h3>
@@ -37,9 +56,17 @@ const MentorCard = ({ mentor }) => {
       {isVerified && (
         <span className="text-sm text-green-600">Verified Mentor</span>
       )}
-      <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 mt-2">
-        Get Mentored
-      </button>
+      {isAuthenticated && (
+  <button
+    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200 mt-2"
+    onClick={handleRequest}
+    disabled={sendRequest}
+  >
+    {sendRequest ? 'Request Sent' : 'Get Mentored'}
+  </button>
+)}
+
+
     </div>
   );
 };
