@@ -9,6 +9,7 @@ import PrivacyPolicy from './components/PrivacyPolicy'
 import ProtectedRoutes from './ProtectedRoutes'
 import Callback from './Callback'
 import AdminPage from './pages/AdminPage'
+import ChatInterface from './components/ChatInterface';
 
 function App() {
 

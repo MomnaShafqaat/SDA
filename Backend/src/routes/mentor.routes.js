@@ -9,6 +9,7 @@ const express = require('express');
    try {
     console.log('generic route' ) ;
     const mentor = await Mentor.find();
+    console.log("Mentors fetched:", mentor);
     
      res.json(mentor);
    } catch (err) {
