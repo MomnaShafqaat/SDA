@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')).render(
     clientId='F1N1HkFfSwuk2lhSxOxeubBMKBcx2qCw'
     authorizationParams={{
       redirect_uri: window.location.origin + '/callback',
-      audience: 'https://mentora.com/api', // 🔥 Replace with your actual API identifier from Auth0
+      audience: 'https://mentora.com/api',
       scope: 'openid profile email offline_access'
     }}
     redirectUrl={window.location.origin+"/callback"}

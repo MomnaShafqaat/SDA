@@ -10,6 +10,7 @@ const messageRoutes = require('./src/routes/message.route.js');
 const jwtCheck = require('./src/middleware/authMiddleware.js');
 const { app, server } = require('./src/lib/socket.js');  // Correct the path
 const studentRoutes = require('./src/routes/student.js');  
+const adminRoutes = require("./src/routes/admin.js");
 
 // Middleware
 app.use(cors());
@@ -21,6 +22,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/mentors', mentorRoutes);
 app.use('/api/messages', jwtCheck, messageRoutes);
 app.use('/api/student', studentRoutes);
+app.use("/api/admin", adminRoutes); // this makes /api/admin/login accessible
 
 
 // Error handling

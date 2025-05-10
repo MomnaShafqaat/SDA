@@ -90,6 +90,28 @@ router.delete("/delete/:auth0Id", async (req, res) => {
 });
 
 
+//count user
+// 🔹 Get total number of mentors
+router.get("/counts", async (req, res) => {
 
+  try {
+    const mentorsCount = await Mentor.countDocuments();
+    const studentsCount = await Student.countDocuments();
+
+    res.json({ mentors: mentorsCount, students: studentsCount });
+  } catch (error) {
+    console.error("Error getting counts:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+
+
+
+
+
+
+);
+  
 
 module.exports = router;

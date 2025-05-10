@@ -9,7 +9,7 @@ import PrivacyPolicy from './components/PrivacyPolicy'
 import ProtectedRoutes from './ProtectedRoutes'
 import Callback from './Callback'
 import AdminPage from './pages/AdminPage'
-
+import AdminLogin from "./pages/AdminLogin";
 function App() {
 
   /*useEffect(() => {
@@ -32,6 +32,7 @@ function App() {
         <Route index element={<LandingPage />} />
         <Route path="/callback" element={<Callback/>} />
         <Route path="admin" element={<AdminPage />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
 
         {/* All routes that need Layout wrapper */}
         <Route element={<Layout />}>
@@ -41,6 +42,7 @@ function App() {
           {/*Proteced route*/}
           <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>
           <Route path="/chatInterface" element={ <ProtectedRoutes> <ChatInterface/> </ProtectedRoutes>}/>
+          
           
         </Route>
     
