@@ -41,20 +41,10 @@ function Navbar() {
 
 
 
-      {/* Show Admin Dashboard only for authenticated admin users */}
-      {isAuthenticated && isAdmin && (
-          <button
-            onClick={() => navigate("/admin-login")}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-          >
-            Admin Dashboard
-          </button>
-        )}
-
 
 
 {/*faltu*/}
-   <button onClick={() => navigate("/admin-login")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >Admin no auth </button>
+   <button onClick={() => navigate("/loginAdmin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >Admin login</button>
 {/*faltu*/}
 
                 {/* Authentication Section */}
@@ -83,13 +73,8 @@ function Navbar() {
                                 >
                                     Login as Student
                                 </button>
+                                <button onClick={() => navigate("/loginAdmin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >login as admin</button>
 
-                                <button 
-                                    onClick={() => handleAuth("admin-login")} 
-                                    className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200 text-left"
-                                >
-                                    Login as Admin
-                                </button>
                             </div>
                         )}
                     </div>

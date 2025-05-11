@@ -27,7 +27,7 @@ const AdminLogin = () => {
         setError(data.message || "Login failed");
       }
     } catch (err) {
-      setError("Server error. Try again later.");
+      setError("Server error. kuch der bad koshish kre abi war chl rahi hai .");
     }
   };
 

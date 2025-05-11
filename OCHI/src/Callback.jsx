@@ -16,6 +16,14 @@ const Callback = () => {
 
             // Access token is now available JWT token to send to backend to authorize requests
             
+            axios.post("http://localhost:5000/api/admin/loginAdmin", { email, password })
+  .then((response) => {
+    // Handle success (e.g., save the token to localStorage)
+  })
+  .catch((error) => {
+    console.error('Error during admin login:', error.response);
+  });
+
 
             const storedRole = localStorage.getItem("user_role"); 
             console.log("Stored Role:", storedRole);

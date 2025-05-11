@@ -32,7 +32,7 @@ function App() {
         <Route index element={<LandingPage />} />
         <Route path="/callback" element={<Callback/>} />
         <Route path="admin" element={<AdminPage />} />
-        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/loginAdmin" element={<AdminLogin />} />
 
         {/* All routes that need Layout wrapper */}
         <Route element={<Layout />}>
@@ -41,7 +41,6 @@ function App() {
 
           {/*Proteced route*/}
           <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>
-          <Route path="/chatInterface" element={ <ProtectedRoutes> <ChatInterface/> </ProtectedRoutes>}/>
           
           
         </Route>
