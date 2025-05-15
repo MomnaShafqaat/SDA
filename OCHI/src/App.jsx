@@ -10,6 +10,7 @@ import ProtectedRoutes from './ProtectedRoutes'
 import Callback from './Callback'
 import AdminPage from './pages/AdminPage'
 import ChatInterface from './components/ChatInterface';
+import MentorRequests from './components/MentorRequests'; 
 
 function App() {
 
@@ -38,6 +39,8 @@ function App() {
         <Route element={<Layout />}>
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<About/>}/>
+          <Route path="/mentor-requests" element={<MentorRequests />} />
+
 
           {/*Proteced route*/}
           <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>

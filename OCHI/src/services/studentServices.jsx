@@ -16,11 +16,13 @@ class StudentService extends GenericService {
             return;
         }
 
-        const requestBody = {
-            mentorId,
-        };
+        // const requestBody = {
+        //     mentorId,
+        // };
 
-        this.post(`${this.baseUrl}sendRequest/${mentorId}` ,  requestBody, {
+        //this.post(`${this.baseUrl}sendRequest/${mentorId}` ,  requestBody, {
+        this.post(`${this.baseUrl}sendRequest/${mentorId}`, {}, {
+
             headers:{
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -33,10 +35,7 @@ class StudentService extends GenericService {
                 console.error('Error sending request:', error);
             });
     }
-
-    
-
 }
 
-let studentService = new StudentService ; 
+let studentService = new StudentService();
 export default studentService;
