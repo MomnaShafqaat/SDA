@@ -53,11 +53,19 @@ const AdminPage = () => {
     <div>
       <AdminNavbar />
 
-      <div style={{ padding: '2rem' }}>
-        <h1>Welcome, Admin!</h1>
+      <div style={{   padding:20}}>
+        <h1  style={{   display: 'flex',justifyContent: 'center' }}>Welcome, Admin</h1>
+                <h1  style={{ fontWeight:15,  display: 'flex',justifyContent: 'center' }}>Data Analysis</h1>
+
 
         {/* Count Cards */}
-        <div style={{ display: 'flex', gap: '1rem', margin: '2rem 0' }}>
+       <div style={{ 
+  display: 'flex', 
+  gap: '2rem', 
+  justifyContent: 'center', 
+  margin: '2rem 0' 
+}}>
+           
           <CounterCard title="Mentors" count={counts.mentors} />
           <CounterCard title="Students" count={counts.students} />
         </div>
