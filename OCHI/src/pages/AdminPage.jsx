@@ -15,12 +15,16 @@ const AdminPage = () => {
   const fetchCounts = async () => {
     try {
       const res = await fetch('http://localhost:5000/api/admin/counts');
+      console.log("get it");
       const data = await res.json();
+      console.log("get it but not converted");
+
       setCounts(data);
     } catch (error) {
       console.error("Failed to fetch counts:", error);
     }
   };
+
 
   const fetchRequests = async () => {
     try {

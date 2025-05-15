@@ -6,7 +6,7 @@ const CounterCard = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/counts")
+    fetch("http://localhost:5000/api/admin/counts")
       .then(res => res.json())
       .then(data => {
         setCounts(data);
@@ -24,7 +24,7 @@ const CounterCard = () => {
 
   return (
     <div style={styles.card}>
-      <h2>User Stats</h2>
+      <h2>User Record</h2>
       <div style={styles.countBox}>
         <p><strong>Mentors:</strong> {counts.mentors}</p>
         <p><strong>Students:</strong> {counts.students}</p>

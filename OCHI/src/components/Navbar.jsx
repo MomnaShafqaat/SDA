@@ -41,12 +41,6 @@ function Navbar() {
 
 
 
-
-
-{/*faltu*/}
-   <button onClick={() => navigate("/loginAdmin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >Admin login</button>
-{/*faltu*/}
-
                 {/* Authentication Section */}
                 {!isAuthenticated ? (
                     <div className="relative">
@@ -73,7 +67,9 @@ function Navbar() {
                                 >
                                     Login as Student
                                 </button>
-                                <button onClick={() => navigate("/loginAdmin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >login as admin</button>
+                                <button
+                                 onClick={() => navigate("/loginAdmin")} 
+                                 className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200 text-left" >login as admin</button>
 
                             </div>
                         )}
