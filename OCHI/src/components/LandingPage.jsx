@@ -136,7 +136,7 @@ function LandingPage() {
 
       <PageContentContainer $isBlurred={isAuthenticated && showProfilePopup}>
         <Landing />
-        <Marque />
+      
         <About />
         <Eyes />
         <Featured  />

@@ -4,7 +4,7 @@ const express = require('express');
  const jwtCheck = require("../middleware/authjwt.js");
  const Student = require('../../models/student.js');
  
- // GET all mentors
+ // 1] GET all mentors
  router.get('/', async (req, res) => {
    try {
     console.log('generic route' ) ;
@@ -15,7 +15,7 @@ const express = require('express');
      res.status(500).json({ message: err.message });
    }
  });
-
+// 2] 
  router.get('/mentor/:auth0Id',async (req,res)=>{
   try{
     const mentor=await Mentor.findOne({ auth0Id: req.params.auth0Id });
@@ -24,7 +24,7 @@ const express = require('express');
     res.status(500).json({ message: err.message });
   }
 }); 
-
+// 3] 
   router.get('/fetchMentors', jwtCheck, async(req,res)=>{
     console.log("Fetching mentors..." , req.user.id) ;
    // Assume this is the logged-in student
@@ -47,5 +47,34 @@ console.log(mentorsWithRequestStatus) ;
 res.json(mentorsWithRequestStatus);
   });
 
- 
- module.exports = router;
+
+// 4] send badge req POST /api/mentors/request-verification
+router.post('/request-verification/:auth0Id', async (req, res) => {
+  try {
+    const { auth0Id } = req.params;
+    console.log("auth0Id received:", auth0Id);
+
+    const mentor = await Mentor.findOne({ auth0Id });
+    if (!mentor) return res.status(404).json({ message: 'Mentor not found' });
+
+    if (mentor.badgeRequest?.requested && mentor.badgeRequest.status === 'pending') {
+      return res.status(400).json({ message: 'Already requested. Please wait for admin response.' });
+    }
+console.log('abi nhi howa hai send');
+
+    mentor.badgeRequest = {
+      requested: true,
+      status: 'pending',
+      requestedAt: new Date()
+    };
+console.log('ho gya hai send');
+    await mentor.save();
+
+    res.status(200).json({ message: 'Verification request sent successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+module.exports = router;

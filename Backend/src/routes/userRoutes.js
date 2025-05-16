@@ -51,6 +51,7 @@ router.post("/register", async (req, res) => {
 // 🔹 Get User Profile
 router.get("/profile/:auth0Id", async (req, res) => {
     try {
+        
         const user = await User.findOne({ auth0Id: req.params.auth0Id });
         if (!user) return res.status(404).json({ error: "User not found" });
 

@@ -16,13 +16,13 @@ const Callback = () => {
 
             // Access token is now available JWT token to send to backend to authorize requests
             
-            axios.post("http://localhost:5000/api/admin/loginAdmin", { email, password })
-  .then((response) => {
-    // Handle success (e.g., save the token to localStorage)
-  })
-  .catch((error) => {
-    console.error('Error during admin login:', error.response);
-  });
+          axios.post("http://localhost:5000/api/admin/loginAdmin", { email, password })
+        .then((response) => {
+            // Handle success (e.g., save the token to localStorage)
+        })
+        .catch((error) => {
+            console.error('Error during admin login:', error.response);
+        });
 
 
             const storedRole = localStorage.getItem("user_role"); 
@@ -30,7 +30,7 @@ const Callback = () => {
 
             // Send user data to backend for registration
             axios.post("http://localhost:5000/api/user/register", {
-                auth0Id: user.sub,
+                auth0Id,
                 email: user.email,
                 name: user.name,
                 role: storedRole,
@@ -41,7 +41,7 @@ const Callback = () => {
                 const token = response.data ;
                 console.log("Token:", token);
                 localStorage.setItem("jwt_token", token); // Store token in local storage
-                return axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
+                return axios.get(`http://localhost:5000/api/user/profile/${auth0Id}`);
             })
             .then((response) => {
                 console.log("User Data:", response.data.user);

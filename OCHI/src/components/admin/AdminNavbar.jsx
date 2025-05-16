@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const links = [
   { name: 'Dashboard', path: '/admin/dashboard' },
@@ -13,8 +13,9 @@ const AdminNavbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('user_role');
+    navigate('/loginAdmin'); // this will redirect to login if route exists
   };
 
   return (
@@ -22,7 +23,9 @@ const AdminNavbar = () => {
       <div style={styles.brand}>Admin Panel</div>
       <div style={styles.links}>
         {links.map(link => (
-          <a key={link.name} href={link.path} style={styles.link}>{link.name}</a>
+          <Link key={link.name} to={link.path} style={styles.link}>
+            {link.name}
+          </Link>
         ))}
       </div>
       <button onClick={handleLogout} style={styles.logout}>Logout</button>

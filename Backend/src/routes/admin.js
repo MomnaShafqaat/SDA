@@ -57,4 +57,44 @@ router.get('/counts', async (req, res) => {
     }
 });
 
+ //badge request from mento shown on admin dashboard
+router.get('/badge-requests', async (req, res) => {
+  try {
+    const mentorsWithRequests = await Mentor.find({ 
+      "badgeRequest.requested": true, 
+      "badgeRequest.status": "pending" 
+    });
+
+    res.status(200).json(mentorsWithRequests);
+  } catch (err) {
+    console.error("Error fetching badge requests:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+router.post('/verify-badge/:mentorId', async (req, res) => {
+  const { mentorId } = req.params;
+  const { decision } = req.body;
+
+  try {
+    const mentor = await Mentor.findById(mentorId);
+    if (!mentor) return res.status(404).json({ message: "Mentor not found" });
+
+    if (decision === 'accept') {
+      mentor.badgeRequest.status = 'accepted';
+    } else if (decision === 'reject') {
+      mentor.badgeRequest.status = 'rejected';
+    }
+
+    await mentor.save();
+    res.status(200).json({ message: `Request ${decision}ed successfully.` });
+  } catch (err) {
+    console.error("Error updating badge request:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
 module.exports = router;
