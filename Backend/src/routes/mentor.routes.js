@@ -59,7 +59,6 @@ router.get('/fetchMentors', jwtCheck, async (req, res) => {
   }
 });
 
-
 // GET /api/mentors/mentorRequests
 router.get('/mentorRequests', jwtCheck, async (req, res) => {
   const mentorId = req.user.id;
