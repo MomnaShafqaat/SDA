@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { NavLink, useNavigate} from "react-router-dom";
+import { FaBell } from "react-icons/fa";
 
 
 function Navbar() {
     const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [userRole, setUserRole] = useState(null); 
     const navigate = useNavigate();
+
+    useEffect(() => {
+    const role = localStorage.getItem("user_role");
+    setUserRole(role);
+  }, []);
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -56,6 +63,17 @@ function Navbar() {
 {/*faltu*/}
    <button onClick={() => navigate("/admin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >Admin no auth </button>
 {/*faltu*/}
+
+        {/* Requests icon (only for mentors) */}
+        {isAuthenticated && userRole === "mentor" && (
+          <button
+            onClick={() => navigate("/mentor-requests")}
+            className="text-orange-600 hover:text-orange-800 transition"
+            title="Mentor Requests"
+          >
+            <FaBell size={24} />
+          </button>
+        )}
 
                 {/* Authentication Section */}
                 {!isAuthenticated ? (

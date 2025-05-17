@@ -9,10 +9,11 @@ class MentorService extends GenericService {
         let token = localStorage.getItem('jwt_token');
         let response ;
         console.log("Token being sent:", token);
-        console.log("user role in get Mentors")
+        
         if(localStorage.getItem("user_role" === "mentor")){
             return null ;
         }
+
         if(!isAuthenticated)
         {
             response = await this.get(`${this.baseUrl}`, {}) ;
@@ -31,7 +32,26 @@ class MentorService extends GenericService {
         console.log("Response from getMentors:", response.data);
         return response ;
     }
+    
+getMentorRequests = () => {
+    const token = localStorage.getItem('jwt_token');
+    return this.get(`${this.baseUrl}mentorRequests`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+};
 
+updateRequestStatus = (studentId, action) => {
+    const token = localStorage.getItem('jwt_token');
+    return this.post(`${this.baseUrl}updateRequestStatus/${studentId}`, { action }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+};
     
 
 }

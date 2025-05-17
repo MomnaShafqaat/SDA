@@ -21,7 +21,7 @@ const MentorSchema = new mongoose.Schema({
     ],
   
     // Student Relations
-    pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    pendingRequests: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], default: [] },
     menteeList: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   
     // Ratings & Reviews
