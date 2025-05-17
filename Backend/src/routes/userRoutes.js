@@ -27,8 +27,9 @@ router.post("/register", async (req, res) => {
         if (!auth0Id /* || !email || !name || !role || !picture */) {
             return res.status(400).json({ error: "All fields are required" });
         }
-
+        console.log("Auth0 ID:", auth0Id);
         let user = await User.findOne({ auth0Id });
+        
 
         if (!user) {
             console.log("Creating new user...");

@@ -14,8 +14,23 @@ router.get('/getUsersForSidebar',async(req,res)=>{
         const loggedInUser = await User.findOne({ auth0Id: auth0Id }); //Using that id to get the user which is logged in
         console.log("LOGGED IN USER :",loggedInUser);
 
-        const filteredUsers= await User.find({_id:{$ne:loggedInUser._id},role: { $ne: loggedInUser.role } //finding all other users except the loggedIn 1 to display list
-        });//use .select("-password") to dont get fields which you dont want 
+        //only those users will be fetched
+        //const filteredUsers= await User.find({_id:{$ne:loggedInUser._id},role: { $ne: loggedInUser.role } //finding all other users except the loggedIn 1 to display list
+        //});//use .select("-password") to dont get fields which you dont want 
+        
+        if(loggedInUser.role === "mentor"){
+          filteredUsers = await User.find({
+        _id: { $in: loggedInUser.menteeList }
+        });
+      }
+        else
+        {
+          filteredUsers = await User.find({
+        _id: { $in: loggedInUser.mentorList }
+        });
+        }
+        
+        
         
         res.status(200).json(filteredUsers);
     }

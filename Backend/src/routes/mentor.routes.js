@@ -88,13 +88,17 @@ router.post('/updateRequestStatus/:studentId', jwtCheck, async (req, res) => {
         }
 
         // Remove student from pending
-        mentor.pendingRequests = mentor.pendingRequests.filter(id => id.toString() !== studentId);
-        student.pendingRequests = student.pendingRequests.filter(id => id.toString() !== mentorId);
-
+        await mentor.pendingRequests.pull(studentId);
+        await student.pendingRequests.pull(mentorId);
+        
         if (action === 'accept') {
-            mentor.acceptedStudents.push(studentId);
-            student.acceptedMentor = mentorId;
-        }
+      if (!mentor.menteeList.some(id => id.toString() === studentId)) {
+        mentor.menteeList.push(studentId);
+      }
+      if (!student.mentorList.some(id => id.toString() === mentorId)) {
+        student.mentorList.push(mentorId);
+      }
+    }
 
         await mentor.save();
         await student.save();
