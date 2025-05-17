@@ -38,8 +38,4 @@ router.post('/sendRequest/:mentorId', authjwt, async(req ,res)=>{
       }
 })
 
-
-
-
-
 module.exports=router;

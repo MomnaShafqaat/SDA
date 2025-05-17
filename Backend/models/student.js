@@ -23,4 +23,3 @@ const StudentSchema = new mongoose.Schema({
   
   const Student = User.discriminator("student", StudentSchema);
   module.exports = Student;
-  
