@@ -8,8 +8,9 @@ const express = require('express');
  router.get('/', async (req, res) => {
    try {
     console.log('generic route' ) ;
+    
     const mentor = await Mentor.find();
-    console.log("Mentors fetched:", mentor);
+    
     
      res.json(mentor);
    } catch (err) {
@@ -43,7 +44,7 @@ const mentorsWithRequestStatus = mentors.map(mentor => {
     requested: isRequested,
   };
 });
-console.log(mentorsWithRequestStatus) ;
+
 // Now `mentorsWithRequestStatus` contains mentors with the `requested` field
 res.json(mentorsWithRequestStatus);
   });

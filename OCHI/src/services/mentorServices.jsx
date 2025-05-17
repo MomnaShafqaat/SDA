@@ -9,6 +9,7 @@ class MentorService extends GenericService {
         let token = localStorage.getItem('jwt_token');
         let response ;
         console.log("Token being sent:", token);
+        console.log("user role in get Mentors")
         if(localStorage.getItem("user_role" === "mentor")){
             return null ;
         }

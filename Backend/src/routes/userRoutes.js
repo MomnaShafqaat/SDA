@@ -38,7 +38,7 @@ router.post("/register", async (req, res) => {
         } else {
             console.log("User already exists:", user);
         }
-
+        console.log("user role : " + user.role) ;
         let token = jwt.sign({ id: user._id  , name: user.name , role: user.role }, config.get("jwtPrivateKey") ) ;
         console.log("Generated Token:", token);
         res.send(token) ;
