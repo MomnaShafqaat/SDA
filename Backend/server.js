@@ -9,7 +9,8 @@ const mentorRoutes = require('./src/routes/mentor.routes.js');
 const messageRoutes = require('./src/routes/message.route.js');
 const jwtCheck = require('./src/middleware/authMiddleware.js');
 const { app, server } = require('./src/lib/socket.js');  // Correct the path
-const studentRoutes = require('./src/routes/student.js');  
+const studentRoutes = require('./src/routes/student.js'); 
+
 
 // Middleware
 app.use(cors());

@@ -105,7 +105,7 @@ const ProfilePopup = ({ onClose }) => {
 
   const handleCompleteProfile = () => {
     localStorage.removeItem('profileReminderDismissed');
-    navigate('/complete-profile');
+    navigate('build-mentor-profile');
   };
 
   const handleLater = () => {

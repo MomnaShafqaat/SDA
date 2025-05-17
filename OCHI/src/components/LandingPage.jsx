@@ -84,7 +84,7 @@ function LandingPage() {
         const dismissed = JSON.parse(localStorage.getItem('profileReminderDismissed'));
         if (dismissed && new Date().getTime() < dismissed.expiry) return;
 
-        const response = await axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
+        //const response = await axios.get(http://localhost:5000/api/user/profile/${user.sub});
         //Add on which fields you want to show the popup
         // if (!response.data.bio) {
         //   setShowProfilePopup(true);

@@ -46,4 +46,3 @@ const MentorSchema = new mongoose.Schema({
   
   const Mentor = User.discriminator("mentor", MentorSchema);
   module.exports = Mentor;
-  
