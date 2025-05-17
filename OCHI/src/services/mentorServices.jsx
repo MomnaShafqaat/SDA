@@ -15,6 +15,14 @@ class MentorService extends GenericService {
             return null;
         }
 
+        if(!isAuthenticated)
+        {
+            response = await this.get(`${this.baseUrl}`, {}) ;
+
+        if (localStorage.getItem("user_role") === "mentor") {
+            return null;
+        }
+
         if (!isAuthenticated) {
             response = await this.get(`${this.baseUrl}`, {});
         } else {
@@ -70,6 +78,6 @@ class MentorService extends GenericService {
         return this.post(`${this.baseUrl}profile`, profileData, { headers });
     };
 }
-
+}
 const mentorService = new MentorService();
 export default mentorService;

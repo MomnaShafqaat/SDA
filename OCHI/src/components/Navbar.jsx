@@ -46,6 +46,11 @@ function Navbar() {
         return () => disconnectSocket();
     }, [isAuthenticated]);
 
+    useEffect(() => {
+    const role = localStorage.getItem("user_role");
+    setUserRole(role);
+  }, []);
+
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
@@ -81,6 +86,36 @@ function Navbar() {
                     `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                 }>About Us</NavLink>
 
+
+
+      {/* Show Admin Dashboard only for authenticated admin users */}
+      {isAuthenticated && isAdmin && (
+          <button
+            onClick={() => navigate("/admin")}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+          >
+            Admin Dashboard
+          </button>
+        )}
+
+
+
+{/*faltu*/}
+   <button onClick={() => navigate("/admin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >Admin no auth </button>
+{/*faltu*/}
+
+        {/* Requests icon (only for mentors) */}
+        {isAuthenticated && userRole === "mentor" && (
+          <button
+            onClick={() => navigate("/mentor-requests")}
+            className="text-orange-600 hover:text-orange-800 transition"
+            title="Mentor Requests"
+          >
+            <FaBell size={24} />
+          </button>
+        )}
+
+                {/* Authentication Section */}
                 {!isAuthenticated ? (
                     <div className="relative">
                         <button onClick={toggleDropdown} className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition">

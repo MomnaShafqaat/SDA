@@ -3,7 +3,7 @@ dotenv.config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const chatbotRoute = require('./src/routes/chatbot.js');  // Ensure these are correct
+const chatbotRoute = require('./src/routes/chatbot.js');
 const userRoutes = require('./src/routes/userRoutes.js');
 const mentorRoutes = require('./src/routes/mentor.routes.js');
 const messageRoutes = require('./src/routes/message.route.js');
@@ -22,7 +22,6 @@ app.use('/api/user', userRoutes);
 app.use('/api/mentors', mentorRoutes);
 app.use('/api/messages', jwtCheck, messageRoutes);
 app.use('/api/student', studentRoutes);
-
 
 // Error handling
 app.use((err, req, res, next) => {
