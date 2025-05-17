@@ -56,6 +56,7 @@ router.post('/request-verification/:auth0Id', async (req, res) => {
 
     const mentor = await Mentor.findOne({ auth0Id });
     if (!mentor) return res.status(404).json({ message: 'Mentor not found' });
+console.log('no  mentorrrr');
 
     if (mentor.badgeRequest?.requested && mentor.badgeRequest.status === 'pending') {
       return res.status(400).json({ message: 'Already requested. Please wait for admin response.' });

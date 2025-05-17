@@ -51,8 +51,8 @@ router.post("/register", async (req, res) => {
 // 🔹 Get User Profile
 router.get("/profile/:auth0Id", async (req, res) => {
     try {
-        
-        const user = await User.findOne({ auth0Id: req.params.auth0Id });
+        const auth0Id = decodeURIComponent(req.params.auth0Id); // decode the pipe symbol
+        const user = await User.findOne({ auth0Id });
         if (!user) return res.status(404).json({ error: "User not found" });
 
         res.status(200).json({ user });
@@ -60,6 +60,7 @@ router.get("/profile/:auth0Id", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 // 🔹 Update User Profile
 router.put("/update-profile/:auth0Id", async (req, res) => {
