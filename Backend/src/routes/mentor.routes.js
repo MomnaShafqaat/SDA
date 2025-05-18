@@ -26,22 +26,11 @@ router.get('/mentor/:auth0Id',async (req,res)=>{
   }
 }); 
 
-router.get('/fetchMentors', jwtCheck, async (req, res) => {
-  try {
-    const student = await Student.findById(req.user.id);
-
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
-    }
-
-    // excluded accepted mentors(mentorList)
-    const excludeIds = student.mentorList;
-
-    // Get all mentors(after excluding aboveee)
-    const mentors = await Mentor.find({ _id: { $nin: excludeIds } });
-
-    // if request is pending
-    const pendingRequests = student.pendingRequests.map(id => id.toString());
+  router.get('/fetchMentors', jwtCheck, async(req,res)=>{
+    console.log("Fetching mentors..." , req.user.id) ;
+   // Assume this is the logged-in student
+const student = await Student.findById(req.user.id); // studentId should be available
+const pendingRequests = student.pendingRequests.map(id => id.toString());
 
     const mentorsWithRequestStatus = mentors.map(mentor => {
       const isRequested = pendingRequests.includes(mentor._id.toString());
@@ -58,6 +47,7 @@ router.get('/fetchMentors', jwtCheck, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 // GET /api/mentors/mentorRequests
 router.get('/mentorRequests', jwtCheck, async (req, res) => {

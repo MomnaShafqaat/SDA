@@ -1,31 +1,5 @@
-// import React from 'react'
-
-// import { Outlet } from 'react-router'
-// import { useAuth0 } from '@auth0/auth0-react'
-// import Navbar from './Navbar'
-
-
-// import Footer from './Footer'
-// import Chatbot from './Chatbot'
-// import ProfilePopup from './ProfilePopup'
-//  function Layout(){
-   
-//     return(
-//         <>
-//         <ProfilePopup/>
-//             <Navbar /> 
-//             <Outlet/>
-//             <Chatbot/>
-//             <Footer />
-            
-//         </>        
-//     )
-// }
-// export default Layout
-
-// Layout.jsx
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import Navbar from './Navbar';
@@ -34,18 +8,22 @@ import Chatbot from './Chatbot';
 import ProfilePopup from './ProfilePopup';
 
 function Layout() {
+  const location = useLocation();
   const { isAuthenticated, user, isLoading } = useAuth0();
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [profileChecked, setProfileChecked] = useState(false);
 
+  // Optional: hide navbar/footer on specific routes
+  const hideNavbarFooter = location.pathname === '/create-mentor-profile';
+
   useEffect(() => {
     const checkProfile = async () => {
-      // Only check if authentication is done and user exists
       if (!isLoading && isAuthenticated && user?.sub) {
         try {
           const response = await axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
-          if (!response.data.bio) {
-            setShowProfilePopup(false);
+          const userData = response.data;
+          if (!userData.bio) {
+            setShowProfilePopup(true);
           }
         } catch (error) {
           console.error('Error fetching profile:', error);
@@ -55,33 +33,30 @@ function Layout() {
       }
     };
 
-    // Only check profile if we haven't checked yet
     if (!profileChecked) {
       checkProfile();
     }
   }, [isAuthenticated, user?.sub, isLoading, profileChecked]);
 
-  // Handle loading state
   if (isLoading) {
     return <div>Loading authentication...</div>;
   }
 
   return (
-    <>
-      <Navbar />
-      <Outlet />
-      {showProfilePopup && (
-        <ProfilePopup 
-          onClose={() => {
-            setShowProfilePopup(false);
-            // Optional: Store dismissal in localStorage
-            //localStorage.setItem('profileReminderDismissed', 'true');
-          }}
-        />
-      )}
+    <div className="flex flex-col min-h-screen">
+      {!hideNavbarFooter && <Navbar />}
+      
+      <main className="flex-grow px-4 py-8">
+        <Outlet />
+        {showProfilePopup && (
+          <ProfilePopup onClose={() => setShowProfilePopup(false)} />
+        )}
+      </main>
+
       <Chatbot />
-      <Footer />
-    </>
+
+      {!hideNavbarFooter && <Footer />}
+    </div>
   );
 }
 

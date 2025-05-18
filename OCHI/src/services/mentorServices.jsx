@@ -1,58 +1,83 @@
 import GenericService from './genericService';
+
 class MentorService extends GenericService {
     constructor() {
         super();
         this.baseUrl = 'http://localhost:5000/api/mentors/';
     }
-    
-    getMentors = async (isAuthenticated) =>{
+
+    getMentors = async (isAuthenticated) => {
         let token = localStorage.getItem('jwt_token');
-        let response ;
+        let response;
         console.log("Token being sent:", token);
 
-        if(localStorage.getItem("user_role") === "mentor"){
-            return null ;
+        if (localStorage.getItem("user_role") === "mentor") {
+            return null;
         }
 
         if(!isAuthenticated)
         {
             response = await this.get(`${this.baseUrl}`, {}) ;
 
+        if (localStorage.getItem("user_role") === "mentor") {
+            return null;
         }
-            
-        else{
-            let headers = { Authorization: `Bearer ${token}` ,
-            'Content-Type': 'application/json',
-        } ;
-            response = await this.get(`${this.baseUrl}fetchMentors`, {
-                headers
-            });
+
+        if (!isAuthenticated) {
+            response = await this.get(`${this.baseUrl}`, {});
+        } else {
+            let headers = {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            };
+            response = await this.get(`${this.baseUrl}fetchMentors`, { headers });
         }
-        
+
         console.log("Response from getMentors:", response.data);
-        return response ;
-    }
-    
-getMentorRequests = () => {
-    const token = localStorage.getItem('jwt_token');
-    return this.get(`${this.baseUrl}mentorRequests`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-    });
-};
+        return response;
+    };
 
-updateRequestStatus = (studentId, action) => {
-    const token = localStorage.getItem('jwt_token');
-    return this.post(`${this.baseUrl}updateRequestStatus/${studentId}`, { action }, {
-        headers: {
+    // ✅ New: Get current mentor's profile
+    getMentorProfile = async () => {
+        console.log("Fetching mentor profile...");
+        const token = localStorage.getItem('jwt_token');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Cache-Control': 'no-cache',
+        };
+        return this.get(`${this.baseUrl}profile`, { headers });
+    };
+
+    // ✅ New: Delete current mentor's profile
+    deleteMentorProfile = async () => {
+        const token = localStorage.getItem('jwt_token');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+        return this.delete(`${this.baseUrl}profile`, { headers });
+    };
+
+    // Create mentor profile
+    createMentorProfile = async (profileData) => {
+        const token = localStorage.getItem('jwt_token');
+        const headers = {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
-        },
-    });
-};
+        };
+        return this.post(`${this.baseUrl}profile`, profileData, { headers });
+    };
+
+    // Update mentor profile
+    updateMentorProfile = async (profileData) => {
+        const token = localStorage.getItem('jwt_token');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        };
+        console.log("Updating mentor profile with data:", profileData);
+        return this.post(`${this.baseUrl}profile`, profileData, { headers });
+    };
 }
-
-let mentorService = new MentorService ; 
+}
+const mentorService = new MentorService();
 export default mentorService;
