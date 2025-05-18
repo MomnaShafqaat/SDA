@@ -42,11 +42,7 @@ const pendingRequests = student.pendingRequests.map(id => id.toString());
 
     res.json(mentorsWithRequestStatus);
 
-  } catch (err) {
-    console.error("Fetch mentors error:", err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
+  });
 
 
 // GET /api/mentors/mentorRequests
