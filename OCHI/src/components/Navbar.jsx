@@ -118,7 +118,12 @@ function Navbar() {
 
                         {/* Logout Button */}
                         <button 
-                            onClick={() => logout()} 
+                            onClick={() => logout()
+                            .then(() => {
+                                localStorage.removeItem("user_role"); // Clear role on logout
+                                navigate("/"); // Redirect to home after logout
+                            })
+                            } 
                             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
                         >
                             Logout

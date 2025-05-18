@@ -41,6 +41,11 @@ const MentorSchema = new mongoose.Schema({
   {
     type: mongoose.Schema.Types.ObjectId,
     ref: "payment"
+  } ,
+  //a valid stripe id for mentors
+  accountId:{
+    type: String,
+    required: true
   }
   });
   

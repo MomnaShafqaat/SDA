@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
+   
 
 // Styled components
 const ChatContainer = styled.div`
@@ -128,7 +129,7 @@ const ChatInterface = () => {
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef(null);
     const messageContainerRef = useRef(null);
-
+    const storedRole = localStorage.getItem('user_role');
 
     useEffect(() => {
         if (messageContainerRef.current) {
@@ -221,6 +222,7 @@ const ChatInterface = () => {
         }
     };
 
+
     const MessageBubble = ({ message }) => (
         <div
             style={{
@@ -289,6 +291,10 @@ const ChatInterface = () => {
                                     </span>
                                 </div>
                             </div>
+
+                            {/* Conditionally show Pay button */}
+       
+
                         </UserItem>
                     ))}
                 </UserList>

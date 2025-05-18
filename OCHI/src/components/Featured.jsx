@@ -15,7 +15,7 @@ function Featured() {
         /*const token = await getAccessTokenSilently({ ignoreCache: true });
         // Step 2
           console.log("Token being sent:", token);*/
-
+          
         const response = await mentorService.getMentors(isAuthenticated);
         if(localStorage.getItem("user_role")){
           console.log("User role:", localStorage.getItem("user_role"));

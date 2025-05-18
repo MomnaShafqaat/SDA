@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import studentService from '../services/studentServices'; // Adjust the import path as necessary
 import { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import {loadStripe} from '@stripe/stripe-js';
+import paymentService from "../services/paymentService"; 
 
 const MentorCard = ({ mentor  }  ) => {
   const { picture, name, ratings, skills, isVerified } = mentor;
@@ -9,10 +11,10 @@ const MentorCard = ({ mentor  }  ) => {
   //tells if the mentor has already been requested 
   const [sendRequest, setSendRequest] = useState(mentor?.requested); 
   const { isAuthenticated } = useAuth0();
-
+  const storedRole = localStorage.getItem("user_role");
 
   const handleRequest = () => {
-    const storedRole = localStorage.getItem("user_role");
+    
     console.log("Stored Role:", storedRole);
     console.log("Mentor ID:", mentor._id);
     studentService.sendRequest(mentor._id) //mentor id is sent
@@ -65,6 +67,27 @@ const MentorCard = ({ mentor  }  ) => {
     {sendRequest ? 'Request Sent' : 'Get Mentored'}
   </button>
 )}
+
+ {storedRole === 'student' && (
+            <button
+                onClick={(e) => {
+                    e.stopPropagation(); // prevent triggering chat selection
+                    paymentService.makePayment(mentor._id) ;
+                    
+                }}
+                style={{
+                    background: '#2d9cdb',
+                    color: 'white',
+                    border: 'none',
+                    padding: '6px 10px',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.8rem'
+                }} 
+            >
+                Pay
+            </button>
+        )}
 
 
     </div>

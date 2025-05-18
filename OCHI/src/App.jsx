@@ -40,7 +40,8 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<About/>}/>
           <Route path="/mentor-requests" element={<MentorRequests />} />
-
+          <Route path="/success" element={<div>Success</div>} />
+          <Route path="/cancel" element={<div>Cancel</div>} />
 
           {/*Proteced route*/}
           <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>

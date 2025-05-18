@@ -10,6 +10,7 @@ const messageRoutes = require('./src/routes/message.route.js');
 const jwtCheck = require('./src/middleware/authMiddleware.js');
 const { app, server } = require('./src/lib/socket.js');
 const studentRoutes = require('./src/routes/student.js');  
+const paymentRoutes = require('./src/routes/payment.js'); 
 
 // Middleware
 app.use(cors());
@@ -21,6 +22,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/mentors', mentorRoutes);
 app.use('/api/messages', jwtCheck, messageRoutes);
 app.use('/api/student', studentRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
