@@ -11,6 +11,7 @@ import AdminPage from './pages/AdminPage';
 import ChatInterface from './components/ChatInterface';
 import MentorProfile from './components/MentorProfile';
 import BuildMentorProfile from './components/BuildMentorProfile';
+import MentorRequests from './components/MentorRequests';
 
 function App() {
   const router = createBrowserRouter(

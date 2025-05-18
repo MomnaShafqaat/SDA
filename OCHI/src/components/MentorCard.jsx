@@ -68,7 +68,7 @@ const MentorCard = ({ mentor  }  ) => {
   </button>
 )}
 
- {storedRole === 'student' && (
+ {storedRole === 'student' && isAuthenticated && (
             <button
                 onClick={(e) => {
                     e.stopPropagation(); // prevent triggering chat selection

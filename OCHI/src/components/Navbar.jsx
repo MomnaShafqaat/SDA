@@ -2,11 +2,13 @@ import React, { useRef, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth0 } from "@auth0/auth0-react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { FaBell } from 'react-icons/fa';
+
 
 function Navbar() {
-    const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+    const { loginWithRedirect, logout, isAuthenticated , user} = useAuth0();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+    const [userRole, setUserRole] = useState(null);
     const socketRef = useRef(null);
     const navigate = useNavigate(); // ✅ Added here
 
@@ -89,7 +91,8 @@ function Navbar() {
 
 
       {/* Show Admin Dashboard only for authenticated admin users */}
-      {isAuthenticated && isAdmin && (
+      {isAuthenticated //&& isAdmin
+       && (
           <button
             onClick={() => navigate("/admin")}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
