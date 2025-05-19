@@ -31,7 +31,7 @@ router.get('/mentor/:auth0Id',async (req,res)=>{
    // Assume this is the logged-in student
 const student = await Student.findById(req.user.id); // studentId should be available
 const pendingRequests = student.pendingRequests.map(id => id.toString());
-
+const mentors = await Mentor.find();
     const mentorsWithRequestStatus = mentors.map(mentor => {
       const isRequested = pendingRequests.includes(mentor._id.toString());
       return {
@@ -39,6 +39,7 @@ const pendingRequests = student.pendingRequests.map(id => id.toString());
         requested: isRequested, //could be useful to disable request button in frontend ig
       };
     });
+    console.log('fetch mentors : ' , mentorsWithRequestStatus) ;
 
     res.json(mentorsWithRequestStatus);
 

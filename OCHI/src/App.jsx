@@ -27,22 +27,10 @@ function App() {
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route path="mentor-profile" element={<MentorProfile />} />
+        <Route path="/mentor-requests" element={<MentorRequests />} />
         <Route path="/build-mentor-profile" element={<BuildMentorProfile />} />
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
-        {/* All routes that need Layout wrapper */}
-        <Route element={<Layout />}>
-          <Route path="contact" element={<Contact />} />
-          <Route path="about" element={<About/>}/>
-          <Route path="/mentor-requests" element={<MentorRequests />} />
-          <Route path="/success" element={<div>Success</div>} />
-          <Route path="/cancel" element={<div>Cancel</div>} />
-
-          {/*Proteced route*/}
-          <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>
-          <Route path="/chatInterface" element={ <ProtectedRoutes> <ChatInterface/> </ProtectedRoutes>}/>
-          
-        </Route>
     
 
         
