@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Mentor = require('../../models/mentor.js');
-const jwtCheck = require("../middleware/authjwt.js");
+const authJwt = require("../middleware/authjwt.js");
 const Student = require('../../models/student.js');
+const jwtCheck = require("../middleware/authMiddleware.js");
 
 // GET all mentors
 router.get('/', async (req, res) => {
@@ -26,10 +27,11 @@ router.get('/mentor/:auth0Id',async (req,res)=>{
   }
 }); 
 
-  router.get('/fetchMentors', jwtCheck, async(req,res)=>{
+  router.get('/fetchMentors', authJwt, async(req,res)=>{
     console.log("Fetching mentors..." , req.user.id) ;
    // Assume this is the logged-in student
-const student = await Student.findById(req.user.id); // studentId should be available
+const student = await Student.findById(req.user.id);
+console.log(student); // studentId should be available
 const pendingRequests = student.pendingRequests.map(id => id.toString());
 const mentors = await Mentor.find();
     const mentorsWithRequestStatus = mentors.map(mentor => {
@@ -47,7 +49,7 @@ const mentors = await Mentor.find();
 
 
 // GET /api/mentors/mentorRequests
-router.get('/mentorRequests', jwtCheck, async (req, res) => {
+router.get('/mentorRequests', authJwt, async (req, res) => {
   const mentorId = req.user.id;
   console.log("mentorId from JWT:", mentorId); 
 
@@ -65,7 +67,7 @@ router.get('/mentorRequests', jwtCheck, async (req, res) => {
 });
 
 // POST /api/mentors/updateRequestStatus/:studentId
-router.post('/updateRequestStatus/:studentId', jwtCheck, async (req, res) => {
+router.post('/updateRequestStatus/:studentId', authJwt, async (req, res) => {
   const mentorId = req.user.id;
   const studentId = req.params.studentId;
   const { action } = req.body;
@@ -98,6 +100,29 @@ router.post('/updateRequestStatus/:studentId', jwtCheck, async (req, res) => {
   } catch (err) {
       console.error(`Error while ${action}ing request:`, err);
       res.status(500).json({ error: `Failed to ${action} request.` });
+  }
+});
+
+
+router.get('/profile', jwtCheck, async (req, res) => {
+  try {
+    const mentor = await Mentor.findOne({ auth0Id: req.auth.payload.sub });
+    res.json(mentor);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post('/profile', jwtCheck, async (req, res) => {
+  try {
+    const mentor = await Mentor.findOneAndUpdate(
+      { auth0Id: req.auth.payload.sub },
+      req.body,
+      { new: true, upsert: true }
+    );
+    res.json(mentor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 

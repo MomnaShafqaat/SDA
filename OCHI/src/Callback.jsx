@@ -6,10 +6,21 @@ import axios from "axios";
 const Callback = () => {
     const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
     const navigate = useNavigate();
+    
     console.log("Callback component mounted...");
-    useEffect(() => {
+    useEffect( () => {
         console.log("Callback mounted..."); 
-
+        async function fetchtoken() {
+            try {
+              const auth0Token = await getAccessTokenSilently();
+              console.log("auth0Token is:", auth0Token);
+              localStorage.setItem("auth0Token", auth0Token);
+            } catch (error) {
+              console.error("Error fetching token:", error);
+            }
+          }
+          fetchtoken();
+        
        
         if (isAuthenticated && user) {
             console.log("User authenticated:", user); 
@@ -33,6 +44,8 @@ const Callback = () => {
                 const token = response.data ;
                 console.log("Token:", token);
                 localStorage.setItem("jwt_token", token); // Store token in local storage
+                localStorage.setItem("auth0Id", user.sub);
+               // console.log(localStorage.get("auth0Id"));
                 return axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
             })
             .then((response) => {
@@ -42,8 +55,8 @@ const Callback = () => {
                 const picture = response.data.user.picture;
                 console.log("Fetched user role:", userRole);
                 console.log("Fetched Picture:", picture);
-
-                localStorage.setItem("auth0Id", user.sub);
+                
+                
                 localStorage.setItem("profilePicture", picture);
                 localStorage.setItem("user_role", userRole); // Save the actual role from backend
                 
@@ -60,7 +73,7 @@ const Callback = () => {
             console.log("User not authenticated yet."); 
         }
         
-    }, [isAuthenticated, user]);
+    }, [isAuthenticated,getAccessTokenSilently, user]);
 
     
 
