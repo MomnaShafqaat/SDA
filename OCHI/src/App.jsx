@@ -34,7 +34,6 @@ function App() {
           <Route path="/success" element={<div>Success</div>} />
           <Route path="/cancel" element={<div>Cancel</div>} />
           <Route path="mentor-profile" element={<MentorProfile />} />
-        <Route path="/build-mentor-profile" element={<BuildMentorProfile />} />
         <Route path="/loginAdmin" element={<AdminLogin />} />
 
           {/*Proteced route*/}
