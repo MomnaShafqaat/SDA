@@ -1,21 +1,26 @@
-import React from 'react';
-
-const CounterCard = ({ title, count }) => (
-  <div style={styles.card}>
-    <h2>{title}</h2>
-    <p>{count}</p>
-  </div>
-);
+const CounterCard = ({ title, count }) => {
+  return (
+    <div style={styles.card}>
+      <h3>{title}</h3>
+      <p style={styles.count}>{count}</p>
+    </div>
+  );
+};
 
 const styles = {
   card: {
-    display:'flex',
-    background: '#f5f5f5',
-    padding: '1rem',
-    borderRadius: '8px',
+    padding: '1.5rem',
+    backgroundColor: '#f9f9f9',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+    width: '200px',
     textAlign: 'center',
-    width: '150px'
-  }
+  },
+  count: {
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    marginTop: '0.5rem',
+  },
 };
 
 export default CounterCard;

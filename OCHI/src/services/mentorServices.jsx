@@ -1,18 +1,16 @@
 import GenericService from './genericService';
-
 class MentorService extends GenericService {
     constructor() {
         super();
-        this.baseUrl = 'http://localhost:5000/api/mentors/';
+        this.baseUrl = 'mentors/';
     }
 
     getMentors = async (isAuthenticated) => {
         let token = localStorage.getItem('jwt_token');
         let response;
         console.log("Token being sent:", token);
-
-        if (localStorage.getItem("user_role") === "mentor") {
-            return null;
+        if(localStorage.getItem("user_role" === "mentor")){
+            return null ;
         }
 
         if(!isAuthenticated)
@@ -34,50 +32,12 @@ class MentorService extends GenericService {
         }
 
         console.log("Response from getMentors:", response.data);
-        return response;
-    };
+        return response ;
+    }
 
-    // ✅ New: Get current mentor's profile
-    getMentorProfile = async () => {
-        console.log("Fetching mentor profile...");
-        const token = localStorage.getItem('jwt_token');
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            'Cache-Control': 'no-cache',
-        };
-        return this.get(`${this.baseUrl}profile`, { headers });
-    };
+    
 
-    // ✅ New: Delete current mentor's profile
-    deleteMentorProfile = async () => {
-        const token = localStorage.getItem('jwt_token');
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-        return this.delete(`${this.baseUrl}profile`, { headers });
-    };
-
-    // Create mentor profile
-    createMentorProfile = async (profileData) => {
-        const token = localStorage.getItem('jwt_token');
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        };
-        return this.post(`${this.baseUrl}profile`, profileData, { headers });
-    };
-
-    // Update mentor profile
-    updateMentorProfile = async (profileData) => {
-        const token = localStorage.getItem('jwt_token');
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        };
-        console.log("Updating mentor profile with data:", profileData);
-        return this.post(`${this.baseUrl}profile`, profileData, { headers });
-    };
 }
-}
-const mentorService = new MentorService();
+
+let mentorService = new MentorService ; 
 export default mentorService;

@@ -4,65 +4,62 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Callback = () => {
-    const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
+    const { isAuthenticated, user } = useAuth0();
     const navigate = useNavigate();
-    console.log("Callback component mounted...");
+
     useEffect(() => {
-        console.log("Callback mounted..."); 
+        const processUser = async () => {
+            try {
+                if (isAuthenticated && user) {
+                    console.log("User authenticated:", user);
 
-       
-        if (isAuthenticated && user) {
-            console.log("User authenticated:", user); 
+                    const storedRole = localStorage.getItem("user_role");
+                    const auth0Id = user.sub;
 
-            // Access token is now available JWT token to send to backend to authorize requests
-            
+                    // If role is admin, send request to /admin/loginAdmin
+                    if (storedRole === "admin") {
+                        const response = await axios.post("http://localhost:5000/api/admin/loginAdmin", {
+                            email: user.email, // get email from Auth0 user
+                        });
 
-            const storedRole = localStorage.getItem("user_role"); 
-            console.log("Stored Role:", storedRole);
+                        const adminToken = response.data.token;
+                        console.log("Admin Token:", adminToken);
+                        localStorage.setItem("admin_token", adminToken);
+                        navigate("/admin/dashboard"); // or wherever you want admins to go
+                    }
 
-            // Send user data to backend for registration
-            axios.post("http://localhost:5000/api/user/register", {
-                auth0Id: user.sub,
-                email: user.email,
-                name: user.name,
-                role: storedRole,
-                picture: user.picture,
-            })
-            .then((response) => {
-                console.log("User registered successfully"); 
-                const token = response.data ;
-                console.log("Token:", token);
-                localStorage.setItem("jwt_token", token); // Store token in local storage
-                return axios.get(`http://localhost:5000/api/user/profile/${user.sub}`);
-            })
-            .then((response) => {
-                console.log("User Data:", response.data.user);
+                    // For normal users (mentor/student)
+                    else {
+                        // Register user in your own backend
+                        await axios.post("http://localhost:5000/api/user/register", {
+                            auth0Id,
+                            email: user.email,
+                            name: user.name,
+                            role: storedRole,
+                            picture: user.picture,
+                        });
 
-                const userRole = response.data.user.role; // Get role from backend
-                const picture = response.data.user.picture;
-                console.log("Fetched user role:", userRole);
-                console.log("Fetched Picture:", picture);
+                        // Fetch user profile
+                        const profileRes = await axios.get(`http://localhost:5000/api/user/profile/${auth0Id}`);
+                        const userData = profileRes.data.user;
 
-                localStorage.setItem("auth0Id", user.sub);
-                localStorage.setItem("profilePicture", picture);
-                localStorage.setItem("user_role", userRole); // Save the actual role from backend
-                
-                if (userRole === "mentor") {
-                    navigate("/"); 
+                        localStorage.setItem("jwt_token", userData.token);
+                        localStorage.setItem("auth0Id", user.sub);
+                        localStorage.setItem("profilePicture", userData.picture);
+                        localStorage.setItem("user_role", userData.role);
+
+                        navigate("/"); // or route based on role
+                    }
                 } else {
-                    navigate("/"); 
+                    console.log("User not authenticated yet.");
                 }
-            })
-            .catch((error) => {
-                console.error("Error processing authentication:", error);
-            });
-        } else {
-            console.log("User not authenticated yet."); 
-        }
-        
-    }, [isAuthenticated, user]);
+            } catch (err) {
+                console.error("Error in Callback:", err);
+            }
+        };
 
-    
+        processUser();
+    }, [isAuthenticated, user, navigate]);
 
     return <div>Loading...</div>;
 };

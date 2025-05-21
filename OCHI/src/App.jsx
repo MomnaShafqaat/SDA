@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout';
@@ -12,41 +13,35 @@ import ChatInterface from './components/ChatInterface';
 import MentorProfile from './components/MentorProfile';
 import BuildMentorProfile from './components/BuildMentorProfile';
 import MentorRequests from './components/MentorRequests';
+import AdminPage from './pages/AdminPage'
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
   const router = createBrowserRouter(
-  createRoutesFromElements(
+
+    createRoutesFromElements(
     <>
       {/* Routes that shouldn't use Layout */}
       <Route path="/callback" element={<Callback />} />
       <Route path="/admin" element={<AdminPage />} />
        <Route index element={<LandingPage />} />
 
-      {/* All Layout-wrapped routes */}
-      <Route element={<Layout />}>
-        <Route path="about" element={<About />} />
-        <Route path="contact" element={<Contact />} />
-        <Route path="mentor-profile" element={<MentorProfile />} />
-        <Route path="/build-mentor-profile" element={<BuildMentorProfile />} />
-        <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
-        <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
-        {/* All routes that need Layout wrapper */}
         <Route element={<Layout />}>
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<About/>}/>
           <Route path="/mentor-requests" element={<MentorRequests />} />
           <Route path="/success" element={<div>Success</div>} />
           <Route path="/cancel" element={<div>Cancel</div>} />
+          <Route path="mentor-profile" element={<MentorProfile />} />
+        <Route path="/build-mentor-profile" element={<BuildMentorProfile />} />
+        <Route path="/loginAdmin" element={<AdminLogin />} />
 
           {/*Proteced route*/}
           <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>
-          <Route path="/chatInterface" element={ <ProtectedRoutes> <ChatInterface/> </ProtectedRoutes>}/>
+          
           
         </Route>
-    
-
-        
-      </Route>
+  
     </>
   )
 );
