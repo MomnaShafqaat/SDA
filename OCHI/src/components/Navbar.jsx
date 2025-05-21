@@ -68,6 +68,22 @@ function Navbar() {
         });
     };
 
+
+      const handleBadgeRequest = async () => {
+    try {
+      const auth0Id = localStorage.getItem("auth0Id");
+      if (!auth0Id) {
+        alert("auth0Id not found in localStorage.");
+        return;
+      }
+
+      const result = await mentorService.sendVerificationRequest(auth0Id);
+      alert(result.message);
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Error sending badge request");
+    }
+  }; 
     const profilePicture = localStorage.getItem("profilePicture");
 
     return (
@@ -89,23 +105,6 @@ function Navbar() {
                 }>About Us</NavLink>
 
 
-
-      {/* Show Admin Dashboard only for authenticated admin users */}
-      {isAuthenticated //&& isAdmin
-       && (
-          <button
-            onClick={() => navigate("/admin")}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-          >
-            Admin Dashboard
-          </button>
-        )}
-
-
-
-{/*faltu*/}
-   <button onClick={() => navigate("/admin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >Admin no auth </button>
-{/*faltu*/}
 
         {/* Requests icon (only for mentors) */}
         {isAuthenticated && userRole === "mentor" && (
@@ -132,6 +131,12 @@ function Navbar() {
                                 <button onClick={() => { handleAuth("student"); setIsDropdownOpen(false); }} className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200 text-left">
                                     Login as Student
                                 </button>
+                                  <button
+                            onClick={() => navigate("/loginAdmin")}
+                            className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200 text-left"
+                            >
+                            Login as Admin
+                            </button>
                             </div>
                         )}
                     </div>
@@ -150,7 +155,16 @@ function Navbar() {
                         />
                     
                         {/* User Profile */}
-                        <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
+
+                          {/* 🔸 Show Request Badge Button for Mentor */}
+                    {localStorage.getItem("user_role") === "mentor" && (
+                    <button
+                    onClick={handleBadgeRequest}                        
+                            className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                    >
+                        Request Badge
+                    </button>
+                    )}
 
                         {/* Logout Button */}
                         <button 

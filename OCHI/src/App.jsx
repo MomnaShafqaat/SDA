@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout';
@@ -13,8 +13,7 @@ import ChatInterface from './components/ChatInterface';
 import MentorProfile from './components/MentorProfile';
 import BuildMentorProfile from './components/BuildMentorProfile';
 import MentorRequests from './components/MentorRequests';
-import AdminPage from './pages/AdminPage'
-import AdminLogin from "./pages/AdminLogin";
+import AdminLogin from './pages/AdminLogin';
 
 function App() {
   const router = createBrowserRouter(
