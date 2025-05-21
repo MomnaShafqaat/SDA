@@ -86,6 +86,26 @@ class MentorService extends GenericService {
       throw new Error("Something went wrong");
     }
   }
+  getMentorRequests = () => {
+    const token = localStorage.getItem('jwt_token');
+    return this.get(`${this.baseUrl}mentorRequests`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+};
+
+updateRequestStatus = (studentId, action) => {
+    const token = localStorage.getItem('jwt_token');
+    return this.post(`${this.baseUrl}updateRequestStatus/${studentId}`, { action }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
+};
+
 }
 
 

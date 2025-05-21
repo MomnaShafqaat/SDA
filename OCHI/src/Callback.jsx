@@ -70,7 +70,8 @@ const Callback = () => {
             if (userRole === "mentor") {
               navigate("/");
             } else {
-              console.log("User is not mentor. Navigate as needed.");
+              //console.log("User is not mentor. Navigate as needed.");
+              navigate("/");
             }
           }
         } else {
