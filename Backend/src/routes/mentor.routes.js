@@ -8,83 +8,89 @@ const jwtCheck = require("../middleware/authMiddleware.js");
 // GET all mentors
 router.get('/', async (req, res) => {
   try {
-  console.log('generic route' ) ;
-  const mentor = await Mentor.find();
-  console.log("Mentors fetched:", mentor);
-  console.log(mentor) ;
+    console.log('GET /api/mentors - Fetching all mentors');
+    const mentor = await Mentor.find();
     res.json(mentor);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-router.get('/mentor/:auth0Id',async (req,res)=>{
-  try{
-    const mentor=await Mentor.findOne({ auth0Id: req.params.auth0Id });
+// GET mentor by auth0Id
+router.get('/mentor/:auth0Id', async (req, res) => {
+  try {
+    const mentor = await Mentor.findOne({ auth0Id: req.params.auth0Id });
     res.json(mentor);
-  }catch (err) {
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}); 
+});
 
-  router.get('/fetchMentors', authJwt, async(req,res)=>{
-    console.log("Fetching mentors..." , req.user.id) ;
-   // Assume this is the logged-in student
-const student = await Student.findById(req.user.id);
-console.log(student); // studentId should be available
-const pendingRequests = student.pendingRequests.map(id => id.toString());
-const mentors = await Mentor.find();
+// GET /fetchMentors (Student fetching available mentors)
+router.get('/fetchMentors', authJwt, async (req, res) => {
+  try {
+    const student = await Student.findById(req.user.id);
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const excludeIds = student.mentorList;
+    const mentors = await Mentor.find({ _id: { $nin: excludeIds } });
+
+    const pendingRequests = student.pendingRequests.map(id => id.toString());
+
     const mentorsWithRequestStatus = mentors.map(mentor => {
       const isRequested = pendingRequests.includes(mentor._id.toString());
       return {
         ...mentor.toObject(),
-        requested: isRequested, //could be useful to disable request button in frontend ig
+        requested: isRequested,
       };
     });
-    console.log('fetch mentors : ' , mentorsWithRequestStatus) ;
 
     res.json(mentorsWithRequestStatus);
-
-  });
-
-
-// GET /api/mentors/mentorRequests
-router.get('/mentorRequests', authJwt, async (req, res) => {
-  const mentorId = req.user.id;
-  console.log("mentorId from JWT:", mentorId); 
-
-  try {
-      const mentor = await Mentor.findById(mentorId).populate('pendingRequests', 'name email');
-      if (!mentor) {
-          return res.status(404).json({ error: 'Mentor not found' });
-      }
-
-      res.status(200).json({ pendingRequests: mentor.pendingRequests });
-  } catch (error) {
-      console.error('Error fetching mentor requests:', error);
-      res.status(500).json({ error: 'Internal server error' });
+  } catch (err) {
+    console.error("Fetch mentors error:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// POST /api/mentors/updateRequestStatus/:studentId
+// GET /mentorRequests (Mentor fetching pending requests)
+router.get('/mentorRequests', authJwt, async (req, res) => {
+  const mentorId = req.user.id;
+
+  try {
+    const mentor = await Mentor.findById(mentorId).populate('pendingRequests', 'name email');
+    if (!mentor) {
+      return res.status(404).json({ error: 'Mentor not found' });
+    }
+
+    res.status(200).json({ pendingRequests: mentor.pendingRequests });
+  } catch (error) {
+    console.error('Error fetching mentor requests:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /updateRequestStatus/:studentId (Mentor accepts/rejects request)
 router.post('/updateRequestStatus/:studentId', authJwt, async (req, res) => {
   const mentorId = req.user.id;
   const studentId = req.params.studentId;
   const { action } = req.body;
 
   try {
-      const mentor = await Mentor.findById(mentorId);
-      const student = await Student.findById(studentId);
+    const mentor = await Mentor.findById(mentorId);
+    const student = await Student.findById(studentId);
 
-      if (!mentor || !student) {
-          return res.status(404).json({ error: 'Mentor or Student not found' });
-      }
+    if (!mentor || !student) {
+      return res.status(404).json({ error: 'Mentor or Student not found' });
+    }
 
-        // Remove student from pending
-        await mentor.pendingRequests.pull(studentId);
-        await student.pendingRequests.pull(mentorId);
-        
-        if (action === 'accept') {
+    // Remove student from pending lists
+    mentor.pendingRequests.pull(studentId);
+    student.pendingRequests.pull(mentorId);
+
+    if (action === 'accept') {
       if (!mentor.menteeList.some(id => id.toString() === studentId)) {
         mentor.menteeList.push(studentId);
       }
@@ -98,12 +104,12 @@ router.post('/updateRequestStatus/:studentId', authJwt, async (req, res) => {
 
     res.status(200).json({ message: `Request ${action}ed successfully.` });
   } catch (err) {
-      console.error(`Error while ${action}ing request:`, err);
-      res.status(500).json({ error: `Failed to ${action} request.` });
+    console.error(`Error while ${action}ing request:`, err);
+    res.status(500).json({ error: `Failed to ${action} request.` });
   }
 });
 
-
+// GET current mentor profile
 router.get('/profile', jwtCheck, async (req, res) => {
   try {
     const mentor = await Mentor.findOne({ auth0Id: req.auth.payload.sub });
@@ -113,6 +119,7 @@ router.get('/profile', jwtCheck, async (req, res) => {
   }
 });
 
+// POST (update or create) mentor profile
 router.post('/profile', jwtCheck, async (req, res) => {
   try {
     const mentor = await Mentor.findOneAndUpdate(
@@ -123,6 +130,27 @@ router.post('/profile', jwtCheck, async (req, res) => {
     res.json(mentor);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+});
+
+// GET /:mentorId/mentees (Get mentor's mentees)
+router.get('/:mentorId/mentees', authJwt, async (req, res) => {
+  const { mentorId } = req.params;
+
+  if (!mentorId || mentorId === "null") {
+    return res.status(400).json({ error: "Invalid mentor ID" });
+  }
+
+  try {
+    const mentor = await Mentor.findById(mentorId).populate('menteeList', 'name email');
+    if (!mentor) {
+      return res.status(404).json({ error: "Mentor not found" });
+    }
+
+    res.status(200).json({ mentees: mentor.menteeList });
+  } catch (err) {
+    console.error("Error fetching mentee list:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

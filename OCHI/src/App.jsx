@@ -10,9 +10,10 @@ import Callback from './Callback';
 import AdminPage from './pages/AdminPage';
 import ChatInterface from './components/ChatInterface';
 import MentorProfile from './components/MentorProfile';
-import BuildMentorProfile from './components/EditMentorProfile';
 import MentorRequests from './components/MentorRequests';
 import EditMentorProfile from './components/EditMentorProfile';
+import MentorDashboard from './components/MentorDashbard';
+
 function App() {
   const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,7 +29,7 @@ function App() {
         <Route path="contact" element={<Contact />} />
         <Route path="mentor-profile" element={<MentorProfile />} />
         <Route path="/mentor-requests" element={<MentorRequests />} />
-        {/*<Route path="/build-mentor-profile" element={<BuildMentorProfile />} />*/}
+        <Route path="/mentor-dashboard" element={<MentorDashboard/>} />
         <Route path="/edit-mentor-profile" element={<EditMentorProfile />} />
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />

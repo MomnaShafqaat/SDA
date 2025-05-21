@@ -45,7 +45,7 @@ const MentorSchema = new mongoose.Schema({
   //a valid stripe id for mentors
   accountId:{
     type: String,
-    required: true
+    //required: true
   }
   });
   
