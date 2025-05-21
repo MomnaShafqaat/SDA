@@ -28,7 +28,7 @@ router.get('/mentor/:auth0Id', async (req, res) => {
 });
 
 // GET /fetchMentors (Student fetching available mentors)
-router.get('/fetchMentors', jwtCheck, async (req, res) => {
+router.get('/fetchMentors', authJwt, async (req, res) => {
   try {
     const student = await Student.findById(req.user.id);
 
@@ -58,7 +58,7 @@ router.get('/fetchMentors', jwtCheck, async (req, res) => {
 });
 
 // GET /mentorRequests (Mentor fetching pending requests)
-router.get('/mentorRequests', jwtCheck, async (req, res) => {
+router.get('/mentorRequests', authJwt, async (req, res) => {
   const mentorId = req.user.id;
   console.log("mentorId from JWT:", mentorId);
 
@@ -76,7 +76,7 @@ router.get('/mentorRequests', jwtCheck, async (req, res) => {
 });
 
 // POST /updateRequestStatus/:studentId (Mentor accepts/rejects request)
-router.post('/updateRequestStatus/:studentId', jwtCheck, async (req, res) => {
+router.post('/updateRequestStatus/:studentId', authJwt, async (req, res) => {
   const mentorId = req.user.id;
   const studentId = req.params.studentId;
   const { action } = req.body;
