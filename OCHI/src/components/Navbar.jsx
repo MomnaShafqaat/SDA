@@ -47,6 +47,22 @@ function Navbar() {
         });
     };
 
+
+      const handleBadgeRequest = async () => {
+    try {
+      const auth0Id = localStorage.getItem("auth0Id");
+      if (!auth0Id) {
+        alert("auth0Id not found in localStorage.");
+        return;
+      }
+
+      const result = await mentorService.sendVerificationRequest(auth0Id);
+      alert(result.message);
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Error sending badge request");
+    }
+  }; 
     const profilePicture = localStorage.getItem("profilePicture");
 
     return (

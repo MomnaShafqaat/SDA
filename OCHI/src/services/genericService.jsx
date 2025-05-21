@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:5000/api/';
 class GenericService{
@@ -21,10 +22,6 @@ class GenericService{
                     throw error;
                 });
     } ;
-
-    
-
-   
     
 
 }
