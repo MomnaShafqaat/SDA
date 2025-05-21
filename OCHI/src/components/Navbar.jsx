@@ -151,6 +151,9 @@ function Navbar() {
                                 if (role === "mentor") {
                                     navigate("/mentor-profile"); // ✅ Redirect on profile icon click
                                 }
+                                else if(role==="student"){
+                                    
+                                }
                             }}
                         />
                     

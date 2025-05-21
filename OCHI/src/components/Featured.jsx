@@ -15,7 +15,7 @@ function Featured() {
         /*const token = await getAccessTokenSilently({ ignoreCache: true });
         // Step 2
           console.log("Token being sent:", token);*/
-          
+          console.log('calling fetching from metnor servic ein featured component')
         const response = await mentorService.getMentors(isAuthenticated);
         if(localStorage.getItem("user_role")){
           console.log("User role:", localStorage.getItem("user_role"));
@@ -37,7 +37,7 @@ function Featured() {
     };
 
     fetchMentors();
-  }, [getAccessTokenSilently]);
+  }, [getAccessTokenSilently,isAuthenticated]);
 
   if (loading) {
     return <div className="text-center py-20">Loading mentors...</div>;

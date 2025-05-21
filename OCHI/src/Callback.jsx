@@ -4,64 +4,87 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Callback = () => {
-    const { isAuthenticated, user } = useAuth0();
-    const navigate = useNavigate();
+  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const processUser = async () => {
-            try {
-                if (isAuthenticated && user) {
-                    console.log("User authenticated:", user);
+  useEffect(() => {
+    const processUser = async () => {
+      try {
+        console.log("Callback component mounted...");
 
-                    const storedRole = localStorage.getItem("user_role");
-                    const auth0Id = user.sub;
+        if (isAuthenticated && user) {
+          console.log("User authenticated:", user);
 
-                    // If role is admin, send request to /admin/loginAdmin
-                    if (storedRole === "admin") {
-                        const response = await axios.post("http://localhost:5000/api/admin/loginAdmin", {
-                            email: user.email, // get email from Auth0 user
-                        });
+          // Fetch and store Auth0 token
+          try {
+            const auth0Token = await getAccessTokenSilently();
+            console.log("auth0Token is:", auth0Token);
+            localStorage.setItem("auth0Token", auth0Token);
+          } catch (error) {
+            console.error("Error fetching token:", error);
+          }
 
-                        const adminToken = response.data.token;
-                        console.log("Admin Token:", adminToken);
-                        localStorage.setItem("admin_token", adminToken);
-                        navigate("/admin/dashboard"); // or wherever you want admins to go
-                    }
+          const storedRole = localStorage.getItem("user_role");
+          const auth0Id = user.sub;
 
-                    // For normal users (mentor/student)
-                    else {
-                        // Register user in your own backend
-                        await axios.post("http://localhost:5000/api/user/register", {
-                            auth0Id,
-                            email: user.email,
-                            name: user.name,
-                            role: storedRole,
-                            picture: user.picture,
-                        });
+          if (storedRole === "admin") {
+            const response = await axios.post("http://localhost:5000/api/admin/loginAdmin", {
+              email: user.email,
+            });
 
-                        // Fetch user profile
-                        const profileRes = await axios.get(`http://localhost:5000/api/user/profile/${auth0Id}`);
-                        const userData = profileRes.data.user;
+            const adminToken = response.data.token;
+            console.log("Admin Token:", adminToken);
+            localStorage.setItem("admin_token", adminToken);
+            navigate("/admin/dashboard");
+          } else {
+            // Register user
+            const registerRes = await axios.post("http://localhost:5000/api/user/register", {
+              auth0Id,
+              email: user.email,
+              name: user.name,
+              role: storedRole,
+              picture: user.picture,
+            });
 
-                        localStorage.setItem("jwt_token", userData.token);
-                        localStorage.setItem("auth0Id", user.sub);
-                        localStorage.setItem("profilePicture", userData.picture);
-                        localStorage.setItem("user_role", userData.role);
+            console.log("User registered successfully");
+            const token = registerRes.data;
+            localStorage.setItem("jwt_token", token);
+            localStorage.setItem("auth0Id", user.sub);
 
-                        navigate("/"); // or route based on role
-                    }
-                } else {
-                    console.log("User not authenticated yet.");
-                }
-            } catch (err) {
-                console.error("Error in Callback:", err);
+            // Get user profile
+            const profileRes = await axios.get(
+              `http://localhost:5000/api/user/profile/${user.sub}`
+            );
+            const userData = profileRes.data.user;
+
+            const userRole = userData.role;
+            const picture = userData.picture;
+
+            console.log("Fetched user role:", userRole);
+            console.log("Fetched Picture:", picture);
+
+            localStorage.setItem("auth0Id", user.sub);
+            localStorage.setItem("profilePicture", picture);
+            localStorage.setItem("user_role", userRole); // Save the actual role from backend
+
+            if (userRole === "mentor") {
+              navigate("/");
+            } else {
+              console.log("User is not mentor. Navigate as needed.");
             }
-        };
+          }
+        } else {
+          console.log("User not authenticated yet.");
+        }
+      } catch (err) {
+        console.error("Error in Callback:", err);
+      }
+    };
 
-        processUser();
-    }, [isAuthenticated, user, navigate]);
+    processUser();
+  }, [isAuthenticated, getAccessTokenSilently, user, navigate]);
 
-    return <div>Loading...</div>;
+  return <div>Loading...</div>;
 };
 
 export default Callback;

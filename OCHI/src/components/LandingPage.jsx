@@ -39,7 +39,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import Navbar from './Navbar';
 import Landing from './Landing';
-import Marque from './marque';
+import Marque from './Marque';
 import About from './About';
 import Eyes from './Eyes';
 import Featured from './Featured';
