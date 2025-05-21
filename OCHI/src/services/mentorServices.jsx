@@ -6,18 +6,11 @@ class MentorService extends GenericService {
         this.baseUrl = 'http://localhost:5000/api/mentors/';
     }
 
+    // Fetch mentors available to a student
     getMentors = async (isAuthenticated) => {
         let token = localStorage.getItem('jwt_token');
         let response;
         console.log("Token being sent:", token);
-
-        if (localStorage.getItem("user_role") === "mentor") {
-            return null;
-        }
-
-        if(!isAuthenticated)
-        {
-            response = await this.get(`${this.baseUrl}`, {}) ;
 
         if (localStorage.getItem("user_role") === "mentor") {
             return null;
@@ -37,7 +30,7 @@ class MentorService extends GenericService {
         return response;
     };
 
-    // ✅ New: Get current mentor's profile
+    // Get current mentor's profile
     getMentorProfile = async () => {
         console.log("Fetching mentor profile...");
         const token = localStorage.getItem('jwt_token');
@@ -48,7 +41,7 @@ class MentorService extends GenericService {
         return this.get(`${this.baseUrl}profile`, { headers });
     };
 
-    // ✅ New: Delete current mentor's profile
+    // Delete mentor profile
     deleteMentorProfile = async () => {
         const token = localStorage.getItem('jwt_token');
         const headers = {
@@ -77,7 +70,29 @@ class MentorService extends GenericService {
         console.log("Updating mentor profile with data:", profileData);
         return this.post(`${this.baseUrl}profile`, profileData, { headers });
     };
+
+    // Get mentor requests
+    getMentorRequests = () => {
+        const token = localStorage.getItem('jwt_token');
+        return this.get(`${this.baseUrl}mentorRequests`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+    };
+
+    // Update request status (accept/reject)
+    updateRequestStatus = (studentId, action) => {
+        const token = localStorage.getItem('jwt_token');
+        return this.post(`${this.baseUrl}updateRequestStatus/${studentId}`, { action }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+    };
 }
-}
+
 const mentorService = new MentorService();
 export default mentorService;
