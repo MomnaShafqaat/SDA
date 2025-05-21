@@ -20,7 +20,7 @@ router.get('/me',jwtCheck, async (req, res) => {
 // 🔹 Register User
 router.post("/register", async (req, res) => {
     try {
-        console.log("Incoming Request:", req.body);
+        console.log("Incoming Request:", req.body); 
         const { auth0Id, email, name, role, picture } = req.body;
 
         // 🔹 Check for missing fields
@@ -43,6 +43,7 @@ router.post("/register", async (req, res) => {
         let token = jwt.sign({ id: user._id  , name: user.name , role: user.role }, config.get("jwtPrivateKey") ) ;
         console.log("Generated Token:", token);
         res.send(token) ;
+        //res.status(200).json({ user });
     } catch (error) {
         console.error("Backend Error:", error);
         res.status(500).json({ error: "Internal Server Error" });

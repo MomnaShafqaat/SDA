@@ -102,11 +102,6 @@ function Navbar() {
         )}
 
 
-
-{/*faltu*/}
-   <button onClick={() => navigate("/admin")} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition" >Admin no auth </button>
-{/*faltu*/}
-
         {/* Requests icon (only for mentors) */}
         {isAuthenticated && userRole === "mentor" && (
           <button
@@ -146,11 +141,13 @@ function Navbar() {
                                 if (role === "mentor") {
                                     navigate("/mentor-profile"); // ✅ Redirect on profile icon click
                                 }
+                                else if(role==="student"){
+                                    
+                                }
                             }}
                         />
                     
-                        {/* User Profile */}
-                        <img src={user.picture} alt="Profile" className="w-10 h-10 rounded-full" />
+                        
 
                         {/* Logout Button */}
                         <button 

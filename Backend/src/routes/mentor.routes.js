@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Mentor = require('../../models/mentor.js');
-const jwtCheck = require("../middleware/authjwt.js");
+const authJwt = require("../middleware/authjwt.js");
 const Student = require('../../models/student.js');
+const jwtCheck = require("../middleware/authMiddleware.js");
 
 // GET all mentors
 router.get('/', async (req, res) => {
@@ -47,6 +48,7 @@ router.get('/fetchMentors', jwtCheck, async (req, res) => {
         requested: isRequested,
       };
     });
+    console.log('fetch mentors : ' , mentorsWithRequestStatus) ;
 
     res.json(mentorsWithRequestStatus);
   } catch (err) {
@@ -107,6 +109,29 @@ router.post('/updateRequestStatus/:studentId', jwtCheck, async (req, res) => {
   } catch (err) {
     console.error(`Error while ${action}ing request:`, err);
     res.status(500).json({ error: `Failed to ${action} request.` });
+  }
+});
+
+
+router.get('/profile', jwtCheck, async (req, res) => {
+  try {
+    const mentor = await Mentor.findOne({ auth0Id: req.auth.payload.sub });
+    res.json(mentor);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post('/profile', jwtCheck, async (req, res) => {
+  try {
+    const mentor = await Mentor.findOneAndUpdate(
+      { auth0Id: req.auth.payload.sub },
+      req.body,
+      { new: true, upsert: true }
+    );
+    res.json(mentor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 

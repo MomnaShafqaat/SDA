@@ -10,6 +10,13 @@ class MentorService extends GenericService {
     getMentors = async (isAuthenticated) => {
         let token = localStorage.getItem('jwt_token');
         let response;
+        console.log('fetchmentors method in mentor services') ;
+        
+
+        if (localStorage.getItem("user_role") === "mentor") {
+            console.log('mentor in fetch mentor services') ;
+            return null;
+        }
         console.log("Token being sent:", token);
 
         if (localStorage.getItem("user_role") === "mentor") {
@@ -18,17 +25,20 @@ class MentorService extends GenericService {
 
         if (!isAuthenticated) {
             response = await this.get(`${this.baseUrl}`, {});
+            console.log('not authenticated') ;
         } else {
             let headers = {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
             };
+            console.log('sending request to fetchmentors backend') ;
             response = await this.get(`${this.baseUrl}fetchMentors`, { headers });
         }
 
         console.log("Response from getMentors:", response.data);
         return response;
-    };
+    }
+
 
     // Get current mentor's profile
     getMentorProfile = async () => {
