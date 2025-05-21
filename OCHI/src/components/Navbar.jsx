@@ -3,6 +3,8 @@ import { io } from 'socket.io-client';
 import { useAuth0 } from "@auth0/auth0-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBell } from 'react-icons/fa';
+import mentorService from "../services/mentorServices.jsx";
+
 
 function Navbar() {
     const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -108,6 +110,17 @@ function Navbar() {
                                 if (role === "mentor") navigate("/mentor-profile");
                             }}
                         />
+                            {/* 🔸 Show Request Badge Button for Mentor */}
+                            {localStorage.getItem("user_role") === "mentor" && (
+                            <button
+                            onClick={handleBadgeRequest}                        
+                                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                            >
+                                Request Badge
+                            </button>
+                            )}
+
+
                         <button
                             onClick={() => {
                                 logout();
@@ -115,7 +128,7 @@ function Navbar() {
                                 localStorage.removeItem("user_role");
                                 navigate("/");
                             }}
-                            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
                         >
                             Logout
                         </button>

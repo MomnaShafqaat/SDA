@@ -51,7 +51,7 @@ const MentorSchema = new mongoose.Schema({
 
 badgeRequest: {
   requested: { type: Boolean, default: false },
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
   requestedAt: { type: Date }
 },
 

@@ -313,4 +313,35 @@ router.get('/:mentorId/mentees', authJwt, async (req, res) => {
   }
 });
 
+
+//  send badge to admin
+router.post('/request-verification/:auth0Id', async (req, res) => {
+  try {
+    const { auth0Id } = req.params;
+    console.log("auth0Id received:", auth0Id);
+
+    const mentor = await Mentor.findOne({ auth0Id });
+    if (!mentor) return res.status(404).json({ message: 'Mentor not found' });
+console.log('no  mentorrrr');
+
+    if (mentor.badgeRequest?.requested && mentor.badgeRequest.status === 'pending') {
+      return res.status(400).json({ message: 'Already requested. Please wait for admin response.' });
+    }
+console.log('abi nhi howa hai send');
+
+    mentor.badgeRequest = {
+      requested: true,
+      status: 'pending',
+      requestedAt: new Date()
+    };
+console.log('ho gya hai send');
+    await mentor.save();
+
+    res.status(200).json({ message: 'Verification request sent successfully.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

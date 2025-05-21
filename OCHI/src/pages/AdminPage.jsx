@@ -63,7 +63,7 @@ const AdminPage = () => {
               <tr>
                 <th style={thStyle}>Name</th>
                 <th style={thStyle}>Email</th>
-                <th style={thStyle}>Document</th>
+                <th style={thStyle}>Profile</th>
                 <th style={thStyle}>Actions</th>
               </tr>
             </thead>

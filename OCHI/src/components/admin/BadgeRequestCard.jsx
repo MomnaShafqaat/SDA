@@ -6,7 +6,7 @@ const BadgeRequestCard = ({ mentor, onAccept, onReject, onViewDocument }) => {
       <td>{mentor.name}</td>
       <td>{mentor.email}</td>
       <td>
-        <button onClick={onViewDocument}>View Document</button>
+        <button onClick={onViewDocument}>ViewProfile</button>
       </td>
       <td>
         <button onClick={onAccept} style={{ marginRight: '8px' }}>Accept</button>
