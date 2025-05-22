@@ -13,36 +13,60 @@ const MentorsPage = () => {
   const [error, setError] = useState(null);
 
   // Get filters from URL
-  const expertise = searchParams.get('expertise');
-  const searchQuery = searchParams.get('searchQuery');
+//   const expertise = searchParams.get('expertise');
+//   const searchQuery = searchParams.get('searchQuery');
 
-  useEffect(() => {
-    const fetchMentors = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+//   useEffect(() => {
+//     const fetchMentors = async () => {
+//       try {
+//         setLoading(true);
+//         setError(null);
         
-        const params = new URLSearchParams();
-        if (expertise) params.append('expertise', expertise);
-        if (searchQuery) params.append('searchQuery', searchQuery);
+//         const params = new URLSearchParams();
+//         if (expertise) params.append('expertise', expertise);
+//         if (searchQuery) params.append('searchQuery', searchQuery);
 
-        const response = await axios.get(`http://localhost:5000/api/mentors/filteredByExpertise?${params.toString()}`);
-        setMentors(response.data);
-      } catch (error) {
-        console.error('Error fetching mentors:', error);
-        setError('Failed to load mentors. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
+//         const response = await axios.get(`http://localhost:5000/api/mentors/filteredByExpertise?${params.toString()}`);
+//         setMentors(response.data);
+//       } catch (error) {
+//         console.error('Error fetching mentors:', error);
+//         setError('Failed to load mentors. Please try again later.');
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
 
-    fetchMentors();
-  }, [expertise, searchQuery]);
+//     fetchMentors();
+//   }, [expertise, searchQuery]);
+const expertise = searchParams.get('expertise');
+const nameQuery = searchParams.get('name');
+
+useEffect(() => {
+  const fetchMentors = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const params = new URLSearchParams();
+      if (expertise) params.append('expertise', expertise);
+      if (nameQuery) params.append('name', nameQuery);
+
+      const response = await axios.get(`http://localhost:5000/api/mentors/filteredByExpertise?${params.toString()}`);
+      setMentors(response.data);
+    } catch (error) {
+      console.error('Error fetching mentors:', error);
+      setError('Failed to load mentors. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchMentors();
+}, [expertise, nameQuery]);
 
   const getFilterMessage = () => {
     const filters = [];
     if (expertise) filters.push(`Expertise: ${expertise}`);
-    if (searchQuery) filters.push(`Search: "${searchQuery}"`);
+    if (nameQuery) filters.push(`Search: "${nameQuery}"`);
     return filters.join(' • ');
   };
 

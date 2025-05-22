@@ -364,19 +364,17 @@ res.status(500).json({message:"server error"});
 });
 router.get('/filteredByExpertise', async (req, res) => {
   try {
-    const { expertise, searchQuery } = req.query;
+    const { expertise, name } = req.query;
     const query = {};
 
     if (expertise) {
       query.expertise = expertise;
     }
 
-    if (searchQuery) {
-      query.$or = [
-        { name: { $regex: searchQuery, $options: 'i' } },
-        { bio: { $regex: searchQuery, $options: 'i' } }
-      ];
+    if (name) {
+      query.name = { $regex: name, $options: 'i' };
     }
+
 
     const mentors = await Mentor.find(query);
     res.json(mentors);
