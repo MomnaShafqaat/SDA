@@ -74,18 +74,28 @@ function Navbar() {
             </NavLink>
 
             <div className="flex gap-10 items-center">
-                {isAuthenticated && userRole === "mentor" && (
+                
                     <>
-                        <NavLink to="/mentor-dashboard" className="text-white hover:text-orange-400 transition">Dashboard</NavLink>
-                        <NavLink to="/chatInterface" className="text-white hover:text-orange-400 transition">Chat with Student</NavLink>
+                    {
+                        userRole === "mentor" &&  (
+                            <>
+                             <NavLink to="/mentor-dashboard" className="text-white hover:text-orange-400 transition">Dashboard</NavLink>
+                    <button onClick={() => navigate("/mentor-requests")} className="text-orange-300 hover:text-orange-500 transition" title="Mentor Requests">
+                            <FaBell size={24} />
+                        </button> 
+                        </>) 
+                    }
+                    {
+                        isAuthenticated && <NavLink to="/chatInterface" className="text-white hover:text-orange-400 transition">Chat</NavLink>
+                    }
+                        
+                        
                         <NavLink to="/contact" className="text-white hover:text-orange-400 transition">Contact Us</NavLink>
                         <NavLink to="/about" className="text-white hover:text-orange-400 transition">About Us</NavLink>
 
-                        <button onClick={() => navigate("/mentor-requests")} className="text-orange-300 hover:text-orange-500 transition" title="Mentor Requests">
-                            <FaBell size={24} />
-                        </button>
+                        
                     </>
-                )}
+            
 
                 {!isAuthenticated ? (
                     <div className="relative">

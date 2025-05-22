@@ -17,6 +17,16 @@ import AdminLogin from './pages/AdminLogin';
 import EditMentorProfile from './components/EditMentorProfile';
 import MentorDashboard from './components/MentorDashbard';
 
+function SuccessPage() {
+  console.log("✅ Payment was successful.");
+  return <h1>Payment Success</h1>;
+}
+
+function CancelPage() {
+  console.log("❌ Payment was cancelled.");
+  return <h1>Payment Cancelled</h1>;
+}
+
 function App() {
   const router = createBrowserRouter(
 
@@ -27,20 +37,7 @@ function App() {
       <Route path="/admin" element={<AdminPage />} />
        <Route index element={<LandingPage />} />
 
-        <Route element={<Layout />}>
-          <Route path="contact" element={<Contact />} />
-          <Route path="about" element={<About/>}/>
-          <Route path="/mentor-requests" element={<MentorRequests />} />
-          <Route path="/success" element={<div>Success</div>} />
-          <Route path="/cancel" element={<div>Cancel</div>} />
-          <Route path="mentor-profile" element={<MentorProfile />} />
-        <Route path="/loginAdmin" element={<AdminLogin />} />
-
-          {/*Proteced route*/}
-          <Route path="privacy" element={ <ProtectedRoutes> <PrivacyPolicy/> </ProtectedRoutes>}/>
-          
-          
-        </Route>
+    
   
       {/* All Layout-wrapped routes */}
       <Route element={<Layout />}>
@@ -52,7 +49,9 @@ function App() {
         <Route path="/edit-mentor-profile" element={<EditMentorProfile />} />
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
-    
+    <Route path="/loginAdmin" element={<AdminLogin />} />
+    <Route path="success" element={<SuccessPage/>} />
+          <Route path="cancel" element={<CancelPage/>} />
 
         
       </Route>
