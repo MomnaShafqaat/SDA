@@ -19,8 +19,14 @@ import MentorDashboard from './components/MentorDashbard';
 
 function SuccessPage() {
   console.log("✅ Payment was successful.");
-  return <h1>Payment Success</h1>;
+  
+  return (
+    <div className="mt-6 ms-6">
+      <h1 className="">Payment Successfull</h1>
+    </div>
+  );
 }
+
 
 function CancelPage() {
   console.log("❌ Payment was cancelled.");
