@@ -128,7 +128,20 @@ class MentorService extends GenericService {
       },
     });
   };
+
+  //mento badge req status too admin
+  getBadgeStatus = async (mentorId) => {
+    const token = localStorage.getItem('jwt_token');
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+    return this.get(`${this.baseUrl}badge-status/${mentorId}`, { headers });
+  };
 }
+
+
+
 
 const mentorService = new MentorService();
 export default mentorService;

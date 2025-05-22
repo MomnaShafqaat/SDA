@@ -342,6 +342,25 @@ console.log('ho gya hai send');
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
+
+
+//badge status 
+router.get('/badge-status/:mentorId', async (res,req) => {
+try{
+const mentor= await Mentor.findById(req.params.mentorId);
+if(!mentor) return res.status(404).json({message:'Mentor not found'});
+res.json({
+      status: mentor.badgeRequest.status || 'pending'
+    });
+}
+catch(error){
+  console.error("error fetching badge status",error);
+res.status(500).json({message:"server error"});
+
+}
+
+});
+
 });
 
 module.exports = router;

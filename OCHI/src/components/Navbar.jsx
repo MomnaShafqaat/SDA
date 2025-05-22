@@ -4,7 +4,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaBell } from 'react-icons/fa';
 import mentorService from "../services/mentorServices.jsx";
-
+import { MdLogout } from 'react-icons/md'; // Material Design
+import { FaMedal } from 'react-icons/fa';
 
 function Navbar() {
     const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
@@ -68,12 +69,12 @@ function Navbar() {
     const profilePicture = localStorage.getItem("profilePicture");
 
     return (
-        <div className="fixed z-[999] w-full px-20 py-4 font-['Neue_Montreal'] flex justify-between items-center bg-[#004D46] shadow-lg">
+        <div className="fixed z-[999] w-full px-10 py-2 font-['Neue_Montreal'] flex justify-between items-center bg-[#004D46]  ">
             <NavLink to="/">
-                <img src="/LOGO/mentora.png" alt="Mentora Logo" className="w-32 h-auto object-contain" />
+                <img src="/LOGO/mentora.png" alt="Mentora Logo" className="w-18 h-5 object-contain" />
             </NavLink>
 
-            <div className="flex gap-10 items-center">
+            <div className="flex gap-7 items-center text-sm">
                 {isAuthenticated && userRole === "mentor" && (
                     <>
                         <NavLink to="/mentor-dashboard" className="text-white hover:text-orange-400 transition">Dashboard</NavLink>
@@ -82,7 +83,7 @@ function Navbar() {
                         <NavLink to="/about" className="text-white hover:text-orange-400 transition">About Us</NavLink>
 
                         <button onClick={() => navigate("/mentor-requests")} className="text-orange-300 hover:text-orange-500 transition" title="Mentor Requests">
-                            <FaBell size={24} />
+                            <FaBell size={16} />
                         </button>
                     </>
                 )}
@@ -100,25 +101,28 @@ function Navbar() {
                         )}
                     </div>
                 ) : (
-                    <div className="flex items-center gap-4">
-                        <img
+                    <div className="flex items-center gap-[-6] ">
+                      
+                            {/* 🔸 Show Request Badge Button for Mentor */}
+                            {localStorage.getItem("user_role") === "mentor" && (
+                            <button
+                            onClick={handleBadgeRequest}                        
+                                    className="px-4 py-2 "
+                        
+                            >
+                                  <FaMedal className="text-orange-300 text-xl" />
+                              
+                            </button>
+                            )}
+                              <img
                             src={profilePicture}
                             alt="Profile"
-                            className="w-10 h-10 rounded-full cursor-pointer"
+                            className="w-6 h-6 rounded-full cursor-pointer"
                             onClick={() => {
                                 const role = localStorage.getItem("user_role");
                                 if (role === "mentor") navigate("/mentor-profile");
                             }}
                         />
-                            {/* 🔸 Show Request Badge Button for Mentor */}
-                            {localStorage.getItem("user_role") === "mentor" && (
-                            <button
-                            onClick={handleBadgeRequest}                        
-                                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                            >
-                                Request Badge
-                            </button>
-                            )}
 
 
                         <button
@@ -128,9 +132,10 @@ function Navbar() {
                                 localStorage.removeItem("user_role");
                                 navigate("/");
                             }}
-                                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                                    className="px-4 py-2 text-white  hover:text-orange transition"
                         >
-                            Logout
+                            
+                        <MdLogout className="text-l" />
                         </button>
                     </div>
                 )}
