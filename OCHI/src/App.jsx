@@ -13,6 +13,8 @@ import ChatInterface from './components/ChatInterface';
 import MentorProfile from './components/MentorProfile';
 import MentorRequests from './components/MentorRequests';
 import AdminLogin from './pages/AdminLogin';
+import StudentProfile from './components/StudentProfile';
+import MentorsPage from './components/MentorsPage';
 
 import EditMentorProfile from './components/EditMentorProfile';
 import MentorDashboard from './components/MentorDashbard';
@@ -49,7 +51,9 @@ function App() {
       <Route element={<Layout />}>
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="mentors" element={<MentorsPage />} />
         <Route path="mentor-profile" element={<MentorProfile />} />
+        <Route path="student-profile" element={<StudentProfile />} />
         <Route path="/mentor-requests" element={<MentorRequests />} />
         <Route path="/mentor-dashboard" element={<MentorDashboard/>} />
         <Route path="/edit-mentor-profile" element={<EditMentorProfile />} />
