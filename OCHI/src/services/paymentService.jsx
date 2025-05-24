@@ -33,29 +33,10 @@ class PaymentService extends GenericService {
         
     }
 
-    createAccount = async () => {
-        let token = localStorage.getItem('jwt_token');
-        await this.post(`${this.baseUrl}account`, {}, {
-             headers:{
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        }
-
-        );
-        
-    }
-
     checkAccount = async () => {
         try{
         let token = localStorage.getItem('jwt_token');
-        const response = await  this.post(`${this.baseUrl}account_link`, {
-            //body: {
-            
-             //     account: connectedAccountId,
-                
-           // }
-        },
+        const response = await  this.post(`${this.baseUrl}account_link`, {},
         {
             headers: {
                 Authorization: `Bearer ${token}`,

@@ -3,11 +3,22 @@ import axios from 'axios';
 import MentorCard from './MentorCard';
 import { useAuth0 } from '@auth0/auth0-react';
 import mentorService from '../services/mentorServices';
+import useAxios from '../hooks/useAxios';
 
 function Featured() {
+
   const [mentors, setMentors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
   const { getAccessTokenSilently , isAuthenticated } = useAuth0();
+
+  //used custom hooks to handle axios calls
+  let url = isAuthenticated
+    ? 'mentors/fetchMentors'
+    : 'mentors/';
+  const { response, loading, error } = useAxios({
+    method: 'GET',
+    url: url , // baseURL is auto-handled
+  });
   
   useEffect(() => {
     const fetchMentors = async () => {
@@ -15,30 +26,26 @@ function Featured() {
         /*const token = await getAccessTokenSilently({ ignoreCache: true });
         // Step 2
           console.log("Token being sent:", token);*/
-          console.log('calling fetching from metnor servic ein featured component')
-        const response = await mentorService.getMentors(isAuthenticated);
-        if(localStorage.getItem("user_role")){
-          console.log("User role:", localStorage.getItem("user_role"));
-         
-        }
+        //const response = await mentorService.getMentors(isAuthenticated);
+        
 
-        if (Array.isArray(response.data)) {
-          setMentors(response.data);
-          console.log(response.data) ;
+        if (Array.isArray(response)) {
+          setMentors(response);
+          console.log(response) ;
         } else {
-          console.error('Expected an array of mentors, but got:', response.data);
+          console.error('Expected an array of mentors, but got:', response);
           setMentors([]);
         }
       } catch (error) {
         console.error('Error fetching mentors:', error);
-        setMentors([]);
-      } finally {
-        setLoading(false);
-      }
+        //setMentors([]);
+      } //finally {
+        //setLoading(false);
+      //}
     };
 
     fetchMentors();
-  }, [getAccessTokenSilently,isAuthenticated]);
+  }, [getAccessTokenSilently,isAuthenticated,response]);
 
   if (loading) {
     return <div className="text-center py-20">Loading mentors...</div>;

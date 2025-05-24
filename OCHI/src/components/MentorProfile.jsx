@@ -174,9 +174,6 @@ const MentorProfile = () => {
       fetchMentor();
     }, []);
 
-    const handleCreateAccount = async () => {
-      paymentService.createAccount() ;
-    }
   
     const handleAccount = async () => {
       paymentService.checkAccount()
@@ -203,14 +200,10 @@ const MentorProfile = () => {
             </svg>
             Edit Profile
           </EditButton>
-          <button onClick={handleCreateAccount} style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}>
-            Set up Stripe account 
+          <button onClick={handleAccount} style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}>
+            Set up stripe connect account
             </button>
-            <button
-            onClick={handleAccount}
-          >
-            Add information
-          </button>
+            
         </HeaderContent>
       </HeaderSection>
 
