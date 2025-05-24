@@ -47,5 +47,28 @@ router.get('/profile', jwtCheck, async (req, res) => {
   }
 });
 
+// GET /:studentID/mentors (Get student's mentors)
+router.get('/:studentID/mentors', authjwt, async (req, res) => {
+  const { studentID } = req.params;
+
+  if (!studentID || studentID === "null") {
+    return res.status(400).json({ error: "Invalid student ID" });
+  }
+
+  try {
+    const student = await Student.findById(studentID).populate('mentorList', 'name email bio picture');
+    console.log(student);
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    res.status(200).json({ mentors: student.mentorList });
+  } catch (err) {
+    console.error("Error fetching mentors list:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 module.exports=router;

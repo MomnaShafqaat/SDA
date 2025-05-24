@@ -35,6 +35,23 @@ class StudentService extends GenericService {
                 console.error('Error sending request:', error);
             });
     }
+
+    // Get mentors list for the logged-in student
+    getMentors = async () => {
+    const token = localStorage.getItem('jwt_token');
+    if (!token) throw new Error("No token found");
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const studentID = payload.id;
+    console.log("Student ID from token:", studentID);
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+
+    return this.get(`${this.baseUrl}${studentID}/mentors`, { headers });
+    };
+
 }
 
 let studentService = new StudentService();

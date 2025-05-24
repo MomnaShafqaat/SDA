@@ -18,6 +18,7 @@ import MentorsPage from './components/MentorsPage';
 
 import EditMentorProfile from './components/EditMentorProfile';
 import MentorDashboard from './components/MentorDashbard';
+import StudentMentors from './components/StudentMentors';
 
 function SuccessPage() {
   console.log("✅ Payment was successful.");
@@ -56,7 +57,8 @@ function App() {
         <Route path="mentor-profile" element={<MentorProfile />} />
         <Route path="student-profile" element={<StudentProfile />} />
         <Route path="/mentor-requests" element={<MentorRequests />} />
-        <Route path="/mentor-dashboard" element={<MentorDashboard/>} />
+        <Route path="/mentor-dashboard" element={<MentorDashboard/>} />  
+        <Route path="/student-dashboard" element={<StudentMentors/>} />
         <Route path="/edit-mentor-profile" element={<EditMentorProfile />} />
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
