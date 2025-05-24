@@ -105,14 +105,14 @@ const ProfilePopup = ({ onClose }) => {
 
   const handleCompleteProfile = () => {
     localStorage.removeItem('profileReminderDismissed');
-    navigate('build-mentor-profile');
+    navigate('/edit-mentor-profile'); // ✅ Absolute path for redirect
   };
 
   const handleLater = () => {
     onClose();
     const item = {
       value: 'true',
-      expiry: new Date().getTime() + 10000000, // 10 seconds
+      expiry: new Date().getTime() + 2 * 60 * 60 * 1000, // ✅ 2 hours
     };
     localStorage.setItem('profileReminderDismissed', JSON.stringify(item));
   };

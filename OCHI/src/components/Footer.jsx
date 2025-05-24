@@ -11,6 +11,11 @@ function Footer() {
     <img src="/LOGO/mentorawhite.png" alt="Mentora Logo"  className="w-40 h-auto mt-2 object-contain" />
     </div>
           <p className="text-gray-300 mt-2">Empowering students with expert mentorship.</p>
+           <NavLink
+                to="/loginAdmin"
+                className={({ isActive }) =>
+                  `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+              }>Admin</NavLink>
         </div>
 
         {/* Quick Links */}
@@ -35,6 +40,7 @@ function Footer() {
                 >
                 Contact US
             </NavLink>
+            
           </ul>
         </div>
 

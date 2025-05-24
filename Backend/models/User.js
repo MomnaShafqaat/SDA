@@ -5,9 +5,10 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   role: { type: String, enum: ["mentor", "student"], required: true },
+  picture: { type: String, required: true },
   createdAt: { type: Date, default: Date.now }
 },
+{ discriminatorKey: "role", collection: "users" },
 { discriminatorKey: "role", collection: "users" });
-
 const User = mongoose.model("User", UserSchema);
 module.exports = User;

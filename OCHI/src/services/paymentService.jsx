@@ -13,6 +13,7 @@ class PaymentService extends GenericService {
         const stripe = await loadStripe('pk_test_51QuUDjIENBzZHlrqzEmxvoNAtzO3p9i6fQVgql68l1hUiFZgLer0wwyNEXIGn94ezKGkV9BcgjUwHgzdeVuvcXcO00raRrxXqI'); 
         let token = localStorage.getItem('jwt_token');
         console.log("Token being sent:", token);
+        console.log('sending payment req' + mentorId) ;
         const response = await this.post(`${this.baseUrl}create-checkout-session`, { mentorId }, {
              headers:{
                 Authorization: `Bearer ${token}`,

@@ -2,75 +2,95 @@ import React, { useEffect, useState } from 'react';
 import AdminNavbar from "../components/admin/AdminNavbar";
 import CounterCard from "../components/admin/CounterCard";
 import BadgeRequestCard from "../components/admin/BadgeRequestCard";
-
-
-// Example - correct casing
+import axios from 'axios';
 
 const AdminPage = () => {
-  const [counts, setCounts] = useState({ mentors: 6, students: 6 });
+  const [counts, setCounts] = useState({ mentors: 0, students: 0 });
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
     fetchCounts();
-    fetchRequests();
+    fetchBadgeRequests();
   }, []);
 
   const fetchCounts = async () => {
-    // Mock or actual API
-    const res = await fetch('/api/admin/counts');
-    const data = await res.json();
-    setCounts(data);
+    try {
+      const res = await fetch('http://localhost:5000/api/admin/counts');
+      const data = await res.json();
+      setCounts(data);
+    } catch (error) {
+      console.error("Failed to fetch counts:", error);
+    }
   };
 
-  const fetchRequests = async () => {
-    const res = await fetch('/api/admin/badge-requests');
-    const data = await res.json();
-    setRequests(data.requests);
+  const fetchBadgeRequests = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/admin/badge-requests");
+      setRequests(res.data);
+    } catch (err) {
+      console.error("Error fetching badge requests:", err);
+    }
   };
 
-  const handleDecision = async (id, action) => {
-    await fetch(`/api/admin/badge-requests/${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ decision: action })
-    });
-    setRequests(requests.filter(r => r._id !== id));
+  const handleDecision = async (mentorId, decision) => {
+    try {
+      await axios.post(`http://localhost:5000/api/admin/verify-badge/${mentorId}`, { decision });
+      // Refresh the list after decision
+      fetchBadgeRequests();
+    } catch (err) {
+      console.error(`Error updating badge request for ${mentorId}:`, err);
+    }
   };
 
   return (
     <div>
       <AdminNavbar />
-
-      <div style={{ padding: '2rem' }}>
-        <h1>Welcome, Admin!</h1>
+      <div style={{ padding: 20 }}>
+        <h1 style={{ display: 'flex', justifyContent: 'center' }}>Welcome, Admin</h1>
+        <h2 style={{ fontWeight: 20, display: 'flex', justifyContent: 'center' }}>Data Analysis</h2>
 
         {/* Count Cards */}
-        <div style={{ display: 'flex', gap: '1rem', margin: '2rem 0' }}>
+        <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', margin: '2rem 0' }}>
           <CounterCard title="Mentors" count={counts.mentors} />
           <CounterCard title="Students" count={counts.students} />
         </div>
 
-        {/* Badge Requests */}
+        {/* Badge Requests Table */}
         <h2>Badge Requests</h2>
-        {requests.length ? (
-  requests.map(mentor => (
-    <BadgeRequestCard
-      key={mentor._id}
-      mentor={mentor}
-      onAccept={() => handleDecision(mentor._id, 'accept')}
-      onReject={() => handleDecision(mentor._id, 'reject')}
-      onViewDocument={() => window.open(mentor.documentUrl, '_blank')}
-    />
-  ))
-) : (
-  <p>No pending requests.</p>
-)}
-
+        {requests.length > 0 ? (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={thStyle}>Name</th>
+                <th style={thStyle}>Email</th>
+                <th style={thStyle}>Profile</th>
+                <th style={thStyle}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {requests.map((mentor) => (
+                <BadgeRequestCard
+                  key={mentor._id}
+                  mentor={mentor}
+                  onAccept={() => handleDecision(mentor._id, 'accept')}
+                  onReject={() => handleDecision(mentor._id, 'reject')}
+                  onViewDocument={() => window.open(mentor.documentUrl, '_blank')}
+                />
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No pending requests.</p>
+        )}
       </div>
     </div>
   );
 };
 
+const thStyle = {
+  borderBottom: '1px solid #ccc',
+  padding: '10px',
+  textAlign: 'left',
+};
+
 export default AdminPage;
-
-

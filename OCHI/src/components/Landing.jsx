@@ -8,7 +8,7 @@ function Landing() {
                 {["FIND THE RIGHT", "MENTOR TO GUIDE", "YOUR CAREER PATH"].map((item, index) => {
                     return <div className="master">
                         <div className='  w-fit flex  items-end overflow-hidden'>
-                         {index===1 && (   <div className='mr-[0.5vw] w-[7vw]  h-[5vw] bg-red-800 mt-3 rounded-md  relative'></div>)}
+                         {index===1 && (   <div className='mr-[0.5vw] w-[7vw]  h-[5vw] bg-orange-700 mt-3 rounded-md  relative'></div>)}
                             <h1 className="upercase text-[7vw]  leading-[6vw] tracking-tighter font-bold font-['Founders Grotesk']">{item}</h1>
                         </div>
                     </div>

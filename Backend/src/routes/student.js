@@ -3,6 +3,7 @@ const router=express.Router();
 const Student = require("../../models/student.js");
 const authjwt = require('../middleware/authjwt.js');
 const Mentor = require("../../models/mentor.js");
+const jwtCheck=require("../middleware/authMiddleware.js")
 
 router.post('/sendRequest/:mentorId', authjwt, async(req ,res)=>{
 
@@ -37,5 +38,14 @@ router.post('/sendRequest/:mentorId', authjwt, async(req ,res)=>{
         res.status(500).json({ error: "Internal server error" });
       }
 })
+router.get('/profile', jwtCheck, async (req, res) => {
+  try {
+    const student = await Student.findOne({ auth0Id: req.auth.payload.sub });
+    res.json(student);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports=router;

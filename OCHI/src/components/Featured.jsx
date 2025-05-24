@@ -24,6 +24,7 @@ function Featured() {
 
         if (Array.isArray(response.data)) {
           setMentors(response.data);
+          console.log(response.data) ;
         } else {
           console.error('Expected an array of mentors, but got:', response.data);
           setMentors([]);

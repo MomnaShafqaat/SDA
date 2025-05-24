@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout';
@@ -10,14 +11,24 @@ import Callback from './Callback';
 import AdminPage from './pages/AdminPage';
 import ChatInterface from './components/ChatInterface';
 import MentorProfile from './components/MentorProfile';
-import BuildMentorProfile from './components/EditMentorProfile';
 import MentorRequests from './components/MentorRequests';
+import AdminLogin from './pages/AdminLogin';
+import StudentProfile from './components/StudentProfile';
+import MentorsPage from './components/MentorsPage';
+
 import EditMentorProfile from './components/EditMentorProfile';
+import MentorDashboard from './components/MentorDashbard';
 
 function SuccessPage() {
   console.log("✅ Payment was successful.");
-  return <h1>Payment Success</h1>;
+  
+  return (
+    <div className="mt-6 ms-6">
+      <h1 className="">Payment Successfull</h1>
+    </div>
+  );
 }
+
 
 function CancelPage() {
   console.log("❌ Payment was cancelled.");
@@ -27,25 +38,31 @@ function CancelPage() {
 function App() {
   
   const router = createBrowserRouter(
-  createRoutesFromElements(
+
+    createRoutesFromElements(
     <>
       {/* Routes that shouldn't use Layout */}
       <Route path="/callback" element={<Callback />} />
       <Route path="/admin" element={<AdminPage />} />
        <Route index element={<LandingPage />} />
 
+    
+  
       {/* All Layout-wrapped routes */}
       <Route element={<Layout />}>
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="mentors" element={<MentorsPage />} />
         <Route path="mentor-profile" element={<MentorProfile />} />
+        <Route path="student-profile" element={<StudentProfile />} />
         <Route path="/mentor-requests" element={<MentorRequests />} />
-        {/*<Route path="/build-mentor-profile" element={<BuildMentorProfile />} />*/}
+        <Route path="/mentor-dashboard" element={<MentorDashboard/>} />
         <Route path="/edit-mentor-profile" element={<EditMentorProfile />} />
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
-        <Route path='success' element={<SuccessPage/>} />
-        <Route path='cancel' element={<CancelPage/>} />
+    <Route path="/loginAdmin" element={<AdminLogin />} />
+    <Route path="success" element={<SuccessPage/>} />
+          <Route path="cancel" element={<CancelPage/>} />
 
         
       </Route>

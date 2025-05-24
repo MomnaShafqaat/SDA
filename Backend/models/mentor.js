@@ -36,6 +36,25 @@ const MentorSchema = new mongoose.Schema({
       average: { type: Number, default: 0 },
       rating: { type: Number, min: 0, max: 5, default: 0 }
     },
+
+    badges: [
+  {
+    title: String,
+    description: String,
+    icon: String, // optional field for badge icon or emoji
+    dateAwarded: {
+      type: Date,
+      default: Date.now,
+    },
+  }
+],
+
+badgeRequest: {
+  requested: { type: Boolean, default: false },
+  status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
+  requestedAt: { type: Date }
+},
+
     
   paymentRecieved :
   {
