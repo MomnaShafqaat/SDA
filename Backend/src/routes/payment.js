@@ -38,6 +38,14 @@ router.post('/create-checkout-session', authjwt, async (req, res) => {
                 },
             ],
             mode: 'payment',
+            //for transfering to mentor accounts
+            /*payment_intent_data: {
+                application_fee_amount: 200, // 10% fee (in cents)
+                transfer_data: {
+                    destination: mentor.accountId, // Mentor's Stripe Connect account ID
+        },
+    },*/
+            
             success_url: `http://localhost:3000/success`,
             cancel_url: `http://localhost:3000/cancel`,
         });

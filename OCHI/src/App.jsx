@@ -13,7 +13,19 @@ import MentorProfile from './components/MentorProfile';
 import BuildMentorProfile from './components/EditMentorProfile';
 import MentorRequests from './components/MentorRequests';
 import EditMentorProfile from './components/EditMentorProfile';
+
+function SuccessPage() {
+  console.log("✅ Payment was successful.");
+  return <h1>Payment Success</h1>;
+}
+
+function CancelPage() {
+  console.log("❌ Payment was cancelled.");
+  return <h1>Payment Cancelled</h1>;
+}
+
 function App() {
+  
   const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -32,7 +44,8 @@ function App() {
         <Route path="/edit-mentor-profile" element={<EditMentorProfile />} />
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
-    
+        <Route path='success' element={<SuccessPage/>} />
+        <Route path='cancel' element={<CancelPage/>} />
 
         
       </Route>

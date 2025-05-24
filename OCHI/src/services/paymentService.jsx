@@ -19,8 +19,8 @@ class PaymentService extends GenericService {
                 'Content-Type': 'application/json',
             },
         });
-        //response.data;
-        result = await stripe.redirectToCheckout({
+        //response.data;    
+       result = await stripe.redirectToCheckout({
             sessionId: response.data.id,
         }); 
         if (result.error) {
