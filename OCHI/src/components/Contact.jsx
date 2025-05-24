@@ -2,10 +2,12 @@ import React from 'react'
 import{Link,NavLink} from 'react-router-dom'
 import { useState } from 'react';
 import emailjs from 'emailjs-com';
+
 export default function Contact() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [tel, setTel] = useState('');
+    const [message, setMessage] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
     const handleSubmit = (e) => {
@@ -20,7 +22,8 @@ export default function Contact() {
         emailjs.send(serviceID, templateID, {
             from_name: name,
             from_email: email,
-            phone_number: tel
+            phone_number: tel,
+            message: message
         }, userID)
         .then((response) => {
             console.log('SUCCESS!', response.status, response.text);
@@ -28,6 +31,8 @@ export default function Contact() {
             setName('');
             setEmail('');
             setTel('');
+            setMessage('');
+
         }, (error) => {
             console.log('FAILED...', error);
         });
@@ -165,6 +170,20 @@ export default function Contact() {
                                     placeholder="Telephone Number"
                                     className="w-100 mt-2 py-3 px-3 rounded-lg bg-white border border-gray-400 text-gray-800 font-semibold focus:border-orange-500 focus:outline-none"
                                 />
+                            </div>
+
+                             {/* New Textarea for Message */}
+                            <div className="flex flex-col mt-2">
+                                <textarea
+                                    name="message"
+                                    id="message"
+                                    rows="4"
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    placeholder="Write your message here..."
+                                    className="w-100 mt-2 py-3 px-3 rounded-lg bg-white border border-gray-400 text-gray-800 font-semibold focus:border-orange-500 focus:outline-none"
+                                    required
+                                ></textarea>
                             </div>
 
                             <button
