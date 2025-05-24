@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import paymentService from "../services/paymentService";
+
 
 const ProfileContainer = styled.div`
   max-width: 1200px;
@@ -171,7 +173,15 @@ const MentorProfile = () => {
   
       fetchMentor();
     }, []);
+
+    const handleCreateAccount = async () => {
+      paymentService.createAccount() ;
+    }
   
+    const handleAccount = async () => {
+      paymentService.checkAccount()
+    }
+
     const handleEdit = () => {
       const storedAuth0Id = localStorage.getItem("auth0Id");
       navigate(`/edit-mentor-profile`);
@@ -193,6 +203,14 @@ const MentorProfile = () => {
             </svg>
             Edit Profile
           </EditButton>
+          <button onClick={handleCreateAccount} style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}>
+            Set up Stripe account 
+            </button>
+            <button
+            onClick={handleAccount}
+          >
+            Add information
+          </button>
         </HeaderContent>
       </HeaderSection>
 

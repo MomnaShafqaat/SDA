@@ -1,3 +1,4 @@
+import axios from 'axios';
 import GenericService from './genericService';
 import {loadStripe } from '@stripe/stripe-js';
 
@@ -29,6 +30,51 @@ class PaymentService extends GenericService {
         } else {
             console.log('Redirecting to checkout...');
         }
+        
+    }
+
+    createAccount = async () => {
+        let token = localStorage.getItem('jwt_token');
+        await this.post(`${this.baseUrl}account`, {}, {
+             headers:{
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        }
+
+        );
+        
+    }
+
+    checkAccount = async () => {
+        try{
+        let token = localStorage.getItem('jwt_token');
+        const response = await  this.post(`${this.baseUrl}account_link`, {
+            //body: {
+            
+             //     account: connectedAccountId,
+                
+           // }
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+                },
+        }) ;
+        const { url, error } = response.data;
+
+    if (url) {
+      window.location.href = url;
+    }
+
+    if (error) {
+      setError(true);
+    }
+  } catch (err) {
+    console.error('Error generating account link:', err);
+    setError(true);
+  }
         
     }
     
