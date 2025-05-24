@@ -28,7 +28,7 @@ function Footer() {
           }>
                     Home
                 </NavLink>
-            <li><a href="#" className="hover:text-gray-200">Our Mentors</a></li>
+            <li><a href="mentors" className="hover:text-gray-200">Our Mentors</a></li>
             <NavLink to="/chatInterface" className={({isActive}) =>
                           `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                         }>Chat With Mentor</NavLink>
@@ -38,7 +38,7 @@ function Footer() {
                     `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                 }
                 >
-                Contact US
+                Contact Us
             </NavLink>
             
           </ul>
@@ -56,8 +56,8 @@ function Footer() {
                 >
                 About Us
             </NavLink>
-          <li><a href="#" className="hover:text-gray-200">How It Works</a></li>
-            <li><a href="#" className="hover:text-gray-200">Testimonials</a></li>
+          <li><a href="/howitworks" className="hover:text-gray-200">How It Works</a></li>
+            <li><a href="/testimonials" className="hover:text-gray-200">Testimonials</a></li>
             <NavLink
                 to="/privacy"
                 className={({isActive}) =>
@@ -70,11 +70,18 @@ function Footer() {
         </div>
 
         {/* Social Media Links */}
-        <div>
-    
-          <h3 className="text-lg font-semibold mb-3">give feedback</h3>
-         
-      
+        <div>         
+        <NavLink
+          to="/submit-testimonial"
+          className={({ isActive }) =>
+            `text-lg font-semibold mb-3 block py-2 pr-4 duration-200 ${
+              isActive ? "text-orange-700" : "text-white-700"
+            } hover:text-orange-700`
+          }
+        >
+          Give Feedback
+        </NavLink>
+
           <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
           <div className="flex gap-4">
             <a href="https://www.instagram.com" target="_blank" className="text-gray-300 hover:text-gray-200 text-2xl">
@@ -85,10 +92,6 @@ function Footer() {
             </a>
           </div>
         </div>
-
-
-        
-
       </div>
 
       {/* Copyright Section */}
