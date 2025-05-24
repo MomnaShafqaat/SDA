@@ -70,7 +70,8 @@ function Navbar() {
     const profilePicture = localStorage.getItem("profilePicture");
 
     return (
-        <div className="fixed z-[999] w-full px-10 py-2 font-['Neue_Montreal'] flex justify-between items-center bg-[#004D46]  ">
+        <div className="fixed z-[999] w-full px-10 py-2 font-['Neue_Montreal'] flex justify-between items-center bg-[#2E7C75]
+  ">
             <NavLink to="/">
                 <img src="/LOGO/mentora.png" alt="Mentora Logo" className="w-18 h-5 object-contain" />
             </NavLink>
@@ -93,31 +94,20 @@ function Navbar() {
                                 </button>
                             </>)
                     }
+
                     {
                         isAuthenticated && <NavLink to="/chatInterface" className={({ isActive }) =>
-                            `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                            `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                         }>Chat</NavLink>
                     }
 
 
                     <NavLink to="/contact" className={({ isActive }) =>
-                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                        `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                     }>Contact Us</NavLink>
                     <NavLink to="/about" className={({ isActive }) =>
-                        `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                        `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                     }>About Us</NavLink>
-
-                    {
-                        userRole === "student" && (
-                            <>
-                                <NavLink to="/student-dashboard" className={({ isActive }) =>
-                                    `block py-2 pr-4 pl-3 duration-200 ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
-                                }>Dashboard</NavLink>
-                            </>)
-                    }
-
-
-
 
                 </>
 
@@ -135,6 +125,15 @@ function Navbar() {
                     </div>
                 ) : (
                     <div className="flex items-center gap-[-6] ">
+
+                                            {
+                        userRole === "mentor" && (
+                            <>
+                                <button onClick={() => navigate("/mentor-requests")} className="text-orange-300 hover:text-orange-500 transition" title="Mentor Requests">
+                                    <FaBell size={24} />
+                                </button>
+                            </>)
+                    }
 
                         {/* 🔸 Show Request Badge Button for Mentor */}
                         {localStorage.getItem("user_role") === "mentor" && (

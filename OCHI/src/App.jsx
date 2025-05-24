@@ -19,6 +19,9 @@ import MentorsPage from './components/MentorsPage';
 import EditMentorProfile from './components/EditMentorProfile';
 import MentorDashboard from './components/MentorDashbard';
 import StudentMentors from './components/StudentMentors';
+import Testimonials from './components/Testimonials';
+import HowItWorks from './components/HowItWorks';
+import SubmitTestimonial from './components/SubmitTestimonials';
 
 function SuccessPage() {
   console.log("✅ Payment was successful.");
@@ -54,6 +57,9 @@ function App() {
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route path="mentors" element={<MentorsPage />} />
+        <Route path="testimonials" element={<Testimonials />} />
+        <Route path="howitworks" element={<HowItWorks/>} />
+        <Route path="/submit-testimonial" element={<SubmitTestimonial />} />
         <Route path="mentor-profile" element={<MentorProfile />} />
         <Route path="student-profile" element={<StudentProfile />} />
         <Route path="/mentor-requests" element={<MentorRequests />} />
