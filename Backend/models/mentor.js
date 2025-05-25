@@ -54,7 +54,11 @@ badgeRequest: {
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
   requestedAt: { type: Date }
 },
-
+priorityDM:[
+  {
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+  }
+],
     
   paymentRecieved :
   {

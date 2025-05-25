@@ -200,9 +200,14 @@ const MentorProfile = () => {
             </svg>
             Edit Profile
           </EditButton>
-          <button onClick={handleAccount} style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}>
+          {
+            mentor.badgeRequest.status === 'accepted' && (
+              <button onClick={handleAccount} style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}>
             Set up stripe connect account
             </button>
+            )
+          }
+          
             
         </HeaderContent>
       </HeaderSection>

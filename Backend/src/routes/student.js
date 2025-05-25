@@ -56,7 +56,7 @@ router.get('/:studentID/mentors', authjwt, async (req, res) => {
   }
 
   try {
-    const student = await Student.findById(studentID).populate('mentorList', 'name email bio picture');
+    const student = await Student.findById(studentID).populate('mentorList');
     console.log(student);
 
     if (!student) {

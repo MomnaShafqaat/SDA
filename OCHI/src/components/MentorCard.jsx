@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import studentService from '../services/studentServices';
 import { useAuth0 } from '@auth0/auth0-react';
-import paymentService from "../services/paymentService";
+import PayButton from './payButton.jsx';
 
 const MentorCard = ({ mentor }) => {
   const { picture, name, ratings, skills, isVerified, _id } = mentor;
@@ -12,11 +12,6 @@ const MentorCard = ({ mentor }) => {
   const handleRequest = () => {
     studentService.sendRequest(_id);
     setSendRequest(true);
-  };
-
-  const handlePayment = (e) => {
-    e.stopPropagation();
-    paymentService.makePayment(_id);
   };
 
   const renderStars = (rating) => {
@@ -97,13 +92,8 @@ const MentorCard = ({ mentor }) => {
             {sendRequest ? 'Request Sent ✓' : 'Request Mentorship'}
           </button>
 
-          {storedRole === 'student' && (
-            <button
-              onClick={handlePayment}
-              className="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition-colors"
-            >
-              Subscribe ($0.99/month)
-            </button>
+          {storedRole === 'student' && mentor.badgeRequest.status === 'accepted'  && (
+            <PayButton mentorId={mentor._id} accountId={mentor.accountId} />
           )}
         </div>
       )}

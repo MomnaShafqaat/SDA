@@ -87,13 +87,23 @@ function Navbar() {
 
                 <>
                     {
-                        userRole === "mentor" && (
-                            <>
-                                <button onClick={() => navigate("/mentor-requests")} className="text-orange-300 hover:text-orange-500 transition" title="Mentor Requests">
-                                    <FaBell size={24} />
-                                </button>
-                            </>)
-                    }
+    userRole === "student" && (
+        <>
+            <NavLink 
+                to="/student-dashboard" 
+                className={({ isActive }) => 
+                    `block py-2 pr-4 pl-3 duration-200 text-lg ${
+                        isActive ? "text-orange-700" : "text-white-700"
+                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                }
+            >
+                Dashboard
+            </NavLink>
+        </>
+    )
+}
+
+
 
                     {
                         isAuthenticated && <NavLink to="/chatInterface" className={({ isActive }) =>
