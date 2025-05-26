@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import mentorService from '../services/mentorServices';
 
 function MentorDashboard() {
   const [students, setStudents] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -14,28 +16,43 @@ function MentorDashboard() {
       }
     };
 
-
-
-    
     fetchStudents();
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-6">
-      <h1 className="text-3xl font-bold mb-6 text-center text-#004D46-700">Mentor Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Mentor Dashboard</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {students.map((student) => (
           <div
             key={student._id}
-            className="bg-white rounded-2xl shadow-md p-4 flex flex-col items-center hover:shadow-lg transition duration-300"
+            className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 p-6 flex flex-col items-center"
           >
             <img
-              src={student.profilePicture || '/default-avatar.png'}
+              src={student.profilePicture || '/default-avatar.png'} 
               alt={student.name}
-              className="w-24 h-24 rounded-full object-cover mb-4"
+              className="w-24 h-24 rounded-lg object-cover border-2 border-white shadow-sm mb-4"
             />
-            <h2 className="text-xl font-semibold text-gray-800">{student.name}</h2>
-            <p className="text-gray-600 text-sm mt-2 text-center">{student.bio}</p>
+            <h2 className="text-xl font-bold text-gray-900">{student.name}</h2>
+
+            <div className="mt-6 flex flex-col gap-3 w-full">
+              <button
+                onClick={() => navigate(`/student/${student._id}`)}
+                className="px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center"
+              >
+                View Profile
+                <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+
+              <button
+                onClick={() => navigate(`/chatInterface?student=${student._id}`)}
+                className="px-4 py-2.5 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
+              >
+                Chat Now
+              </button>
+            </div>
           </div>
         ))}
       </div>
