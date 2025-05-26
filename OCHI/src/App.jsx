@@ -71,6 +71,7 @@ function App() {
     <Route path="/loginAdmin" element={<AdminLogin />} />
     <Route path="success" element={<SuccessPage/>} />
           <Route path="cancel" element={<CancelPage/>} />
+          <Route path="/student-profile/:id" element={<StudentProfile />} />
 
         
       </Route>

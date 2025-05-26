@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import paymentService from "../services/paymentService";
 
 
+
+
 const ProfileContainer = styled.div`
   max-width: 1200px;
   margin: 2rem auto;
@@ -150,6 +152,8 @@ const MentorProfile = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [profilePicture,setProfilePicture]=useState(null);
+    const [reviews, setReviews] = useState([]);
+
   
     useEffect(() => {
       const fetchMentor = async () => {
@@ -164,6 +168,8 @@ const MentorProfile = () => {
           const response = await axios.get(`http://localhost:5000/api/mentors/mentor/${storedAuth0Id}`);
           setMentor(response.data);
           setProfilePicture(localStorage.getItem("profilePicture"));
+          const reviewsRes = await axios.get(`http://localhost:5000/api/mentors/${response.data._id}/reviews`);
+          setReviews(reviewsRes.data);
         } catch (err) {
           setError(err.response?.data?.message || 'Error fetching profile data');
         } finally {
@@ -279,6 +285,22 @@ const MentorProfile = () => {
           <div>{mentor.ratings.average}/5 ({mentor.ratings.count} ratings)</div>
         </FieldGroup>
       </Section>
+      <Section>
+  <SectionTitle>Student Reviews</SectionTitle>
+  {reviews.length === 0 ? (
+    <p>No reviews yet.</p>
+  ) : (
+    reviews.map((review, index) => (
+      <QualificationItem key={index}>
+        <p><strong>Student:</strong> {review.studentName || 'Anonymous'}</p>
+        <p><strong>Rating:</strong> {review.rating}/5</p>
+        <p><strong>Comment:</strong> {review.comment}</p>
+        <p><strong>Date:</strong> {new Date(review.createdAt).toLocaleDateString()}</p>
+      </QualificationItem>
+    ))
+  )}
+  </Section>
+
     </ProfileContainer>
   );
 };

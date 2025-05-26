@@ -231,8 +231,14 @@ const EditMentorProfile = () => {
       </div>
 
       <div>
-        <h4 className="font-semibold">Full Name</h4>
-        <div className="bg-gray-100 p-2 rounded">{formData.name}</div>
+        <label className="block font-semibold">Full Name</label>
+        <input
+          type="text"
+          className="w-full border p-2 rounded"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+        />
       </div>
 
       <div>

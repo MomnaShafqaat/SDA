@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mentorService from '../services/mentorServices';
+import avatar from '../assets/avatar.png';
 
 function MentorDashboard() {
   const [students, setStudents] = useState([]);
@@ -28,23 +29,29 @@ function MentorDashboard() {
             key={student._id}
             className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 p-6 flex flex-col items-center"
           >
-            <img
-              src={student.profilePicture || '/default-avatar.png'} 
+           <img
+              src={student.profilePicture || avatar} 
               alt={student.name}
-              className="w-24 h-24 rounded-lg object-cover border-2 border-white shadow-sm mb-4"
+              className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
             />
             <h2 className="text-xl font-bold text-gray-900">{student.name}</h2>
 
             <div className="mt-6 flex flex-col gap-3 w-full">
-              <button
-                onClick={() => navigate(`/student/${student._id}`)}
-                className="px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center"
-              >
-                View Profile
-                <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </button>
+            <button
+              onClick={(e) => {
+              e.stopPropagation(); // Prevent parent onClick from firing
+              navigate(`/student-profile/${student._id}`);
+            }}
+              className="px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center"
+            >
+              View Profile
+              <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+
+
+
 
               <button
                 onClick={() => navigate(`/chatInterface?student=${student._id}`)}
