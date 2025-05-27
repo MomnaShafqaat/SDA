@@ -66,7 +66,7 @@ badgeRequest: {
 },
 priorityDM:[
   {
-    studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+    type: mongoose.Schema.Types.ObjectId, ref: "Student" ,
   }
 ],
     

@@ -4,10 +4,52 @@ const router=express.Router();
 const Student = require("../../models/student.js");
 const authjwt = require('../middleware/authjwt.js');
 const Mentor = require("../../models/mentor.js");
+const Payment = require("../../models/payment.js");
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
-router.post('/create-checkout-session', authjwt, async (req, res) => {
+// IMPORTANT: Use raw body for webhook route
+router.post('/webhook', async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    console.error('Webhook Error:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    
+    // Save payment to DB
+    await Payment.create({
+      payer: session.metadata.studentId,
+      recipient: session.metadata.mentorId,
+      amount: session.amount_total
+    });
+
+    const mentor = await Mentor.findById(session.metadata.mentorId);
+    mentor.priorityDM.push(
+      session.metadata.studentId 
+    );
+    await mentor.save();
+
+    const student = await Student.findById(session.metadata.studentId);
+    student.payedMentors.push(
+      session.metadata.mentorId
+    );
+    await student.save();
+
+    console.log('Payment saved to DB.');
+  }
+
+  res.status(200).json({ received: true });
+});
+
+
+router.post('/api/payment/create-checkout-session', authjwt, async (req, res) => {
     console.log('Creating checkout session...');
     const studentId = req.user.id;         
     const mentorId = req.body.mentorId;
@@ -45,6 +87,10 @@ router.post('/create-checkout-session', authjwt, async (req, res) => {
                     destination: mentor.accountId, // Mentor's Stripe Connect account ID
         },
     },
+    metadata: {
+    studentId: studentId.toString(),
+    mentorId: mentorId.toString()
+  },
             
             success_url: `http://localhost:3000/success`,
             cancel_url: `http://localhost:3000/cancel`,
@@ -59,7 +105,7 @@ router.post('/create-checkout-session', authjwt, async (req, res) => {
 
 //add a create stripe account option in mentor profile
 
-router.post("/account_link", authjwt , async (req, res) => {
+router.post("/api/payment/account_link", authjwt , async (req, res) => {
   try {
      let mentor = await Mentor.findById(req.user.id); 
 
