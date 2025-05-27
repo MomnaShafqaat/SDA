@@ -22,6 +22,9 @@ import StudentMentors from './components/StudentMentors';
 import Testimonials from './components/Testimonials';
 import HowItWorks from './components/HowItWorks';
 import SubmitTestimonial from './components/SubmitTestimonials';
+import ViewMentorProfile from './components/ViewMentorProfile';
+import ViewStudentProfile from './components/ViewStudentProfile';
+import EditStudentProfile from './components/EditStudentProfile';
 
 function SuccessPage() {
   console.log("✅ Payment was successful.");
@@ -68,10 +71,14 @@ function App() {
         <Route path="/edit-mentor-profile" element={<EditMentorProfile />} />
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
-    <Route path="/loginAdmin" element={<AdminLogin />} />
-    <Route path="success" element={<SuccessPage/>} />
-          <Route path="cancel" element={<CancelPage/>} />
-          <Route path="/student-profile/:id" element={<StudentProfile />} />
+        <Route path="/loginAdmin" element={<AdminLogin />} />
+        <Route path="success" element={<SuccessPage/>} />
+        <Route path="cancel" element={<CancelPage/>} />
+        <Route path="/mentor-profile/:mentorId" element={<ViewMentorProfile />} />
+        <Route path="/student-profile/:studentId" element={<ViewStudentProfile />} />
+        <Route path="/edit-student-profile" element={<EditStudentProfile />} />
+
+
 
         
       </Route>

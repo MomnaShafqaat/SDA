@@ -70,5 +70,44 @@ router.get('/:studentID/mentors', authjwt, async (req, res) => {
   }
 });
 
+router.get('/:studentId', async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.studentId);
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+    res.status(200).json(student);
+  } catch (err) {
+    console.error("Error fetching student:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post('/profile', jwtCheck, async (req, res) => {
+  try {
+    const auth0Id = req.auth.payload.sub;
+
+    // Find studnet
+    let student = await Student.findOne({ auth0Id });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Update fields
+    const { name, qualification } = req.body;
+
+    if (name !== undefined) student.name = name;
+    if (qualification !== undefined) student.education = qualification;
+
+    await student.save();
+
+    res.status(200).json({ message: "Profile updated successfully" });
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({ message: "Server error while updating profile" });
+  }
+});
+
 
 module.exports=router;
