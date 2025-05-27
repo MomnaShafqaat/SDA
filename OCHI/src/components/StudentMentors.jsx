@@ -64,7 +64,7 @@ function ViewMentors() {
 
             <div className="mt-6 flex flex-col gap-3 w-full">
               <button
-                onClick={() => navigate(`/mentor/${mentor.auth0Id}`)}
+                onClick={() => navigate(`/mentor-profile/${mentor.auth0Id}`)}
                 className="px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center"
               >
                 View Profile

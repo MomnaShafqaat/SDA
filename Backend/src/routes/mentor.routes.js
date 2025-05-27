@@ -301,7 +301,7 @@ router.get('/:mentorId/mentees', authJwt, async (req, res) => {
   }
 
   try {
-    const mentor = await Mentor.findById(mentorId).populate('menteeList', 'name email');
+    const mentor = await Mentor.findById(mentorId).populate('menteeList', 'name email picture');
     if (!mentor) {
       return res.status(404).json({ error: "Mentor not found" });
     }
