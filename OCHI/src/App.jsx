@@ -77,9 +77,6 @@ function App() {
         <Route path="/mentor-profile/:mentorId" element={<ViewMentorProfile />} />
         <Route path="/student-profile/:studentId" element={<ViewStudentProfile />} />
         <Route path="/edit-student-profile" element={<EditStudentProfile />} />
-
-
-
         
       </Route>
     </>
