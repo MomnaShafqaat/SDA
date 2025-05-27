@@ -12,6 +12,7 @@ const { app, server } = require('./src/lib/socket.js');  // Correct the path
 const studentRoutes = require('./src/routes/student.js'); 
 const adminRoutes = require("./src/routes/admin.js");
 const paymentRoutes = require('./src/routes/payment.js'); 
+const reportRoutes = require('./src/routes/report.js'); // Import report routes
 
 
 // Middleware
@@ -26,6 +27,7 @@ app.use('/api/messages', jwtCheck, messageRoutes);
 app.use('/api/student', studentRoutes);
 app.use("/api/admin", adminRoutes); // this makes /api/admin/loginAdmin accessibleapp.use('/api/payment', paymentRoutes);
 app.use('/api/payment',paymentRoutes) ;
+app.use('/api/report', reportRoutes); // Use the report routes
 
 // Error handling
 app.use((err, req, res, next) => {

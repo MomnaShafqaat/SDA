@@ -72,6 +72,7 @@ function App() {
     <Route path="success" element={<SuccessPage/>} />
           <Route path="cancel" element={<CancelPage/>} />
           <Route path="/student-profile/:id" element={<StudentProfile />} />
+          
 
         
       </Route>
