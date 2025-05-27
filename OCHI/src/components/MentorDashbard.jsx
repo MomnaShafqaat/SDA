@@ -32,7 +32,7 @@ function MentorDashboard() {
             className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 p-6 flex flex-col items-center"
           >
            <img
-              src={student.profilePicture || avatar} 
+              src={student.picture || avatar} 
               alt={student.name}
               className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
             />

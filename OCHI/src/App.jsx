@@ -28,7 +28,7 @@ import EditStudentProfile from './components/EditStudentProfile';
 
 function SuccessPage() {
   console.log("✅ Payment was successful.");
-  
+
   return (
     <div className="mt-6 ms-6">
       <h1 className="">Payment Successfull</h1>
@@ -43,20 +43,43 @@ function CancelPage() {
 }
 
 function App() {
-  
+
   const router = createBrowserRouter(
 
     createRoutesFromElements(
-    <>
-      {/* Routes that shouldn't use Layout */}
-      <Route path="/callback" element={<Callback />} />
-      <Route path="/admin" element={<AdminPage />} />
-       <Route index element={<LandingPage />} />
+      <>
+        {/* Routes that shouldn't use Layout */}
+        <Route path="/callback" element={<Callback />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route index element={<LandingPage />} />
 
-    
-  
-      {/* All Layout-wrapped routes */}
-      <Route element={<Layout />}>
+
+
+        {/* All Layout-wrapped routes */}
+        <Route element={<Layout />}>
+        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
+        <Route path="mentors" element={<ProtectedRoutes><MentorsPage /></ProtectedRoutes>} />
+        <Route path="testimonials" element={<Testimonials />} />
+        <Route path="howitworks" element={<HowItWorks/>} />
+        <Route path="/submit-testimonial" element={<ProtectedRoutes><SubmitTestimonial /></ProtectedRoutes>} />
+        <Route path="mentor-profile" element={<ProtectedRoutes><MentorProfile /></ProtectedRoutes>} />
+        <Route path="student-profile" element={<ProtectedRoutes><StudentProfile /></ProtectedRoutes>} />
+        <Route path="/mentor-requests" element={<ProtectedRoutes><MentorRequests /></ProtectedRoutes>} />
+        <Route path="/mentor-dashboard" element={<ProtectedRoutes><MentorDashboard/></ProtectedRoutes>} />  
+        <Route path="/student-dashboard" element={<ProtectedRoutes><StudentMentors/></ProtectedRoutes>} />
+        <Route path="/edit-mentor-profile" element={<ProtectedRoutes><EditMentorProfile /></ProtectedRoutes>} />
+        <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
+        <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
+        <Route path="/loginAdmin" element={<AdminLogin />} />
+        <Route path="success" element={<SuccessPage/>} />
+        <Route path="cancel" element={<CancelPage/>} />
+        <Route path="/mentor-profile/:mentorId" element={<ProtectedRoutes><ViewMentorProfile /></ProtectedRoutes>} />
+        <Route path="/student-profile/:studentId" element={<ProtectedRoutes><ViewStudentProfile /></ProtectedRoutes>} />
+        <Route path="/edit-student-profile" element={<ProtectedRoutes><EditStudentProfile /></ProtectedRoutes>} />
+        
+      </Route>
+        {/* <Route element={<Layout />}>
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route path="mentors" element={<MentorsPage />} />
@@ -74,17 +97,14 @@ function App() {
         <Route path="/loginAdmin" element={<AdminLogin />} />
         <Route path="success" element={<SuccessPage/>} />
         <Route path="cancel" element={<CancelPage/>} />
-        <Route path="/mentor-profile/:mentorId" element={<ViewMentorProfile />} />
-        <Route path="/student-profile/:studentId" element={<ViewStudentProfile />} />
-        <Route path="/edit-student-profile" element={<EditStudentProfile />} />
         
-      </Route>
-    </>
-  )
-);
+      </Route> */}
+      </>
+    )
+  );
 
 
-   return (
+  return (
     <div className="text-zinc-900 bg-gray-100 v-full min-h-screen">
       <RouterProvider router={router} />
     </div>
