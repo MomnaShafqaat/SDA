@@ -46,14 +46,22 @@ const MentorSchema = new mongoose.Schema({
     average: { type: Number, default: 0 },
     count: { type: Number, default: 0 }
   },
-
-    badges: {icon:{ String, default: "⭐" }},
+// admin part 
+badges: {
+  icon: {
+    type: String,
+    default: "⭐"
+  }
+},
 
 badgeRequest: {
   requested: { type: Boolean, default: false },
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
   requestedAt: { type: Date }
 },
+hasBadge: { type: Boolean, default: false },
+//admin part ^
+
 priorityDM:[
   {
     type: mongoose.Schema.Types.ObjectId, ref: "Student" ,

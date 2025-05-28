@@ -313,8 +313,7 @@ router.get('/:mentorId/mentees', authJwt, async (req, res) => {
   }
 });
 
-
-//  send badge to admin
+ // badhe to adminnpm start
 router.post('/request-verification/:auth0Id', async (req, res) => {
   try {
     const { auth0Id } = req.params;
@@ -322,19 +321,17 @@ router.post('/request-verification/:auth0Id', async (req, res) => {
 
     const mentor = await Mentor.findOne({ auth0Id });
     if (!mentor) return res.status(404).json({ message: 'Mentor not found' });
-console.log('no  mentorrrr');
 
     if (mentor.badgeRequest?.requested && mentor.badgeRequest.status === 'pending') {
       return res.status(400).json({ message: 'Already requested. Please wait for admin response.' });
     }
-console.log('abi nhi howa hai send');
 
     mentor.badgeRequest = {
       requested: true,
       status: 'pending',
       requestedAt: new Date()
     };
-console.log('ho gya hai send');
+
     await mentor.save();
 
     res.status(200).json({ message: 'Verification request sent successfully.' });
@@ -342,26 +339,37 @@ console.log('ho gya hai send');
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
+});
 
 
 //badge status 
-router.get('/badge-status/:mentorId', async (req,res) => {
-try{
-const mentor= await Mentor.findById(req.params.mentorId);
-if(!mentor) return res.status(404).json({message:'Mentor not found'});
-res.json({
-      status: mentor.badgeRequest.status || 'pending'
-    });
-}
-catch(error){
-  console.error("error fetching badge status",error);
-res.status(500).json({message:"server error"});
+router.get('/badge-status/:mentorId', authJwt, async (req, res) => {
+  try {
+    const mentor = await Mentor.findById(req.params.mentorId);
+    if (!mentor) return res.status(404).json({ error: 'Mentor not found' });
 
-}
-
+    // Assuming mentor.badgeStatus or similar field exists
+    res.json({ badgeStatus: mentor.badgeStatus || null });
+  } catch (error) {
+    console.error('Error fetching badge status:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
+
+// GET /api/mentors/by-auth0/:auth0Id
+router.get('/by-auth0/:auth0Id', authJwt, async (req, res) => {
+  try {
+    const mentor = await Mentor.findOne({ auth0Id: req.params.auth0Id });
+    if (!mentor) return res.status(404).json({ error: 'Mentor not found' });
+
+    res.json(mentor);
+  } catch (error) {
+    console.error('Error fetching mentor by Auth0 ID:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
+
 router.get('/filteredByExpertise', async (req, res) => {
   try {
     const { expertise, name } = req.query;
@@ -441,5 +449,19 @@ router.post('/:mentorId/ratings', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+
+//for admin to access
+// GET /api/mentors/:mentorId
+router.get('/:mentorId', async (req, res) => {
+  try {
+    const mentor = await Mentor.findById(req.params.mentorId);
+    if (!mentor) return res.status(404).json({ message: 'Mentor not found' });
+    res.json(mentor);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports = router;

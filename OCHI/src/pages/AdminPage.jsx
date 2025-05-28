@@ -13,6 +13,7 @@ const AdminPage = () => {
     fetchBadgeRequests();
   }, []);
 
+
   const fetchCounts = async () => {
     try {
       const res = await fetch('http://localhost:5000/api/admin/counts');
@@ -32,9 +33,11 @@ const AdminPage = () => {
     }
   };
 
+
   const handleDecision = async (mentorId, decision) => {
     try {
       await axios.post(`http://localhost:5000/api/admin/verify-badge/${mentorId}`, { decision });
+      
       // Refresh the list after decision
       fetchBadgeRequests();
     } catch (err) {
@@ -74,7 +77,6 @@ const AdminPage = () => {
                   mentor={mentor}
                   onAccept={() => handleDecision(mentor._id, 'accept')}
                   onReject={() => handleDecision(mentor._id, 'reject')}
-                  onViewDocument={() => window.open(mentor.documentUrl, '_blank')}
                 />
               ))}
             </tbody>

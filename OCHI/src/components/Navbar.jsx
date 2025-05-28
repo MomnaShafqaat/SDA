@@ -8,12 +8,17 @@ import { MdLogout } from 'react-icons/md'; // Material Design
 import { FaMedal } from 'react-icons/fa';
 import DropdownMenu from './DropdownMenu.jsx';
 import SearchBar from './Searchbar.jsx';
+
 function Navbar() {
     const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [userRole, setUserRole] = useState(null);
     const socketRef = useRef(null);
     const navigate = useNavigate();
+    const [mentorData, setMentorData] = useState(null); // existing
+
+    // New state flag to trigger refetch after badge request
+    const [badgeRequested, setBadgeRequested] = useState(false);
 
     useEffect(() => {
         if (isAuthenticated) connectSocket();
@@ -25,6 +30,27 @@ function Navbar() {
         const role = localStorage.getItem("user_role");
         setUserRole(role);
     }, []);
+
+    // Add badgeRequested to dependencies to refetch mentor data after request
+    useEffect(() => {
+        const fetchMentorData = async () => {
+            try {
+                const auth0Id = localStorage.getItem("auth0Id");
+                if (!auth0Id) return;
+                const mentor = await mentorService.getMentorByAuth0Id(auth0Id);
+                setMentorData({
+                    hasBadge: mentor.hasBadge,
+                    badgeIcon: mentor.badges?.icon || "⭐"
+                });
+            } catch (error) {
+                console.error("Error fetching mentor data:", error);
+            }
+        };
+
+        if (userRole === "mentor" && isAuthenticated) {
+            fetchMentorData();
+        }
+    }, [userRole, isAuthenticated, badgeRequested]);  // <-- added badgeRequested here
 
     const connectSocket = () => {
         if (!isAuthenticated || socketRef.current?.connected) return;
@@ -51,8 +77,11 @@ function Navbar() {
         });
     };
 
-
+    // Updated handleBadgeRequest to toggle badgeRequested state after successful request
     const handleBadgeRequest = async () => {
+        
+            const confirmed = window.confirm("Are you sure you want to request a badge? This action cannot be undone.");
+           if (!confirmed) return;
         try {
             const auth0Id = localStorage.getItem("auth0Id");
             if (!auth0Id) {
@@ -62,113 +91,145 @@ function Navbar() {
 
             const result = await mentorService.sendVerificationRequest(auth0Id);
             alert(result.message);
+
+            // Trigger refetch of mentor data
+            setBadgeRequested(prev => !prev);
         } catch (err) {
             console.error(err);
             alert(err.message || "Error sending badge request");
         }
     };
+
     const profilePicture = localStorage.getItem("profilePicture");
 
     return (
-        <div className="fixed z-[999] w-full px-10 py-2 font-['Neue_Montreal'] flex justify-between items-center bg-[#2E7C75]
-  ">
+        <div className="fixed z-[999] w-full px-10 py-2 font-['Neue_Montreal'] flex justify-between items-center bg-[#2E7C75]">
             <NavLink to="/">
                 <img src="/LOGO/mentora.png" alt="Mentora Logo" className="w-18 h-5 object-contain" />
             </NavLink>
-            {
-                        userRole === "student" && (
-            <>
-                <DropdownMenu />
-                <SearchBar/>
-            </>
-                        )}
-            <div className="flex gap-7 items-center text-sm">
-                
-
+            {userRole === "student" && (
                 <>
-                    {
-    userRole === "student" && (
-        <>
-            <NavLink 
-                to="/student-dashboard" 
-                className={({ isActive }) => 
-                    `block py-2 pr-4 pl-3 duration-200 text-lg ${
-                        isActive ? "text-orange-700" : "text-white-700"
-                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
-                }
-            >
-                Dashboard
-            </NavLink>
-        </>
-    )
-}
+                    <DropdownMenu />
+                    <SearchBar />
+                </>
+            )}
+            <div className="flex gap-7 items-center text-sm">
+                <>
+                    {userRole === "student" && (
+                        <>
+                            <NavLink
+                                to="/student-dashboard"
+                                className={({ isActive }) =>
+                                    `block py-2 pr-4 pl-3 duration-200 text-lg ${
+                                        isActive ? "text-orange-700" : "text-white-700"
+                                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                                }
+                            >
+                                Dashboard
+                            </NavLink>
+                        </>
+                    )}
 
+                    {isAuthenticated && (
+                        <NavLink
+                            to="/chatInterface"
+                            className={({ isActive }) =>
+                                `block py-2 pr-4 pl-3 duration-200 text-lg ${
+                                    isActive ? "text-orange-700" : "text-white-700"
+                                } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                            }
+                        >
+                            Chat
+                        </NavLink>
+                    )}
 
-
-                    {
-                        isAuthenticated && <NavLink to="/chatInterface" className={({ isActive }) =>
-                            `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
-                        }>Chat</NavLink>
-                    }
-
-
-                    <NavLink to="/contact" className={({ isActive }) =>
-                        `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
-                    }>Contact Us</NavLink>
-                    <NavLink to="/about" className={({ isActive }) =>
-                        `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
-                    }>About Us</NavLink>
-
+                    <NavLink
+                        to="/contact"
+                        className={({ isActive }) =>
+                            `block py-2 pr-4 pl-3 duration-200 text-lg ${
+                                isActive ? "text-orange-700" : "text-white-700"
+                            } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                        }
+                    >
+                        Contact Us
+                    </NavLink>
+                    <NavLink
+                        to="/about"
+                        className={({ isActive }) =>
+                            `block py-2 pr-4 pl-3 duration-200 text-lg ${
+                                isActive ? "text-orange-700" : "text-white-700"
+                            } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                        }
+                    >
+                        About Us
+                    </NavLink>
                 </>
 
                 {!isAuthenticated ? (
                     <div className="relative">
-                        <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition">
+                        <button
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition"
+                        >
                             Login
                         </button>
                         {isDropdownOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md">
-                                <button onClick={() => { handleAuth("mentor"); setIsDropdownOpen(false); }} className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200">Login as Mentor</button>
-                                <button onClick={() => { handleAuth("student"); setIsDropdownOpen(false); }} className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200">Login as Student</button>
+                                <button
+                                    onClick={() => {
+                                        handleAuth("mentor");
+                                        setIsDropdownOpen(false);
+                                    }}
+                                    className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200"
+                                >
+                                    Login as Mentor
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        handleAuth("student");
+                                        setIsDropdownOpen(false);
+                                    }}
+                                    className="block w-full px-4 py-2 text-gray-700 hover:bg-gray-200"
+                                >
+                                    Login as Student
+                                </button>
                             </div>
                         )}
                     </div>
                 ) : (
                     <div className="flex items-center gap-[-6] ">
-
-                                            {
-                        userRole === "mentor" && (
+                        {userRole === "mentor" && (
                             <>
-                                <button onClick={() => navigate("/mentor-requests")} className="text-orange-300 hover:text-orange-500 transition" title="Mentor Requests">
+                                <button
+                                    onClick={() => navigate("/mentor-requests")}
+                                    className="text-orange-300 hover:text-orange-500 transition"
+                                    title="Mentor Requests"
+                                >
                                     <FaBell size={24} />
                                 </button>
-                            </>)
-                    }
+                            </>
+                        )}
 
                         {/* 🔸 Show Request Badge Button for Mentor */}
                         {localStorage.getItem("user_role") === "mentor" && (
-                            <button
-                                onClick={handleBadgeRequest}
-                                className="px-4 py-2 "
-
-                            >
+                            <button onClick={handleBadgeRequest} className="px-4 py-2 ">
                                 <FaMedal className="text-orange-300 text-xl" />
-
                             </button>
                         )}
-                        <img
-                            src={profilePicture}
-                            alt="Profile"
-                            className="w-6 h-6 rounded-full cursor-pointer"
+                        <div
+                            className="relative flex items-center gap-2 cursor-pointer"
                             onClick={() => {
                                 const role = localStorage.getItem("user_role");
-                                if (role === "mentor") navigate("/mentor-profile");
-                                else {
-                                    navigate("/student-profile");
-                                }
+                                navigate(role === "mentor" ? "/mentor-profile" : "/student-profile");
                             }}
-                        />
-
+                        >
+                            <img src={profilePicture} alt="Profile" className="w-6 h-6 rounded-full" />
+                            {mentorData?.hasBadge && (
+                                <span className="text-yellow-400 text-xl" title="Verified Mentor">
+                                    {mentorData.badgeIcon}
+                                </span>
+                            )}
+                        </div>
 
                         <button
                             onClick={() => {
@@ -179,7 +240,6 @@ function Navbar() {
                             }}
                             className="px-4 py-2 text-white  hover:text-orange transition"
                         >
-
                             <MdLogout className="text-l" />
                         </button>
                     </div>
@@ -190,5 +250,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
-

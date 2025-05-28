@@ -5,6 +5,8 @@ const Mentor = require("../../models/mentor.js");
 const Student = require("../../models/student.js");
 const User = require("../../models/User.js"); // path to your User model
 const router = express.Router();
+const verifyToken = require('../middleware/verifyToken.js');
+
 require("dotenv").config();
 
 // Hardcoded admin credentials
@@ -41,6 +43,10 @@ router.get("/protected", (req, res) => {
     res.status(401).json({ message: "Invalid token" });
   }
 });
+
+
+
+
 
 //count user
 router.get('/counts', async (req, res) => {
@@ -83,8 +89,16 @@ router.post('/verify-badge/:mentorId', async (req, res) => {
 
     if (decision === 'accept') {
       mentor.badgeRequest.status = 'accepted';
+      console.log("admin accept it");
+      mentor.hasBadge = true;
+       console.log("status updated to true for badge");
+
     } else if (decision === 'reject') {
       mentor.badgeRequest.status = 'rejected';
+
+            console.log("admin reject it");
+
+        mentor.hasBadge = false;
     }
 
     await mentor.save();
@@ -94,6 +108,20 @@ router.post('/verify-badge/:mentorId', async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+
+// Apply to the route
+router.get('/:id', verifyToken, async (req, res) => {
+  try {
+    const mentor = await Mentor.findById(req.params.id);
+    if (!mentor) return res.status(404).json({ message: 'Mentor not found' });
+    res.json(mentor);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 
 
