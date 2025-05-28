@@ -3,6 +3,7 @@ dotenv.config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const chatbotRoute = require('./src/routes/chatbot.js');
 const userRoutes = require('./src/routes/userRoutes.js');
 const mentorRoutes = require('./src/routes/mentor.routes.js');
@@ -12,6 +13,10 @@ const { app, server } = require('./src/lib/socket.js');  // Correct the path
 const studentRoutes = require('./src/routes/student.js'); 
 const adminRoutes = require("./src/routes/admin.js");
 const paymentRoutes = require('./src/routes/payment.js'); 
+const reportRoutes = require('./src/routes/report.js'); // Import report routes
+
+//for preventing application of express.json on this route
+app.use('/webhook', bodyParser.raw({ type: 'application/json' }));
 
 // Middleware
 app.use(cors());
@@ -24,7 +29,8 @@ app.use('/api/mentors', mentorRoutes);
 app.use('/api/messages', jwtCheck, messageRoutes);
 app.use('/api/student', studentRoutes);
 app.use("/api/admin", adminRoutes); // this makes /api/admin/loginAdmin accessibleapp.use('/api/payment', paymentRoutes);
-app.use('/api/payment', paymentRoutes);
+app.use(paymentRoutes) ;
+app.use('/api/report', reportRoutes); // Use the report routes
 
 // Error handling
 app.use((err, req, res, next) => {

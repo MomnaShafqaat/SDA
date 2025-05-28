@@ -294,8 +294,18 @@ const ChatInterface = () => {
 
                             {/* Conditionally show Pay button */}
        
+                         {user.priorityDM && storedRole === 'mentor' && (
+        <span
+          title="Priority DM"
+          style={{ color: '#f5c518', fontSize: '18px', lineHeight: 1 }}
+          aria-label="Priority DM"
+        >
+          ★
+        </span>
+      )}
 
                         </UserItem>
+                        
                     ))}
                 </UserList>
             </Sidebar>

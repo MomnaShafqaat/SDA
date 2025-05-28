@@ -301,7 +301,7 @@ router.get('/:mentorId/mentees', authJwt, async (req, res) => {
   }
 
   try {
-    const mentor = await Mentor.findById(mentorId).populate('menteeList', 'name email');
+    const mentor = await Mentor.findById(mentorId).populate('menteeList', 'name email picture');
     if (!mentor) {
       return res.status(404).json({ error: "Mentor not found" });
     }
@@ -361,6 +361,85 @@ res.status(500).json({message:"server error"});
 
 });
 
+});
+router.get('/filteredByExpertise', async (req, res) => {
+  try {
+    const { expertise, name } = req.query;
+    const query = {};
+
+    if (expertise) {
+      query.expertise = expertise;
+    }
+
+    if (name) {
+      query.name = { $regex: name, $options: 'i' };
+    }
+
+
+    const mentors = await Mentor.find(query);
+    res.json(mentors);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.post('/:mentorId/reviews', async (req, res) => {
+  try {
+    const { review, reviewerId } = req.body;
+    const mentor = await Mentor.findById(req.params.mentorId);
+
+    mentor.reviews.push({ review, reviewer: reviewerId });
+    await mentor.save();
+
+    res.status(201).json(mentor);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET all reviews for a mentor
+router.get('/:mentorId/reviews', async (req, res) => {
+  try {
+    const mentor = await Mentor.findById(req.params.mentorId).populate('reviews.reviewer', 'name');
+    if (!mentor) {
+      return res.status(404).json({ message: 'Mentor not found' });
+    }
+
+    res.json(mentor.reviews);
+    
+  } catch (err) {
+    console.error('GET reviews error:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+router.post('/:mentorId/ratings', async (req, res) => {
+  try {
+    const { rating, raterId } = req.body;
+    const mentor = await Mentor.findById(req.params.mentorId);
+
+    // Add new rating or update existing rating from same user
+    const existingRatingIndex = mentor.ratings.findIndex(r => r.rater.toString() === raterId);
+
+    if (existingRatingIndex >= 0) {
+      mentor.ratings[existingRatingIndex].rating = rating;
+      mentor.ratings[existingRatingIndex].createdAt = new Date();
+    } else {
+      mentor.ratings.push({ rating, rater: raterId });
+    }
+
+    // Calculate summary
+    mentor.ratingSummary.count = mentor.ratings.length;
+    mentor.ratingSummary.average =
+      mentor.ratings.reduce((sum, r) => sum + r.rating, 0) / mentor.ratingSummary.count;
+
+    await mentor.save();
+
+    res.status(201).json(mentor);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 module.exports = router;

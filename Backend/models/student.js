@@ -17,7 +17,14 @@ const StudentSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "payment"
-    }
+    },
+    
+    payedMentors:[
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "mentor"
+      }
+    ]
   });
   
   

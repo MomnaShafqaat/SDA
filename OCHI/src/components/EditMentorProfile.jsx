@@ -1,9 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import mentorService from "../services/mentorServices";
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from "axios";
+// import React, { useState, useEffect } from "react";
+// import { useAuth0 } from "@auth0/auth0-react";
+// import mentorService from "../services/mentorServices";
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import axios from "axios";
 
+// // const EditMentorProfile = () => {
+// //   const { user, isAuthenticated } = useAuth0();
+// //   const location = useLocation();
+// //   const navigate = useNavigate();
+// //   const existingProfile = location.state?.profile;
+// //   const [formData, setFormData] = useState({
+// //     auth0Id: user?.sub,
+// //     email: user?.email,
+// //     name: user?.name,
+// //     bio: existingProfile?.bio || "",
+// //     expertise: existingProfile?.expertise || [""],
+// //     experience: existingProfile?.experience || 0,
+// //     availableSlots: existingProfile?.availableSlots || [""],
+// //     skills: existingProfile?.skills || [""],
+// //     qualification: existingProfile?.qualification || [{ institute: "", grade: "", cv: "" }]
+// //   });
 // const EditMentorProfile = () => {
 //   const { user, isAuthenticated } = useAuth0();
 //   const location = useLocation();
@@ -20,22 +36,91 @@ import axios from "axios";
 //     skills: existingProfile?.skills || [""],
 //     qualification: existingProfile?.qualification || [{ institute: "", grade: "", cv: "" }]
 //   });
+//   const handleChange = (e, index, field, nested = false) => {
+//     const { name, value } = e.target;
+
+//     if (name === "experience") {
+//       const numericValue = Math.max(1, Number(value));
+//       setFormData({ ...formData, [name]: numericValue });
+//       return;
+//     }
+
+//     if (nested) {
+//       const updatedQual = [...formData.qualification];
+//       updatedQual[index][field] = value;
+//       setFormData({ ...formData, qualification: updatedQual });
+//     } else if (Array.isArray(formData[name])) {
+//       const arr = [...formData[name]];
+//       arr[index] = value;
+//       setFormData({ ...formData, [name]: arr });
+//     } else {
+//       setFormData({ ...formData, [name]: value });
+//     }
+//   };
+import React, { useState, useEffect } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from "axios";
+
+const expertiseOptions = [
+  'Software Engineering',
+  'Data Science',
+  'Product Management',
+  'UX Design',
+  'Digital Marketing',
+  'Entrepreneurship',
+  'Cybersecurity',
+  'Cloud Computing',
+  'Artificial Intelligence',
+  'Machine Learning',
+  'Blockchain',
+  'DevOps'
+];
+
 const EditMentorProfile = () => {
   const { user, isAuthenticated } = useAuth0();
-  const location = useLocation();
   const navigate = useNavigate();
-  const existingProfile = location.state?.profile;
   const [formData, setFormData] = useState({
-    auth0Id: user?.sub,
-    email: user?.email,
-    name: user?.name,
-    bio: existingProfile?.bio || "",
-    expertise: existingProfile?.expertise || [""],
-    experience: existingProfile?.experience || 0,
-    availableSlots: existingProfile?.availableSlots || [""],
-    skills: existingProfile?.skills || [""],
-    qualification: existingProfile?.qualification || [{ institute: "", grade: "", cv: "" }]
+    auth0Id: '',
+    email: '',
+    name: '',
+    bio: "",
+    expertise: [],
+    experience: 0,
+    availableSlots: [""],
+    skills: [""],
+    qualification: [{ institute: "", grade: "", cv: "" }]
   });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('auth0Token');
+        const headers = { Authorization: `Bearer ${token}` };
+        const response = await axios.get('http://localhost:5000/api/mentors/profile', { headers });
+        const profileData = response.data;
+        
+        setFormData({
+          auth0Id: user?.sub,
+          email: user?.email,
+          name: user?.name,
+          bio: profileData.bio || "",
+          expertise: profileData.expertise || [],
+          experience: profileData.experience || 0,
+          availableSlots: profileData.availableSlots || [""],
+          skills: profileData.skills || [""],
+          qualification: profileData.qualification || [{ institute: "", grade: "", cv: "" }]
+        });
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchProfile();
+    }
+  }, [isAuthenticated, user]);
+
   const handleChange = (e, index, field, nested = false) => {
     const { name, value } = e.target;
 
@@ -58,6 +143,18 @@ const EditMentorProfile = () => {
     }
   };
 
+  const handleExpertiseChange = (option) => {
+    const currentExpertise = [...formData.expertise];
+    const optionIndex = currentExpertise.indexOf(option);
+    
+    if (optionIndex === -1) {
+      currentExpertise.push(option);
+    } else {
+      currentExpertise.splice(optionIndex, 1);
+    }
+    
+    setFormData({ ...formData, expertise: currentExpertise });
+  };
   const addArrayField = (key) => {
     setFormData({ ...formData, [key]: [...formData[key], ""] });
   };
@@ -134,8 +231,14 @@ const EditMentorProfile = () => {
       </div>
 
       <div>
-        <h4 className="font-semibold">Full Name</h4>
-        <div className="bg-gray-100 p-2 rounded">{formData.name}</div>
+        <label className="block font-semibold">Full Name</label>
+        <input
+          type="text"
+          className="w-full border p-2 rounded"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+        />
       </div>
 
       <div>
@@ -159,7 +262,7 @@ const EditMentorProfile = () => {
         />
       </div>
 
-      <div>
+      {/* <div>
         <label className="block font-semibold">Expertise</label>
         {formData.expertise.map((exp, i) => (
           <input
@@ -171,7 +274,42 @@ const EditMentorProfile = () => {
           />
         ))}
         <button type="button" className="text-blue-600" onClick={() => addArrayField("expertise")}>+ Add Expertise</button>
-      </div>
+      </div> */}
+       <div>
+    <label className="block font-semibold mb-2">Expertise</label>
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto p-2 border rounded">
+      {expertiseOptions.map((option, index) => (
+        <label 
+          key={index}
+          className={`flex items-center space-x-2 p-2 rounded cursor-pointer ${
+            formData.expertise.includes(option)
+              ? 'bg-blue-100 border-blue-500'
+              : 'hover:bg-gray-50 border-gray-200'
+          } border`}
+        >
+          <input
+            type="checkbox"
+            className="hidden"
+            checked={formData.expertise.includes(option)}
+            onChange={() => handleExpertiseChange(option)}
+          />
+          <span className="flex-1 text-sm">{option}</span>
+          <svg 
+            className={`w-5 h-5 ${formData.expertise.includes(option) ? 'text-blue-600' : 'text-gray-300'}`}
+            fill="none" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth="2" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path d="M5 13l4 4L19 7"></path>
+          </svg>
+        </label>
+      ))}
+    </div>
+    <p className="text-sm text-gray-500 mt-1">Select relevant areas of expertise</p>
+  </div>
 
       <div>
         <label className="block font-semibold">Available Slots</label>
@@ -225,7 +363,9 @@ const EditMentorProfile = () => {
             />
           </div>
         ))}
-        <button type="button" className="text-blue-600" onClick={addQualification}>+ Add Qualification</button>
+        <button type="button" className="text-blue-600" onClick={addQualification}>
+          + Add Qualification
+        </button> 
       </div>
 
       <div className="flex justify-center gap-4">

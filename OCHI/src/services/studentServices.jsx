@@ -1,29 +1,23 @@
 import GenericService from './genericService';
+import axios from 'axios'; // required for submitReview
+
 class StudentService extends GenericService {
     constructor() {
         super();
         this.baseUrl = 'http://localhost:5000/api/student/';
     }
-    
-    
 
-    sendRequest = (mentorId)=>{
-        console.log(    'Sending request to mentor with ID:', mentorId);
-
+    sendRequest = (mentorId) => {
+        console.log('Sending request to mentor with ID:', mentorId);
         const token = localStorage.getItem('jwt_token');
+
         if (!token) {
             console.error('No access token found in local storage.');
             return;
         }
 
-        // const requestBody = {
-        //     mentorId,
-        // };
-
-        //this.post(`${this.baseUrl}sendRequest/${mentorId}` ,  requestBody, {
         this.post(`${this.baseUrl}sendRequest/${mentorId}`, {}, {
-
-            headers:{
+            headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
@@ -34,8 +28,33 @@ class StudentService extends GenericService {
             .catch(error => {
                 console.error('Error sending request:', error);
             });
-    }
+    };
+
+    getMentors = async () => {
+        const token = localStorage.getItem('jwt_token');
+        if (!token) throw new Error("No token found");
+
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const studentID = payload.id;
+        console.log("Student ID from token:", studentID);
+
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        return this.get(`${this.baseUrl}${studentID}/mentors`, { headers });
+    };
+
+    submitReview = async (mentorId, reviewData) => {
+        const token = localStorage.getItem('jwt_token');
+        return axios.post(`http://localhost:5000/api/mentors/${mentorId}/reviews`, reviewData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+    };
 }
 
-let studentService = new StudentService();
+const studentService = new StudentService();
 export default studentService;

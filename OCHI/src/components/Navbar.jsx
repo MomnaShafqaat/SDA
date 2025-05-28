@@ -6,7 +6,8 @@ import { FaBell } from 'react-icons/fa';
 import mentorService from "../services/mentorServices.jsx";
 import { MdLogout } from 'react-icons/md'; // Material Design
 import { FaMedal } from 'react-icons/fa';
-
+import DropdownMenu from './DropdownMenu.jsx';
+import SearchBar from './Searchbar.jsx';
 function Navbar() {
     const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -50,42 +51,75 @@ function Navbar() {
         });
     };
 
-   // ✅ 6. Send Badge Request — CLEANED version
-    const handleBadgeRequest = async () => {
-        if (!window.confirm("Are you sure you want to send a badge request?")) return;
 
+    const handleBadgeRequest = async () => {
         try {
             const auth0Id = localStorage.getItem("auth0Id");
-            if (!auth0Id) return alert("auth0Id not found in localStorage.");
+            if (!auth0Id) {
+                alert("auth0Id not found in localStorage.");
+                return;
+            }
+
             const result = await mentorService.sendVerificationRequest(auth0Id);
             alert(result.message);
         } catch (err) {
-            console.error("Badge request error:", err);
+            console.error(err);
             alert(err.message || "Error sending badge request");
         }
     };
-
     const profilePicture = localStorage.getItem("profilePicture");
 
     return (
-        <div className="fixed z-[999] w-full px-10 py-2 flex justify-between items-center bg-[#004D46]  ">
+        <div className="fixed z-[999] w-full px-10 py-2 font-['Neue_Montreal'] flex justify-between items-center bg-[#2E7C75]
+  ">
             <NavLink to="/">
                 <img src="/LOGO/mentora.png" alt="Mentora Logo" className="w-18 h-5 object-contain" />
             </NavLink>
-
+            {
+                        userRole === "student" && (
+            <>
+                <DropdownMenu />
+                <SearchBar/>
+            </>
+                        )}
             <div className="flex gap-7 items-center text-sm">
-                {isAuthenticated && userRole === "mentor" && (
-                    <>
-                        <NavLink to="/mentor-dashboard" className="text-white hover:text-orange-400 transition">Dashboard</NavLink>
-                        <NavLink to="/chatInterface" className="text-white hover:text-orange-400 transition">Chat with Student</NavLink>
-                        <NavLink to="/contact" className="text-white hover:text-orange-400 transition">Contact Us</NavLink>
-                        <NavLink to="/about" className="text-white hover:text-orange-400 transition">About Us</NavLink>
+                
 
-                        <button onClick={() => navigate("/mentor-requests")} className="text-orange-300 hover:text-orange-500 transition" title="Mentor Requests">
-                            <FaBell size={16} />
-                        </button>
-                    </>
-                )}
+                <>
+                    {
+    userRole === "student" && (
+        <>
+            <NavLink 
+                to="/student-dashboard" 
+                className={({ isActive }) => 
+                    `block py-2 pr-4 pl-3 duration-200 text-lg ${
+                        isActive ? "text-orange-700" : "text-white-700"
+                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                }
+            >
+                Dashboard
+            </NavLink>
+        </>
+    )
+}
+
+
+
+                    {
+                        isAuthenticated && <NavLink to="/chatInterface" className={({ isActive }) =>
+                            `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                        }>Chat</NavLink>
+                    }
+
+
+                    <NavLink to="/contact" className={({ isActive }) =>
+                        `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                    }>Contact Us</NavLink>
+                    <NavLink to="/about" className={({ isActive }) =>
+                        `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                    }>About Us</NavLink>
+
+                </>
 
                 {!isAuthenticated ? (
                     <div className="relative">
@@ -100,23 +134,38 @@ function Navbar() {
                         )}
                     </div>
                 ) : (
+                    <div className="flex items-center gap-[-6] ">
 
-                     <div className="flex items-center gap-4">
-                        {/* ✅ Show Badge Request for Mentor */}
-                        {userRole === "mentor" && (
-                            <button onClick={handleBadgeRequest} title="Request Badge">
+                                            {
+                        userRole === "mentor" && (
+                            <>
+                                <button onClick={() => navigate("/mentor-requests")} className="text-orange-300 hover:text-orange-500 transition" title="Mentor Requests">
+                                    <FaBell size={24} />
+                                </button>
+                            </>)
+                    }
+
+                        {/* 🔸 Show Request Badge Button for Mentor */}
+                        {localStorage.getItem("user_role") === "mentor" && (
+                            <button
+                                onClick={handleBadgeRequest}
+                                className="px-4 py-2 "
+
+                            >
                                 <FaMedal className="text-orange-300 text-xl" />
+
                             </button>
                         )}
-
-                            
-                              <img
+                        <img
                             src={profilePicture}
                             alt="Profile"
                             className="w-6 h-6 rounded-full cursor-pointer"
                             onClick={() => {
                                 const role = localStorage.getItem("user_role");
                                 if (role === "mentor") navigate("/mentor-profile");
+                                else {
+                                    navigate("/student-profile");
+                                }
                             }}
                         />
 
@@ -128,10 +177,10 @@ function Navbar() {
                                 localStorage.removeItem("user_role");
                                 navigate("/");
                             }}
-                                    className="px-4 py-2 text-white  hover:text-orange transition"
+                            className="px-4 py-2 text-white  hover:text-orange transition"
                         >
-                            
-                        <MdLogout className="text-l" />
+
+                            <MdLogout className="text-l" />
                         </button>
                     </div>
                 )}

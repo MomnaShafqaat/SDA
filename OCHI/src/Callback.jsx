@@ -68,7 +68,7 @@ const Callback = () => {
             localStorage.setItem("user_role", userRole); // Save the actual role from backend
 
             if (userRole === "mentor") {
-              navigate("/");
+              navigate("/mentor-dashboard");
             } else {
               //console.log("User is not mentor. Navigate as needed.");
               navigate("/");

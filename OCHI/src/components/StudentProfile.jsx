@@ -2,11 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
-import paymentService from "../services/paymentService";
 
-
-
-
+// Reuse the same styled components from mentor profile
 const ProfileContainer = styled.div`
   max-width: 1200px;
   margin: 2rem auto;
@@ -127,7 +124,7 @@ const Tag = styled.span`
   }
 `;
 
-const QualificationItem = styled.div`
+const EducationItem = styled.div`
   background: white;
   padding: 1.5rem;
   border-radius: 10px;
@@ -146,53 +143,49 @@ const QualificationItem = styled.div`
   }
 `;
 
-const MentorProfile = () => {
-    const navigate = useNavigate();
-    const [mentor, setMentor] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [profilePicture,setProfilePicture]=useState(null);
-    const [reviews, setReviews] = useState([]);
+const StudentProfile = () => {
+  const navigate = useNavigate();
+  const [student, setStudent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
 
-  
-    useEffect(() => {
-      const fetchMentor = async () => {
-        const storedAuth0Id = localStorage.getItem("auth0Id");
-        if (!storedAuth0Id) {
-          setError("Please login to view your profile");
-          setLoading(false);
-          return;
-        }
-  
-        try {
-          const response = await axios.get(`http://localhost:5000/api/mentors/mentor/${storedAuth0Id}`);
-          setMentor(response.data);
-          setProfilePicture(localStorage.getItem("profilePicture"));
-          const reviewsRes = await axios.get(`http://localhost:5000/api/mentors/${response.data._id}/reviews`);
-          setReviews(reviewsRes.data);
-        } catch (err) {
-          setError(err.response?.data?.message || 'Error fetching profile data');
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchMentor();
-    }, []);
-
-  
-    const handleAccount = async () => {
-      paymentService.checkAccount()
-    }
-
-    const handleEdit = () => {
+  useEffect(() => {
+    const fetchStudent = async () => {
       const storedAuth0Id = localStorage.getItem("auth0Id");
-      navigate(`/edit-mentor-profile`);
+      if (!storedAuth0Id) {
+        setError("Please login to view your profile");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        // const response = await axios.get(`http://localhost:5000/api/student/profile/${storedAuth0Id}`);
+        const auth0Token = localStorage.getItem("auth0Token");
+        const response = await axios.get("http://localhost:5000/api/student/profile", {
+            headers: {
+              Authorization: `Bearer ${auth0Token}`,
+            },
+        });
+        setStudent(response.data);
+        setProfilePicture(localStorage.getItem("profilePicture"));
+      } catch (err) {
+        setError(err.response?.data?.message || 'Error fetching profile data');
+      } finally {
+        setLoading(false);
+      }
     };
+
+    fetchStudent();
+  }, []);
+
+  const handleEdit = () => {
+    navigate(`/edit-student-profile`);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
-  if (!mentor) return <div>Profile not found</div>;
+  if (!student) return <div>Profile not found</div>;
 
   return (
     <ProfileContainer>
@@ -206,15 +199,6 @@ const MentorProfile = () => {
             </svg>
             Edit Profile
           </EditButton>
-          {
-            mentor.badgeRequest.status === 'accepted' && (
-              <button onClick={handleAccount} style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}>
-            Set up stripe connect account
-            </button>
-            )
-          }
-          
-            
         </HeaderContent>
       </HeaderSection>
 
@@ -222,87 +206,54 @@ const MentorProfile = () => {
         <SectionTitle>Basic Information</SectionTitle>
         <FieldGroup>
           <p>Name</p>
-          <div>{mentor.name}</div>
+          <div>{student.name}</div>
         </FieldGroup>
         <FieldGroup>
           <p>Email Address</p>
-          <div>{mentor.email}</div>
-        </FieldGroup>
-        <FieldGroup>
-          <p>Professional Bio</p>
-          <div>{mentor.bio || 'No biography added yet'}</div>
-        </FieldGroup>
-        <FieldGroup>
-          <p>Years of Experience</p>
-          <div>{mentor.experience} years</div>
+          <div>{student.email}</div>
         </FieldGroup>
       </Section>
 
       <Section>
-        <SectionTitle>Areas of Expertise</SectionTitle>
-        <FieldGroup>
-          <p>Primary Expertise</p>
-          <TagList>
-            {mentor.expertise.map((skill, index) => (
-              <Tag key={index}>{skill}</Tag>
-            ))}
-          </TagList>
-        </FieldGroup>
-        <FieldGroup>
-          <p>Technical Skills</p>
-          <TagList>
-            {mentor.skills.map((skill, index) => (
-              <Tag key={index}>{skill}</Tag>
-            ))}
-          </TagList>
-        </FieldGroup>
-      </Section>
-
-      <Section>
-        <SectionTitle>Education & Qualifications</SectionTitle>
-        {mentor.qualification.map((qual, index) => (
-          <QualificationItem key={index}>
-            <p><strong>Institution:</strong> {qual.institute}</p>
-            <p><strong>Degree/Qualification:</strong> {qual.grade}</p>
-            <p><strong>Certification:</strong> {qual.cv ? 'Attached' : 'Not provided'}</p>
-          </QualificationItem>
+        <SectionTitle>Education Background</SectionTitle>
+        {student.education.map((edu, index) => (
+          <EducationItem key={index}>
+            <p><strong>Institute:</strong> {edu.institute}</p>
+            <p><strong>Qualification:</strong> {edu.qualification}</p>
+            <p><strong>Grade:</strong> {edu.grade}</p>
+          </EducationItem>
         ))}
       </Section>
 
       <Section>
-        <SectionTitle>Availability Schedule</SectionTitle>
-        <TagList>
-          {mentor.availableSlots.map((slot, index) => (
-            <Tag key={index}>{slot}</Tag>
-          ))}
-        </TagList>
-      </Section>
-
-      <Section>
-        <SectionTitle>Performance Metrics</SectionTitle>
+        <SectionTitle>Mentorship Network</SectionTitle>
         <FieldGroup>
-          <p>Average Rating</p>
-          <div>{mentor.ratings.average}/5 ({mentor.ratings.count} ratings)</div>
+          <p>Current Mentors</p>
+          <TagList>
+            {student.mentorList.map((mentor, index) => (
+              <Tag key={index}>{mentor.name}</Tag>
+            ))}
+          </TagList>
+        </FieldGroup>
+        <FieldGroup>
+          <p>Pending Requests</p>
+          <TagList>
+            {student.pendingRequests.map((request, index) => (
+              <Tag key={index}>{request.name}</Tag>
+            ))}
+          </TagList>
         </FieldGroup>
       </Section>
-      <Section>
-  <SectionTitle>Student Reviews</SectionTitle>
-  {reviews.length === 0 ? (
-    <p>No reviews yet.</p>
-  ) : (
-    reviews.map((review, index) => (
-      <QualificationItem key={index}>
-        <p><strong>Student:</strong> {review.studentName || 'Anonymous'}</p>
-        <p><strong>Rating:</strong> {review.rating}/5</p>
-        <p><strong>Comment:</strong> {review.comment}</p>
-        <p><strong>Date:</strong> {new Date(review.createdAt).toLocaleDateString()}</p>
-      </QualificationItem>
-    ))
-  )}
-  </Section>
 
+      <Section>
+        <SectionTitle>Payment Information</SectionTitle>
+        <FieldGroup>
+          <p>Payment Status</p>
+          <div>{student.paymentMade ? "Payment Completed" : "No Payment Recorded"}</div>
+        </FieldGroup>
+      </Section>
     </ProfileContainer>
   );
 };
 
-export default MentorProfile;
+export default StudentProfile;

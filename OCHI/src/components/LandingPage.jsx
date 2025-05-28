@@ -46,6 +46,7 @@ import Featured from './Featured';
 import Footer from './Footer';
 import Chatbot from './Chatbot';
 import ProfilePopup from './ProfilePopup';
+import { useNavigate } from 'react-router-dom';
 import ChatInterface from './ChatInterface';
 
 // Styled components
@@ -76,6 +77,7 @@ function LandingPage() {
   const { isAuthenticated, user, isLoading } = useAuth0();
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [profileChecked, setProfileChecked] = useState(false);
+  const navigate = useNavigate();
  
 
   const checkProfile = useCallback(async () => {
@@ -100,6 +102,14 @@ function LandingPage() {
   }, [isAuthenticated, user?.sub, isLoading]);
 
   useEffect(() => {
+    console.log('LandingPage useEffect triggered');
+    //navigate to mentor dashboard if user is a mentor
+    const storedRole = localStorage.getItem('user_role');
+    console.log('Stored role:', storedRole);
+    if (storedRole === 'mentor') {
+        navigate('/mentor-dashboard');
+    }
+
     if (!profileChecked) checkProfile();
     
     // Set up interval to check every 5 seconds
@@ -111,7 +121,7 @@ function LandingPage() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [checkProfile, profileChecked]);
+  }, [checkProfile, profileChecked,navigate]);
 
   if (isLoading) {
     return <LoadingScreen>Authenticating...</LoadingScreen>;

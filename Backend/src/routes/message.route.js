@@ -18,11 +18,42 @@ router.get('/getUsersForSidebar',async(req,res)=>{
         // const filteredUsers= await User.find({_id:{$ne:loggedInUser._id},role: { $ne: loggedInUser.role } //finding all other users except the loggedIn 1 to display list
         // });//use .select("-password") to dont get fields which you dont want 
         
-        if(loggedInUser.role === "mentor"){
-          filteredUsers = await User.find({
-        _id: { $in: loggedInUser.menteeList }
-        });
-      }
+     if (loggedInUser.role === "mentor") {
+  // Step 1: Get mentees
+  const menteeUsers = await User.find({
+    _id: { $in: loggedInUser.menteeList }
+  });
+
+  // Step 2: Normalize priorityDM to an array of ObjectIds
+  const priorityDMIds = loggedInUser.priorityDM.map(id => id.toString());
+
+  // Step 3: Convert mentee list to map and add `priorityDM` flag
+  const userMap = new Map();
+  menteeUsers.forEach(user => {
+    const userObj = user.toObject();
+    userObj.priorityDM = priorityDMIds.includes(user._id.toString());
+    userMap.set(user._id.toString(), userObj);
+  });
+
+  // Step 4: Ensure all priorityDM students are included (in case not in mentee list)
+  const additionalPriorityUsers = await User.find({
+    _id: { $in: priorityDMIds }
+  });
+
+  additionalPriorityUsers.forEach(user => {
+    const userId = user._id.toString();
+    if (!userMap.has(userId)) {
+      const userObj = user.toObject();
+      userObj.priorityDM = true;
+      userMap.set(userId, userObj);
+    }
+  });
+
+  // Step 5: Convert map to array
+  filteredUsers = Array.from(userMap.values());
+
+  console.log("Filtered Users:", filteredUsers);
+}
         else
         {
           filteredUsers = await User.find({
@@ -38,7 +69,7 @@ router.get('/getUsersForSidebar',async(req,res)=>{
         res.status(500).json({ message: err.message });
 
     }
-})
+});
 
 //To load Chat with a User
 router.get('/:auth0Id', async (req, res) => {

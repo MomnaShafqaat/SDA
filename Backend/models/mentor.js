@@ -26,16 +26,26 @@ const MentorSchema = new mongoose.Schema({
   
     // Ratings & Reviews
     reviews: [
-      {
-        review: String,
-        reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
-      }
-    ],
-    ratings: {
-      count: { type: Number, default: 0 },
-      average: { type: Number, default: 0 },
-      rating: { type: Number, min: 0, max: 5, default: 0 }
-    },
+    {
+      review: String,
+      reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      createdAt: { type: Date, default: Date.now }
+    }
+  ],
+
+  ratings: [
+    {
+      rating: { type: Number, min: 0, max: 5 },
+      rater: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      createdAt: { type: Date, default: Date.now }
+    }
+  ],
+
+  // You can keep the summary ratings field too for quick access
+  ratingSummary: {
+    average: { type: Number, default: 0 },
+    count: { type: Number, default: 0 }
+  },
 
     badges: {icon:{ String, default: "⭐" }},
 
@@ -44,7 +54,11 @@ badgeRequest: {
   status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
   requestedAt: { type: Date }
 },
-
+priorityDM:[
+  {
+    type: mongoose.Schema.Types.ObjectId, ref: "Student" ,
+  }
+],
     
   paymentRecieved :
   {
