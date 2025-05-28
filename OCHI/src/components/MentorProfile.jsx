@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import paymentService from "../services/paymentService";
+import MentorReviews from './MentorReviews'; // import the reviews component
 
 
 
@@ -147,48 +148,42 @@ const QualificationItem = styled.div`
 `;
 
 const MentorProfile = () => {
-    const navigate = useNavigate();
-    const [mentor, setMentor] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [profilePicture,setProfilePicture]=useState(null);
-    const [reviews, setReviews] = useState([]);
+  const navigate = useNavigate();
+  const [mentor, setMentor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
 
-  
-    useEffect(() => {
-      const fetchMentor = async () => {
-        const storedAuth0Id = localStorage.getItem("auth0Id");
-        if (!storedAuth0Id) {
-          setError("Please login to view your profile");
-          setLoading(false);
-          return;
-        }
-  
-        try {
-          const response = await axios.get(`http://localhost:5000/api/mentors/mentor/${storedAuth0Id}`);
-          setMentor(response.data);
-          setProfilePicture(localStorage.getItem("profilePicture"));
-          const reviewsRes = await axios.get(`http://localhost:5000/api/mentors/${response.data._id}/reviews`);
-          setReviews(reviewsRes.data);
-        } catch (err) {
-          setError(err.response?.data?.message || 'Error fetching profile data');
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchMentor();
-    }, []);
-
-  
-    const handleAccount = async () => {
-      paymentService.checkAccount()
-    }
-
-    const handleEdit = () => {
+  useEffect(() => {
+    const fetchMentor = async () => {
       const storedAuth0Id = localStorage.getItem("auth0Id");
-      navigate(`/edit-mentor-profile`);
+      if (!storedAuth0Id) {
+        setError("Please login to view your profile");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:5000/api/mentors/mentor/${storedAuth0Id}`);
+        setMentor(response.data);
+        setProfilePicture(localStorage.getItem("profilePicture"));
+      } catch (err) {
+        setError(err.response?.data?.message || 'Error fetching profile data');
+      } finally {
+        setLoading(false);
+      }
     };
+
+    fetchMentor();
+  }, []);
+
+  const handleAccount = () => {
+    paymentService.checkAccount();
+  };
+
+  const handleEdit = () => {
+    navigate(`/edit-mentor-profile`);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -206,15 +201,14 @@ const MentorProfile = () => {
             </svg>
             Edit Profile
           </EditButton>
-          {
-            mentor.badgeRequest.status === 'accepted' && (
-              <button onClick={handleAccount} style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}>
-            Set up stripe connect account
+          {mentor.badgeRequest.status === 'accepted' && (
+            <button
+              onClick={handleAccount}
+              style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}
+            >
+              Set up stripe connect account
             </button>
-            )
-          }
-          
-            
+          )}
         </HeaderContent>
       </HeaderSection>
 
@@ -278,29 +272,14 @@ const MentorProfile = () => {
         </TagList>
       </Section>
 
-      <Section>
-        <SectionTitle>Performance Metrics</SectionTitle>
-        <FieldGroup>
-          <p>Average Rating</p>
-          <div>{mentor.ratings.average}/5 ({mentor.ratings.count} ratings)</div>
-        </FieldGroup>
-      </Section>
-      <Section>
-  <SectionTitle>Student Reviews</SectionTitle>
-  {reviews.length === 0 ? (
-    <p>No reviews yet.</p>
-  ) : (
-    reviews.map((review, index) => (
-      <QualificationItem key={index}>
-        <p><strong>Student:</strong> {review.studentName || 'Anonymous'}</p>
-        <p><strong>Rating:</strong> {review.rating}/5</p>
-        <p><strong>Comment:</strong> {review.comment}</p>
-        <p><strong>Date:</strong> {new Date(review.createdAt).toLocaleDateString()}</p>
-      </QualificationItem>
-    ))
-  )}
-  </Section>
+      {/* Removed Performance Metrics and reviews here */}
 
+      <Section>
+         <SectionTitle>Mentor Reviews</SectionTitle>
+        <TagList>
+        <MentorReviews mentorId={mentor._id} />
+         </TagList>
+      </Section>
     </ProfileContainer>
   );
 };
