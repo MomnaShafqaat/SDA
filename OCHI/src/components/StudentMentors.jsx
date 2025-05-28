@@ -3,10 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import studentService from '../services/studentServices';
 import PayButton from './payButton.jsx';
 import ReportModal from './reportModal.jsx';
+import ReviewForm from './ReviewForm.jsx';
+import { useAuth0 } from "@auth0/auth0-react";
 
 function ViewMentors() {
   const [mentors, setMentors] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [activeReviewMentor, setActiveReviewMentor] = useState(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
+  const { user, isAuthenticated } = useAuth0();
+  const auth0Id = user?.sub;
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +30,54 @@ function ViewMentors() {
 
     fetchMentors();
   }, []);
+
+  
+
+  const handleReviewSubmit = async (mentorId) => {
+    try {
+      if (!auth0Id) {
+        alert("User not authenticated");
+        return;
+      }
+
+      await studentService.submitReview(mentorId, { 
+        rating,
+        reviewText,
+        reviewerId:auth0Id
+      });
+
+      setRating(0);
+      setReviewText('');
+      setActiveReviewMentor(null);
+      setShowReviewForm(false);
+      alert('Review submitted successfully!');
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+      alert('Failed to submit review.');
+    }
+  };
+  const renderStars = (average) => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    if (i <= Math.floor(average)) {
+      // Full star
+      stars.push(
+        <span key={i} className="text-yellow-400 text-sm">★</span>
+      );
+    } else if (i === Math.ceil(average) && average % 1 !== 0) {
+      // Partial star (optional, or treat as half star if you want)
+      stars.push(
+        <span key={i} className="text-yellow-400 text-sm opacity-50">★</span>
+      );
+    } else {
+      // Empty star
+      stars.push(
+        <span key={i} className="text-gray-300 text-sm">★</span>
+      );
+    }
+  }
+  return stars;
+};
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-6">
@@ -39,7 +96,6 @@ function ViewMentors() {
             <h2 className="text-xl font-bold text-gray-900">{mentor.name}</h2>
             <p className="text-sm text-gray-500 mt-1">{mentor.location || 'Remote'}</p>
 
-            {/* Expertise Tags (Optional fallback) */}
             {mentor.expertise?.length > 0 && (
               <div className="mt-3 flex flex-wrap justify-center gap-2">
                 {mentor.expertise.slice(0, 3).map((skill, index) => (
@@ -62,7 +118,21 @@ function ViewMentors() {
               {mentor.bio || 'Experienced professional with a proven track record.'}
             </p>
 
+           <div className="mt-3 text-center">
+            <div className="flex items-center justify-center gap-1">
+              {renderStars(mentor.ratingSummary?.average || 0)}
+            </div>
+            <div className="text-sm text-gray-700 mt-1">
+              Average Rating: {mentor.ratingSummary?.average?.toFixed(1) || '0.0'}
+            </div>
+            <div className="text-xs text-gray-500">
+              ({mentor.ratingSummary?.count || 0} reviews)
+            </div>
+          </div>
+
+
             <div className="mt-6 flex flex-col gap-3 w-full">
+              {/* Use mentor.auth0Id for routes */}
               <button
                 onClick={() => navigate(`/mentor-profile/${mentor.auth0Id}`)}
                 className="px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center justify-center"
@@ -80,22 +150,46 @@ function ViewMentors() {
                 Chat Now
               </button>
 
+              {/* Use mentor._id for payments and backend operations */}
               <PayButton mentorId={mentor._id} accountId={mentor.accountId} />
 
               <button
-                              onClick={() => setShowModal(true)}
-                              className="px-4 py-2.5 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
-                            >
-                              Report User
-                            </button>
-              
-              
-                            {showModal && (
-                      <ReportModal
-                        reportedId= {mentor._id}
-                        onClose={() => setShowModal(false)}
-                      />
-                    )}
+                onClick={() => setShowModal(true)}
+                className="px-4 py-2.5 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
+              >
+                Report User
+              </button>
+
+              {showModal && (
+                <ReportModal
+                  reportedId={mentor._id}
+                  onClose={() => setShowModal(false)}
+                />
+              )}
+
+              <button
+                onClick={() => {
+                  setActiveReviewMentor(mentor._id); // important: use _id here
+                  setShowReviewForm(true);
+                }}
+                className="w-full mt-2 py-2 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold"
+              >
+                Write a Review
+              </button>
+
+              {showReviewForm && activeReviewMentor === mentor._id && (
+                <ReviewForm
+                  rating={rating}
+                  setRating={setRating}
+                  reviewText={reviewText}
+                  setReviewText={setReviewText}
+                  onSubmit={() => handleReviewSubmit(mentor._id)}
+                  onClose={() => {
+                    setShowReviewForm(false);
+                    setActiveReviewMentor(null);
+                  }}
+                />
+              )}
             </div>
           </div>
         ))}

@@ -391,20 +391,6 @@ router.get('/filteredByExpertise', async (req, res) => {
   }
 });
 
-router.post('/:mentorId/reviews', async (req, res) => {
-  try {
-    const { review, reviewerId } = req.body;
-    const mentor = await Mentor.findById(req.params.mentorId);
-
-    mentor.reviews.push({ review, reviewer: reviewerId });
-    await mentor.save();
-
-    res.status(201).json(mentor);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 // GET all reviews for a mentor
 router.get('/:mentorId/reviews', async (req, res) => {
   try {
@@ -413,8 +399,11 @@ router.get('/:mentorId/reviews', async (req, res) => {
       return res.status(404).json({ message: 'Mentor not found' });
     }
 
-    res.json(mentor.reviews);
-    
+    res.json({
+      reviews: mentor.reviews || [],
+      ratingSummary: mentor.ratingSummary || { average: 0, count: 0 }
+    });
+
   } catch (err) {
     console.error('GET reviews error:', err);
     res.status(500).json({ message: err.message });
@@ -422,22 +411,65 @@ router.get('/:mentorId/reviews', async (req, res) => {
 });
 
 
-router.post('/:mentorId/ratings', async (req, res) => {
-  try {
-    const { rating, raterId } = req.body;
-    const mentor = await Mentor.findById(req.params.mentorId);
 
-    // Add new rating or update existing rating from same user
-    const existingRatingIndex = mentor.ratings.findIndex(r => r.rater.toString() === raterId);
+router.post('/:mentorId/reviews', async (req, res) => {
+  try {
+    const { rating, reviewText, reviewerId } = req.body;
+
+    if (!reviewerId) {
+      return res.status(400).json({ message: "Missing reviewerId in request body" });
+    }
+
+    // Step 1: Find the student using the auth0Id
+    const student = await Student.findOne({ auth0Id: reviewerId });
+    if (!student) {
+      return res.status(404).json({ message: "Reviewer (student) not found" });
+    }
+
+    const reviewerObjectId = student._id;
+
+    // Step 2: Find mentor
+    const mentor = await Mentor.findById(req.params.mentorId);
+    if (!mentor) {
+      return res.status(404).json({ message: 'Mentor not found' });
+    }
+
+   // console.log('Mentor menteeList:', mentor.menteeList);
+    //console.log('Reviewer ObjectId:', reviewerObjectId);
+
+    // Step 3: Verify reviewer is in menteeList
+    const isMentee = mentor.menteeList.some(
+      (menteeId) => menteeId.toString() === reviewerObjectId.toString()
+    );
+    if (!isMentee) {
+      return res.status(403).json({ message: "You are not authorized to review this mentor." });
+    }
+
+    // Step 4: Check if already reviewed
+    const alreadyReviewed = mentor.reviews.some(
+    (r) => r.reviewer && r.reviewer.toString() === reviewerId
+    );
+    if (alreadyReviewed) {
+      return res.status(400).json({ message: 'You have already reviewed this mentor' });
+    }
+
+    // Step 5: Add review
+    mentor.reviews.push({ review: reviewText, reviewer: reviewerObjectId });
+
+    // Step 6: Add/update rating
+    const existingRatingIndex = mentor.ratings.findIndex(
+     (r) => r.rater && r.rater.toString() === reviewerId
+    );
 
     if (existingRatingIndex >= 0) {
       mentor.ratings[existingRatingIndex].rating = rating;
       mentor.ratings[existingRatingIndex].createdAt = new Date();
     } else {
-      mentor.ratings.push({ rating, rater: raterId });
+      mentor.ratings.push({ rating, rater: reviewerObjectId });
     }
+    mentor.reviews = mentor.reviews.filter(r => r.reviewer);
 
-    // Calculate summary
+    // Step 7: Update rating summary
     mentor.ratingSummary.count = mentor.ratings.length;
     mentor.ratingSummary.average =
       mentor.ratings.reduce((sum, r) => sum + r.rating, 0) / mentor.ratingSummary.count;

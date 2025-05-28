@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import PayButton from './payButton.jsx';
 
 const MentorCard = ({ mentor }) => {
-  const { picture, name, ratings, skills, isVerified, _id } = mentor;
+  const { picture, name, ratingSummary, skills, isVerified, _id } = mentor;
   const [sendRequest, setSendRequest] = useState(mentor?.requested);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewText, setReviewText] = useState('');
@@ -17,27 +17,29 @@ const MentorCard = ({ mentor }) => {
     setSendRequest(true);
   };
 
-  const handleSubmitReview = async () => {
-    await studentService.submitReview(_id, {
-      review: reviewText,
-      rating,
-    });
-    setShowReviewForm(false);
-    setReviewText('');
-    setRating(0);
-  };
-
-  const renderStars = (rating) => {
-    return [...Array(5)].map((_, i) => (
-      <span
-        key={i}
-        className={`text-xl ${i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}`}
-      >
-        ★
-      </span>
-    ));
-  };
-
+  
+  const renderStars = (average) => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    if (i <= Math.floor(average)) {
+      // Full star
+      stars.push(
+        <span key={i} className="text-yellow-400 text-sm">★</span>
+      );
+    } else if (i === Math.ceil(average) && average % 1 !== 0) {
+      // Partial star (optional, or treat as half star if you want)
+      stars.push(
+        <span key={i} className="text-yellow-400 text-sm opacity-50">★</span>
+      );
+    } else {
+      // Empty star
+      stars.push(
+        <span key={i} className="text-gray-300 text-sm">★</span>
+      );
+    }
+  }
+  return stars;
+};
   return (
     <>
       {/* Mentor Card */}
@@ -68,12 +70,6 @@ const MentorCard = ({ mentor }) => {
         {/* Name */}
         <h3 className="text-xl font-bold text-gray-800 mb-2 truncate max-w-full px-2">{name}</h3>
 
-        {/* Ratings */}
-        <div className="flex items-center justify-center mb-4">
-          <div className="flex items-center mr-2">{renderStars(ratings.average)}</div>
-          <span className="text-sm text-gray-500">({ratings.count} reviews)</span>
-        </div>
-
         {/* Skills */}
         <div className="w-full mb-4">
           <div className="flex flex-wrap justify-center gap-2">
@@ -87,6 +83,22 @@ const MentorCard = ({ mentor }) => {
             ))}
           </div>
         </div>
+
+        {/* Ratings */}
+          <div className="mt-3 text-center">
+            <div className="flex items-center justify-center gap-1">
+              {renderStars(mentor.ratingSummary?.average || 0)}
+            </div>
+            <div className="text-sm text-gray-700 mt-1">
+              Average Rating: {mentor.ratingSummary?.average?.toFixed(1) || '0.0'}
+            </div>
+            <div className="text-xs text-gray-500">
+              ({mentor.ratingSummary?.count || 0} reviews)
+            </div>
+          </div>
+
+
+        
 
         {/* Buttons */}
         {isAuthenticated && (
@@ -106,62 +118,9 @@ const MentorCard = ({ mentor }) => {
             {storedRole === 'student' && mentor.badgeRequest?.status === 'accepted' && (
               <PayButton mentorId={mentor._id} accountId={mentor.accountId} />
             )}
-
-            <button
-              onClick={() => setShowReviewForm(true)}
-              className="w-full mt-2 py-2 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold"
-            >
-              Write a Review
-            </button>
-          </div>
+            </div>
         )}
       </div>
-
-      {/* Review Modal */}
-      {showReviewForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-bold mb-2">Submit a Review</h2>
-
-            <div className="flex items-center mb-3">
-              {[...Array(5)].map((_, i) => (
-                <span
-                  key={i}
-                  className={`cursor-pointer text-2xl ${
-                    i < rating ? 'text-yellow-400' : 'text-gray-300'
-                  }`}
-                  onClick={() => setRating(i + 1)}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
-
-            <textarea
-              className="w-full p-2 border border-gray-300 rounded"
-              placeholder="Write your review here..."
-              rows="4"
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-            ></textarea>
-
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                onClick={() => setShowReviewForm(false)}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmitReview}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
