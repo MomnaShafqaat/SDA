@@ -37,17 +37,7 @@ const MentorSchema = new mongoose.Schema({
       rating: { type: Number, min: 0, max: 5, default: 0 }
     },
 
-    badges: [
-  {
-    title: String,
-    description: String,
-    icon: String, // optional field for badge icon or emoji
-    dateAwarded: {
-      type: Date,
-      default: Date.now,
-    },
-  }
-],
+    badges: {icon:{ String, default: "⭐" }},
 
 badgeRequest: {
   requested: { type: Boolean, default: false },

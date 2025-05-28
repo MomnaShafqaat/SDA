@@ -345,7 +345,7 @@ console.log('ho gya hai send');
 
 
 //badge status 
-router.get('/badge-status/:mentorId', async (res,req) => {
+router.get('/badge-status/:mentorId', async (req,res) => {
 try{
 const mentor= await Mentor.findById(req.params.mentorId);
 if(!mentor) return res.status(404).json({message:'Mentor not found'});
