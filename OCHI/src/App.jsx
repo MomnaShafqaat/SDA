@@ -52,7 +52,8 @@ function App() {
         <Route path="/callback" element={<Callback />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route index element={<LandingPage />} />
-
+        <Route path="success" element={<SuccessPage/>} />
+        <Route path="cancel" element={<CancelPage/>} />
 
 
         {/* All Layout-wrapped routes */}
@@ -72,8 +73,7 @@ function App() {
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
         <Route path="/loginAdmin" element={<AdminLogin />} />
-        <Route path="success" element={<SuccessPage/>} />
-        <Route path="cancel" element={<CancelPage/>} />
+        
         <Route path="/mentor-profile/:mentorId" element={<ProtectedRoutes><ViewMentorProfile /></ProtectedRoutes>} />
         <Route path="/student-profile/:studentId" element={<ProtectedRoutes><ViewStudentProfile /></ProtectedRoutes>} />
         <Route path="/edit-student-profile" element={<ProtectedRoutes><EditStudentProfile /></ProtectedRoutes>} />

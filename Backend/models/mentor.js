@@ -47,12 +47,12 @@ const MentorSchema = new mongoose.Schema({
     count: { type: Number, default: 0 }
   },
 // admin part 
-badges: {
+badges: [{
   icon: {
     type: String,
     default: "⭐"
   }
-},
+}],
 
 badgeRequest: {
   requested: { type: Boolean, default: false },
