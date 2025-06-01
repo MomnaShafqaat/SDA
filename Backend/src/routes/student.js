@@ -57,18 +57,27 @@ router.get('/:studentID/mentors', authjwt, async (req, res) => {
 
   try {
     const student = await Student.findById(studentID).populate('mentorList');
-    console.log(student);
 
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
 
-    res.status(200).json({ mentors: student.mentorList });
+    // Map through mentorList and add isPayed field
+    const mentorsWithPayedStatus = student.mentorList.map(mentor => {
+      const isPayed = student.payedMentors.includes(mentor._id.toString());
+      return {
+        ...mentor.toObject(), // convert Mongoose document to plain JS object
+        isPayed
+      };
+    });
+
+    res.status(200).json({ mentors: mentorsWithPayedStatus });
   } catch (err) {
     console.error("Error fetching mentors list:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 router.get('/:studentId', async (req, res) => {
   try {
