@@ -28,7 +28,7 @@ const MentorSchema = new mongoose.Schema({
     reviews: [
     {
       review: String,
-      reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      reviewer: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
       createdAt: { type: Date, default: Date.now }
     }
   ],
@@ -75,7 +75,7 @@ priorityDM:[
   } ,
   //a valid stripe id for mentors
   accountId:{
-    type: String,
+    type: String,git 
     //required: true
   }
   });

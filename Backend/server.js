@@ -1,6 +1,8 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
+const multer = require('multer');
+const pdf = require('pdf-parse');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -9,13 +11,14 @@ const userRoutes = require('./src/routes/userRoutes.js');
 const mentorRoutes = require('./src/routes/mentor.routes.js');
 const messageRoutes = require('./src/routes/message.route.js');
 const jwtCheck = require('./src/middleware/authMiddleware.js');
-const { app, server } = require('./src/lib/socket.js');  // Correct the path
+const { app, server } = require('./src/lib/socket.js');
 const studentRoutes = require('./src/routes/student.js'); 
 const adminRoutes = require("./src/routes/admin.js");
 const paymentRoutes = require('./src/routes/payment.js'); 
-const reportRoutes = require('./src/routes/report.js'); // Import report routes
+const reportRoutes = require('./src/routes/report.js');
+const cvAnalyzerRoute = require('./src/routes/cvAnalyze.js'); // Add this
 
-//for preventing application of express.json on this route
+// Prevent express.json from applying to webhook route
 app.use('/webhook', bodyParser.raw({ type: 'application/json' }));
 
 // Middleware
@@ -28,9 +31,10 @@ app.use('/api/user', userRoutes);
 app.use('/api/mentors', mentorRoutes);
 app.use('/api/messages', jwtCheck, messageRoutes);
 app.use('/api/student', studentRoutes);
-app.use("/api/admin", adminRoutes); // this makes /api/admin/loginAdmin accessibleapp.use('/api/payment', paymentRoutes);
-app.use(paymentRoutes) ;
-app.use('/api/report', reportRoutes); // Use the report routes
+app.use("/api/admin", adminRoutes);
+app.use(paymentRoutes) ; // Fixed to use route path
+app.use('/api/report', reportRoutes);
+app.use('/api/cvAnalyzer', cvAnalyzerRoute); // Add this new route
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -42,14 +46,13 @@ app.use((err, req, res, next) => {
 const CLUSTER = process.env.CLUSTER;
 const connectionString = `mongodb+srv://${CLUSTER}@vintasycluster.hpn5p.mongodb.net/mentora`;
 
-mongoose
-  .connect(connectionString)
-  .then(() => {
-    console.log("Connected to Mongo DB Server: " + connectionString);
-  })
+mongoose.connect(connectionString)
+  .then(() => console.log("Connected to Mongo DB Server: " + connectionString))
   .catch((error) => console.log(error.message));
 
-// Socket connection (Make sure socket is correctly set up in your 'socket.js')
+
+
+// Socket connection
 server.listen(process.env.PORT || 5000, () => {
   console.log('Server is running on port', process.env.PORT || 5000);
 });
