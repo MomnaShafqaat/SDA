@@ -278,7 +278,7 @@ router.get('/profile', jwtCheck, async (req, res) => {
   }
 });
 
-// POST (update or create) mentor profile
+/*POST (update or create) mentor profile
 router.post('/profile', jwtCheck, async (req, res) => {
   try {
     const mentor = await Mentor.findOneAndUpdate(
@@ -291,7 +291,7 @@ router.post('/profile', jwtCheck, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-
+*/
 // GET /:mentorId/mentees (Get mentor's mentees)
 router.get('/:mentorId/mentees', authJwt, async (req, res) => {
   const { mentorId } = req.params;
@@ -483,17 +483,84 @@ router.post('/:mentorId/reviews', async (req, res) => {
 });
 
 
+
+
 //for admin to access
 // GET /api/mentors/:mentorId
-router.get('/:mentorId', async (req, res) => {
+router.get('/profile/:id?', async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(' ')[1];
+
+  if (!token) return res.status(401).json({ message: 'No token provided' });
+
   try {
-    const mentor = await Mentor.findById(req.params.mentorId);
+    let userData;
+    let mentor;
+
+    try {
+      // Try Auth0 validation first
+      const decodedAuth0 = await axios.get(`https://YOUR_DOMAIN/userinfo`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const auth0Id = decodedAuth0.data.sub;
+      mentor = await Mentor.findOne({ auth0Id });
+    } catch (err) {
+      // If Auth0 fails, try internal JWT
+      const decodedJWT = jwt.verify(token, process.env.JWT_SECRET);
+      const adminEmail = decodedJWT.email;
+
+      if (adminEmail !== process.env.ADMIN_EMAIL) {
+        return res.status(403).json({ message: 'Invalid admin token' });
+      }
+
+      const mentorId = req.params.id;
+      if (!mentorId) return res.status(400).json({ message: 'Mentor ID required for admin' });
+
+      mentor = await Mentor.findById(mentorId);
+    }
+
     if (!mentor) return res.status(404).json({ message: 'Mentor not found' });
-    res.json(mentor);
+
+    return res.status(200).json(mentor);
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+//show warning notification to mentor
+router.get('/notifications', jwtCheck, async (req, res) => {
+  try {
+    const mentor = await Mentor.findOne({ auth0Id: req.auth.payload.sub });
+
+    if (!mentor) {
+      return res.status(404).json({ error: "Mentor not found" });
+    }
+
+    res.status(200).json({ notifications: mentor.notifications });
+  } catch (err) {
+    console.error("Fetch Notifications Error:", err);
+    res.status(500).json({ error: "Failed to fetch notifications." });
+  }
+});
+
+
+//badge
+const updateBadge = async (req, res) => {
+  try {
+    const mentor = await Mentor.findById(req.params.id);
+    if (!mentor) return res.status(404).json({ message: "Mentor not found" });
+
+    mentor.badge = true;  // Set the badge to true
+    await mentor.save();
+
+    res.json(mentor);  // Return updated mentor data
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-});
+};
 
 
 module.exports = router;

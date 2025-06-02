@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import mentorService from '../services/mentorServices';
 import avatar from '../assets/avatar.png';
 import ReportModal from './reportModal';
+import { useNavigate} from 'react-router-dom';
+
 
 function MentorDashboard() {
   const [students, setStudents] = useState([]);
@@ -67,12 +68,18 @@ function MentorDashboard() {
               </button>
 
 
+
+
               {showModal && (
         <ReportModal
           reportedId= {student._id}
           onClose={() => setShowModal(false)}
         />
+
+
+        
       )}
+             
             </div>
           </div>
         ))}

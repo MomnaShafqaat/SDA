@@ -54,8 +54,18 @@ const MentorCard = ({ mentor }) => {
               e.target.src = 'https://via.placeholder.com/128';
             }}
           />
+                    {/* Badge Icon */}
+          {mentor.hasBadge && (
+            <div className="absolute bottom-22 left-[-20]  bg-yellow-400 rounded-full p-1 shadow-md">
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 1l2.39 4.84L18 7.16l-4 3.89L15.3 17 10 14.27 4.7 17 6 11.05l-4-3.89 5.61-.32L10 1z" />
+              </svg>
+            </div>
+          )}
+
           {isVerified && (
             <div className="absolute bottom-0 right-0 bg-blue-500 rounded-full p-1.5">
+              
               <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"

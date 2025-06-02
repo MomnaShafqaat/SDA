@@ -13,6 +13,16 @@ class GenericService{
             });
     } ;
 
+      getWithConfig = async (url, config = {}) => {
+    return await axios
+      .get(url, config)
+      .then((response) => response)
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        throw error;
+      });
+  };
+
     post = async (url,data, config = {}) => {
             console.log("Data being sent by parent:", data);
             return await axios.post(url, data, config)

@@ -3,19 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import paymentService from "../services/paymentService";
-import MentorReviews from './MentorReviews'; // import the reviews component
-
-
-
+import MentorReviews from './MentorReviews';
 
 const ProfileContainer = styled.div`
   max-width: 1200px;
   margin: 2rem auto;
   padding: 3rem;
-  background: #fff;
+  background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #1a1a1a;
 `;
 
 const HeaderSection = styled.div`
@@ -23,7 +21,7 @@ const HeaderSection = styled.div`
   align-items: center;
   margin-bottom: 3rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid #f0f2f5;
+  border-bottom: 1px solid #ccc;
 `;
 
 const Avatar = styled.div`
@@ -33,11 +31,28 @@ const Avatar = styled.div`
   background-image: url(${props => props.src});
   background-size: cover;
   background-position: center;
-  background-color: #f0f2f5;
+  background-color: #e0e0e0;
   margin-right: 2rem;
   border: 4px solid white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 `;
+
+const AvatarWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const BadgeIcon = styled.img`
+  position: absolute;
+  bottom: 0;
+  right: 10;
+  top:500;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  box-shadow:  rgba(243, 223, 6, 0.1);
+`;
+
 
 const HeaderContent = styled.div`
   flex: 1;
@@ -48,13 +63,12 @@ const HeaderContent = styled.div`
 
 const ProfileTitle = styled.h1`
   font-size: 2.2rem;
-  color: #1a1a1a;
   margin: 0;
   font-weight: 600;
 `;
 
 const EditButton = styled.button`
-  background: #007bff;
+  background: #000;
   color: white;
   padding: 0.8rem 1.8rem;
   border: none;
@@ -67,26 +81,24 @@ const EditButton = styled.button`
   gap: 0.5rem;
   
   &:hover {
-    background: #0056b3;
+    background: #333;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   }
 `;
 
 const Section = styled.div`
   margin: 2.5rem 0;
   padding: 2rem;
-  background: #f8f9fa;
+  background: #f4f4f4;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 `;
 
 const SectionTitle = styled.h2`
-  color: #2d3436;
   font-size: 1.5rem;
   margin-bottom: 1.8rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid #ddd;
   font-weight: 600;
 `;
 
@@ -95,14 +107,13 @@ const FieldGroup = styled.div`
   line-height: 1.6;
 
   p {
-    color: #6c757d;
+    color: #666;
     font-weight: 500;
     margin-bottom: 0.5rem;
     font-size: 0.95rem;
   }
 
   div {
-    color: #495057;
     font-size: 1.1rem;
     line-height: 1.5;
   }
@@ -115,8 +126,8 @@ const TagList = styled.div`
 `;
 
 const Tag = styled.span`
-  background: #e9ecef;
-  color: #2d3436;
+  background: #dcdcdc;
+  color: #1a1a1a;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -124,7 +135,7 @@ const Tag = styled.span`
   transition: all 0.2s;
 
   &:hover {
-    background: #dee2e6;
+    background: #c0c0c0;
   }
 `;
 
@@ -137,10 +148,8 @@ const QualificationItem = styled.div`
   
   p {
     margin: 0.5rem 0;
-    color: #495057;
     
     strong {
-      color: #2d3436;
       font-weight: 600;
       margin-right: 0.5rem;
     }
@@ -164,7 +173,10 @@ const MentorProfile = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/mentors/mentor/${storedAuth0Id}`);
+        const token = localStorage.getItem("jwt_token");
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const response = await axios.get(`http://localhost:5000/api/mentors/mentor/${storedAuth0Id}`, { headers });
         setMentor(response.data);
         setProfilePicture(localStorage.getItem("profilePicture"));
       } catch (err) {
@@ -192,19 +204,33 @@ const MentorProfile = () => {
   return (
     <ProfileContainer>
       <HeaderSection>
-        <Avatar src={profilePicture || 'default-avatar-url'} />
+      
+      
+      <AvatarWrapper>
+          <Avatar src={profilePicture || 'default-avatar-url'} />
+          {mentor.hasBadge && (
+            <BadgeIcon src="/assets/badge.png" alt="Verified Badge" />
+          )}
+        </AvatarWrapper>
+
         <HeaderContent>
-          <ProfileTitle>Your Profile</ProfileTitle>
+
+               <ProfileTitle>
+              Your Profile {mentor.hasBadge && <span style={{ color: "green", fontSize: "0.5rem",marginLeft:"-10px",marginTop:"-15px" }}>Verified Mentor</span>}
+            </ProfileTitle>
+
+
+
           <EditButton onClick={handleEdit}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
             </svg>
             Edit Profile
           </EditButton>
-          {mentor.badgeRequest.status === 'accepted' && (
+          {mentor.badgeRequest?.status === 'accepted' && (
             <button
               onClick={handleAccount}
-              style={{ background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '1rem' }}
+              style={{ background: 'none', border: 'none', color: '#000', cursor: 'pointer', fontSize: '1rem' }}
             >
               Set up stripe connect account
             </button>
@@ -272,13 +298,11 @@ const MentorProfile = () => {
         </TagList>
       </Section>
 
-      {/* Removed Performance Metrics and reviews here */}
-
       <Section>
-         <SectionTitle>Mentor Reviews</SectionTitle>
+        <SectionTitle>Mentor Reviews</SectionTitle>
         <TagList>
-        <MentorReviews mentorId={mentor._id} />
-         </TagList>
+          <MentorReviews mentorId={mentor._id} />
+        </TagList>
       </Section>
     </ProfileContainer>
   );

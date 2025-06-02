@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react';
 import AdminNavbar from "../components/admin/AdminNavbar";
 import CounterCard from "../components/admin/CounterCard";
 import BadgeRequestCard from "../components/admin/BadgeRequestCard";
+import ReportList from "../components/admin/ReportList"; // Adjust the path if needed
+
 import axios from 'axios';
 
 const AdminPage = () => {
   const [counts, setCounts] = useState({ mentors: 0, students: 0 });
   const [requests, setRequests] = useState([]);
+  //const [reports, setReports] = useState([]);
 
   useEffect(() => {
     fetchCounts();
     fetchBadgeRequests();
+   // fetchReports();
   }, []);
 
 
@@ -44,6 +48,36 @@ const AdminPage = () => {
       console.error(`Error updating badge request for ${mentorId}:`, err);
     }
   };
+
+
+/*FETCH REPORTS OF MENTOR FOR ADMIN DASHBOARD
+const fetchReports = async () => {
+  try {
+    const res = await axios.get("http://localhost:5000/api/admin/reports");
+    setReports(res.data);
+  } catch (err) {
+    console.error("Error fetching reports:", err);
+  }
+};*/
+
+
+
+
+  const fetchMentorProfile = async (mentorId) => {
+  const token = localStorage.getItem('jwt_token');
+  try {
+   // const res = await axios.get(`http://localhost:5000/api/mentors/${mentorId}`, {
+ const res = await axios.get(  `http://localhost:5000/api/mentors/mentor/${mentorId}`,{  
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching mentor profile:", err);
+  }
+};
+
 
   return (
     <div>
@@ -85,6 +119,11 @@ const AdminPage = () => {
           <p>No pending requests.</p>
         )}
       </div>
+
+      {/*reports*/}
+        <div className="mt-8">
+      <ReportList />
+    </div>
     </div>
   );
 };

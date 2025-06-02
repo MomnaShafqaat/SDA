@@ -13,7 +13,7 @@ const { app, server } = require('./src/lib/socket.js');  // Correct the path
 const studentRoutes = require('./src/routes/student.js'); 
 const adminRoutes = require("./src/routes/admin.js");
 const paymentRoutes = require('./src/routes/payment.js'); 
-const reportRoutes = require('./src/routes/report.js'); // Import report routes
+const reportRoutes = require('./src/routes/report.js'); 
 
 //for preventing application of express.json on this route
 app.use('/webhook', bodyParser.raw({ type: 'application/json' }));

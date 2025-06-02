@@ -10,6 +10,7 @@ import DropdownMenu from './DropdownMenu.jsx';
 import SearchBar from './Searchbar.jsx';
 
 function Navbar() {
+    
     const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [userRole, setUserRole] = useState(null);
@@ -19,7 +20,7 @@ function Navbar() {
 
     // New state flag to trigger refetch after badge request
     const [badgeRequested, setBadgeRequested] = useState(false);
-
+//
     useEffect(() => {
         if (isAuthenticated) connectSocket();
         else disconnectSocket();
@@ -40,17 +41,21 @@ function Navbar() {
                 const mentor = await mentorService.getMentorByAuth0Id(auth0Id);
                 setMentorData({
                     hasBadge: mentor.hasBadge,
-                    badgeIcon: mentor.badges?.icon || "⭐"
+
                 });
             } catch (error) {
                 console.error("Error fetching mentor data:", error);
             }
         };
 
-        if (userRole === "mentor" && isAuthenticated) {
+        const role = localStorage.getItem("user_role");
+        setUserRole(role);
+
+        if (role === "mentor" && isAuthenticated) {
             fetchMentorData();
         }
-    }, [userRole, isAuthenticated, badgeRequested]);  // <-- added badgeRequested here
+    }, [isAuthenticated, badgeRequested]);
+
 
     const connectSocket = () => {
         if (!isAuthenticated || socketRef.current?.connected) return;
@@ -79,9 +84,9 @@ function Navbar() {
 
     // Updated handleBadgeRequest to toggle badgeRequested state after successful request
     const handleBadgeRequest = async () => {
-        
-            const confirmed = window.confirm("Are you sure you want to request a badge? This action cannot be undone.");
-           if (!confirmed) return;
+
+        const confirmed = window.confirm("Are you sure you want to request a badge? This action cannot be undone.");
+        if (!confirmed) return;
         try {
             const auth0Id = localStorage.getItem("auth0Id");
             if (!auth0Id) {
@@ -120,8 +125,7 @@ function Navbar() {
                             <NavLink
                                 to="/student-dashboard"
                                 className={({ isActive }) =>
-                                    `block py-2 pr-4 pl-3 duration-200 text-lg ${
-                                        isActive ? "text-orange-700" : "text-white-700"
+                                    `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"
                                     } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                                 }
                             >
@@ -134,8 +138,7 @@ function Navbar() {
                         <NavLink
                             to="/chatInterface"
                             className={({ isActive }) =>
-                                `block py-2 pr-4 pl-3 duration-200 text-lg ${
-                                    isActive ? "text-orange-700" : "text-white-700"
+                                `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"
                                 } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                             }
                         >
@@ -146,8 +149,7 @@ function Navbar() {
                     <NavLink
                         to="/contact"
                         className={({ isActive }) =>
-                            `block py-2 pr-4 pl-3 duration-200 text-lg ${
-                                isActive ? "text-orange-700" : "text-white-700"
+                            `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"
                             } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                         }
                     >
@@ -156,8 +158,7 @@ function Navbar() {
                     <NavLink
                         to="/about"
                         className={({ isActive }) =>
-                            `block py-2 pr-4 pl-3 duration-200 text-lg ${
-                                isActive ? "text-orange-700" : "text-white-700"
+                            `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"
                             } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                         }
                     >
@@ -211,7 +212,7 @@ function Navbar() {
                         )}
 
                         {/* 🔸 Show Request Badge Button for Mentor */}
-                        {localStorage.getItem("user_role") === "mentor" && (
+                        {localStorage.getItem("user_role") === "mentor" && !mentorData?.hasBadge && (
                             <button onClick={handleBadgeRequest} className="px-4 py-2 ">
                                 <FaMedal className="text-orange-300 text-xl" />
                             </button>
@@ -223,12 +224,19 @@ function Navbar() {
                                 navigate(role === "mentor" ? "/mentor-profile" : "/student-profile");
                             }}
                         >
-                            <img src={profilePicture} alt="Profile" className="w-6 h-6 rounded-full" />
-                            {mentorData?.hasBadge && (
-                                <span className="text-yellow-400 text-xl" title="Verified Mentor">
-                                    {mentorData.badgeIcon}
-                                </span>
-                            )}
+                            <div className="relative">
+                                <img src={profilePicture} className="w-6 h-6 rounded-full" />
+                                {   /* {mentorData?.hasBadge && (
+                                    <img
+                                        src="/assets/badge.png"
+                                        alt="Badge"
+                                        className="absolute -top-1 -right-1 w-4 h-4"
+                                    />
+                                    )}*/}
+
+
+
+                            </div>
                         </div>
 
                         <button

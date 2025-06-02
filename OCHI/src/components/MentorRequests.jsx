@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import mentorService from '../services/mentorServices';
 import { useAuth0 } from '@auth0/auth0-react';
+import MentorNotifications from './MentorNotification'; 
 
 const MentorRequests = () => {
     const [requests, setRequests] = useState([]);
@@ -11,7 +12,6 @@ const MentorRequests = () => {
 
         try {
             const response = await mentorService.getMentorRequests();
-            // Your backend returns { pendingRequests: [...] }, so adjust accordingly
             setRequests(response.data.pendingRequests || []);
         } catch (error) {
             console.error('Error fetching mentor requests:', error);
@@ -22,7 +22,7 @@ const MentorRequests = () => {
         try {
             const response = await mentorService.updateRequestStatus(studentId, action);
             console.log(`Request ${action} successfully:`, response.data);
-            fetchRequests();  // Refresh list after action
+            fetchRequests();  // Refresh list
         } catch (error) {
             console.error(`Error while ${action} request:`, error);
         }
@@ -31,10 +31,17 @@ const MentorRequests = () => {
     useEffect(() => {
         fetchRequests();
     }, [isAuthenticated]);
-    
+
     return (
         <div className="max-w-4xl mx-auto p-4">
-            <h2 className="text-2xl font-semibold mb-4 mt-8">Your Mentor Requests</h2>
+            <h2 className="text-3xl font-bold mb-6 mt-10">Mentor Dashboard</h2>
+
+            {/* ✅ Add Notifications Here */}
+            <div className="mb-10">
+                <MentorNotifications />
+            </div>
+
+            <h2 className="text-2xl font-semibold mb-4">Your Mentor Requests</h2>
             {requests.length === 0 ? (
                 <p>No requests sent yet.</p>
             ) : (

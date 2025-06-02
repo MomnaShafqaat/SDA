@@ -47,12 +47,12 @@ const MentorSchema = new mongoose.Schema({
     count: { type: Number, default: 0 }
   },
 // admin part 
-badges: {
+badges: [{
   icon: {
     type: String,
-    default: "⭐"
+    default: " "
   }
-},
+}],
 
 badgeRequest: {
   requested: { type: Boolean, default: false },
@@ -77,8 +77,20 @@ priorityDM:[
   accountId:{
     type: String,
     //required: true
-  }
-  });
+  },
+  // Add this inside the MentorSchema:
+
+
+
+ 
+
+
+
+}
+
+
+
+);
   
   const Mentor = User.discriminator("mentor", MentorSchema);
   module.exports = Mentor;

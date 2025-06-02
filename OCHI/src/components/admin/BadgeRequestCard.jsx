@@ -4,9 +4,15 @@ import { useNavigate } from 'react-router-dom';
 const BadgeRequestCard = ({ mentor, onAccept, onReject }) => {
   const navigate = useNavigate();
 
-  const handleViewProfile = () => {
-    navigate('/mentor-profile', { state: { mentorId: mentor._id } });
-  };
+ // const handleViewProfile = () => {
+ //   navigate('/mentor-profile', { state: { mentorId: mentor._id } });
+ // };
+
+const handleViewProfile = () => {
+navigate(`/admin/mentor-profile/${mentor._id}`);
+
+};
+
   const handleAccept = () => {
     const confirmed = window.confirm(`Are you sure you want to accept ${mentor.name}'s badge request?`);
     if (confirmed) onAccept();
