@@ -131,6 +131,16 @@ function Navbar() {
                             >
                                 Dashboard
                             </NavLink>
+                            <NavLink
+                                to="/cv-analyzer"
+                                className={({ isActive }) =>
+                                    `block py-2 pr-4 pl-3 duration-200 text-lg ${
+                                        isActive ? "text-orange-700" : "text-white-700"
+                                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
+                                }
+                            >
+                                Cv Analyzer
+                            </NavLink>
                         </>
                     )}
 

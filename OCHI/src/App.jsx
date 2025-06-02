@@ -25,6 +25,7 @@ import SubmitTestimonial from './components/SubmitTestimonials';
 import ViewMentorProfile from './components/ViewMentorProfile';
 import ViewStudentProfile from './components/ViewStudentProfile';
 import EditStudentProfile from './components/EditStudentProfile';
+import CVAnalyzer from './components/CVAnalyzer';
 
 function SuccessPage() {
   console.log("✅ Payment was successful.");
@@ -52,7 +53,8 @@ function App() {
         <Route path="/callback" element={<Callback />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route index element={<LandingPage />} />
-
+        <Route path="success" element={<SuccessPage/>} />
+        <Route path="cancel" element={<CancelPage/>} />
 
 
         {/* All Layout-wrapped routes */}
@@ -72,8 +74,7 @@ function App() {
         <Route path="chatInterface" element={<ProtectedRoutes><ChatInterface /></ProtectedRoutes>} />
         <Route path="privacy" element={<ProtectedRoutes><PrivacyPolicy /></ProtectedRoutes>} />
         <Route path="/loginAdmin" element={<AdminLogin />} />
-        <Route path="success" element={<SuccessPage/>} />
-        <Route path="cancel" element={<CancelPage/>} />
+        
         <Route path="/mentor-profile/:mentorId" element={<ProtectedRoutes><ViewMentorProfile /></ProtectedRoutes>} />
         <Route path="/student-profile/:studentId" element={<ProtectedRoutes><ViewStudentProfile /></ProtectedRoutes>} />
         <Route path="/edit-student-profile" element={<ProtectedRoutes><EditStudentProfile /></ProtectedRoutes>} />
@@ -81,6 +82,8 @@ function App() {
         < Route path="/admin/mentor-profile/:mentorId" element={<MentorProfile />} />
 
 
+        <Route path="cv-analyzer" element={<ProtectedRoutes><CVAnalyzer/></ProtectedRoutes>}/>
+        
       </Route>
         {/* <Route element={<Layout />}>
         <Route path="about" element={<About />} />

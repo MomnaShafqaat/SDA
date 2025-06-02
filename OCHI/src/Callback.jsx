@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+// import jwtDecode from "jwt-decode";
 
 const Callback = () => {
   const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
@@ -48,6 +49,7 @@ const Callback = () => {
 
             console.log("User registered successfully");
             const token = registerRes.data;
+           // console.log("Momina Ahmed wala token",jwtDecode(registerRes.data));
             localStorage.setItem("jwt_token", token);
             localStorage.setItem("auth0Id", user.sub);
 
