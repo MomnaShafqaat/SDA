@@ -75,7 +75,7 @@ priorityDM:[
   } ,
   //a valid stripe id for mentors
   accountId:{
-    type: String,git 
+    type: String
     //required: true
   }
   });
