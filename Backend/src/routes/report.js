@@ -47,6 +47,8 @@ router.post('/warn/:userId', async (req, res) => {
   const { userId } = req.params;
   const { message } = req.body;
   const userToWarn = await User.findById(userId);
+  console.log("User to warn:", userToWarn);
+  console.log("Message:", message);
   try {
     const userToWarn = await User.findById(userId);
     if (!userToWarn) {
