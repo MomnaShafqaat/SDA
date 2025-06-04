@@ -15,7 +15,7 @@ const { app, server } = require('./src/lib/socket.js');
 const studentRoutes = require('./src/routes/student.js'); 
 const adminRoutes = require("./src/routes/admin.js");
 const paymentRoutes = require('./src/routes/payment.js'); 
-const reportRoutes = require('./src/routes/report.js');
+const reportRoutes = require('./src/routes/report.js'); 
 const cvAnalyzerRoute = require('./src/routes/cvAnalyze.js'); // Add this
 
 // Prevent express.json from applying to webhook route

@@ -50,7 +50,7 @@ const MentorSchema = new mongoose.Schema({
 badges: [{
   icon: {
     type: String,
-    default: "⭐"
+    default: " "
   }
 }],
 
@@ -75,10 +75,22 @@ priorityDM:[
   } ,
   //a valid stripe id for mentors
   accountId:{
-    type: String
+    type: String,
     //required: true
-  }
-  });
+  },
+  // Add this inside the MentorSchema:
+
+
+
+ 
+
+
+
+}
+
+
+
+);
   
   const Mentor = User.discriminator("mentor", MentorSchema);
   module.exports = Mentor;

@@ -6,6 +6,7 @@ const Student = require("../../models/student.js");
 const User = require("../../models/User.js"); // path to your User model
 const router = express.Router();
 const verifyToken = require('../middleware/verifyToken.js');
+const verifyAdmin = require('../middleware/verifyAdmin');
 
 require("dotenv").config();
 
@@ -20,8 +21,8 @@ router.post("/loginAdmin", (req, res) => {
   console.log("1");
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         console.log("2");
-
-      const token = jwt.sign({}, JWT_SECRET, { expiresIn: "1h" });
+         const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
+             // const token = jwt.sign({}, JWT_SECRET, { expiresIn: "1h" });
       console.log("3");
 
       return res.json({ token });
@@ -111,7 +112,7 @@ router.post('/verify-badge/:mentorId', async (req, res) => {
 
 
 
-// Apply to the route
+//takes the mentor id for admin 
 router.get('/:id', verifyToken, async (req, res) => {
   try {
     const mentor = await Mentor.findById(req.params.id);
@@ -123,6 +124,42 @@ router.get('/:id', verifyToken, async (req, res) => {
 });
 
 
+
+/* verify admin
+
+router.get('/mentor-profile/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const mentor = await Mentor.findById(id);
+    if (!mentor) return res.status(404).json({ message: "Mentor not found" });
+
+    res.status(200).json(mentor);
+  } catch (error) {
+    console.error("Error fetching mentor profile by admin:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+GET /api/admin/mentor-profile/MENTOR_ID
+Authorization: Bearer YOUR_ADMIN_JWT
+
+
+
+*/
+router.get('/mentor-profile/:id', verifyAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const mentor = await Mentor.findById(id);
+    if (!mentor) return res.status(404).json({ message: "Mentor not found" });
+
+    res.status(200).json(mentor);
+  } catch (error) {
+    console.error("Error fetching mentor profile by admin:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 
 module.exports = router;

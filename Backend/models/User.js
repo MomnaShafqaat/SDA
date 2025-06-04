@@ -6,9 +6,20 @@ const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   role: { type: String, enum: ["mentor", "student"], required: true },
   picture: { type: String},
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  notifications: [
+  {
+    message: { type: String, required: true },
+    type: { type: String, default: 'warning' },
+    read: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+  }
+],
+
+
 },
 { discriminatorKey: "role", collection: "users" },
-{ discriminatorKey: "role", collection: "users" });
+
+);
 const User = mongoose.model("User", UserSchema);
 module.exports = User;

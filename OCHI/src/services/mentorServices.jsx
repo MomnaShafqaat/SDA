@@ -6,6 +6,17 @@ class MentorService extends GenericService {
     this.baseUrl = 'http://localhost:5000/api/mentors/';
   }
 
+
+//for admin
+
+  getMentorProfileById = async (mentorId) => {
+  const token = localStorage.getItem('jwt_token');
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  return this.get(`${this.baseUrl}${mentorId}`, { headers });
+};
+
   // Fetch mentors available to a student
   getMentors = async (isAuthenticated) => {
     const token = localStorage.getItem('jwt_token');
@@ -150,6 +161,18 @@ getMentorByAuth0Id = async (auth0Id) => {
     };
     return this.get(`${this.baseUrl}badge-status/${mentorId}`, { headers });
   };
+
+ getBadgeMentor = async (mentorId) => {
+  try {
+    const response = await axios.get(`/api/mentors/${mentorId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching mentor:', error);
+    throw error;
+  }
+};
+
+
 }
 
 
