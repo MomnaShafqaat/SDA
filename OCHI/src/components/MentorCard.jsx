@@ -6,9 +6,6 @@ import PayButton from './payButton.jsx';
 const MentorCard = ({ mentor }) => {
   const { picture, name, ratingSummary, skills, isVerified, _id } = mentor;
   const [sendRequest, setSendRequest] = useState(mentor?.requested);
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [reviewText, setReviewText] = useState('');
-  const [rating, setRating] = useState(0);
   const { isAuthenticated } = useAuth0();
   const storedRole = localStorage.getItem('user_role');
 
@@ -17,121 +14,90 @@ const MentorCard = ({ mentor }) => {
     setSendRequest(true);
   };
 
-  
   const renderStars = (average) => {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    if (i <= Math.floor(average)) {
-      // Full star
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
       stars.push(
-        <span key={i} className="text-yellow-400 text-sm">★</span>
-      );
-    } else if (i === Math.ceil(average) && average % 1 !== 0) {
-      // Partial star (optional, or treat as half star if you want)
-      stars.push(
-        <span key={i} className="text-yellow-400 text-sm opacity-50">★</span>
-      );
-    } else {
-      // Empty star
-      stars.push(
-        <span key={i} className="text-gray-300 text-sm">★</span>
+        <span key={i} className={`text-yellow-400 text-base ${i <= average ? '' : 'opacity-30'}`}>
+          ★
+        </span>
       );
     }
-  }
-  return stars;
-};
+    return stars;
+  };
+
   return (
-    <>
-      {/* Mentor Card */}
-      <div className="flex flex-col items-center bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 w-72 mx-4 my-4 text-center">
-        {/* Picture */}
-        <div className="relative mb-4 flex justify-center w-full">
-          <img
-            src={picture}
-            alt={name}
-            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
-            onError={(e) => {
-              e.target.src = 'https://via.placeholder.com/128';
-            }}
-          />
-                    {/* Badge Icon */}
-          {mentor.hasBadge && (
-            <div className="absolute bottom-22 left-[-20]  bg-yellow-400 rounded-full p-1 shadow-md">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 1l2.39 4.84L18 7.16l-4 3.89L15.3 17 10 14.27 4.7 17 6 11.05l-4-3.89 5.61-.32L10 1z" />
-              </svg>
-            </div>
-          )}
+    <div className="relative w-[300px] min-h-[360px] bg-white border-2-[#104D43]  rounded-3xl p-6 mt-8  shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out flex flex-col items-center">
+      {/* Avatar */}
+      <div className="w-24 h-24 rounded-full overflow-hidden border-[5px] border-white shadow-xl bg-[#104D43]  -mt-2">
+        <img
+          src={picture}
+          alt={name}
+          onError={(e) => (e.target.src = 'https://via.placeholder.com/128')}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-          {isVerified && (
-            <div className="absolute bottom-0 right-0 bg-blue-500 rounded-full p-1.5">
-              
-              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-          )}
-        </div>
+      {/* Name */}
+      <h3 className="text-lg font-semibold text-gray-800 mt-4 truncate">{name}</h3>
 
-        {/* Name */}
-        <h3 className="text-xl font-bold text-gray-800 mb-2 truncate max-w-full px-2">{name}</h3>
-
-        {/* Skills */}
-        <div className="w-full mb-4">
-          <div className="flex flex-wrap justify-center gap-2">
-            {skills.map((skill, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Ratings */}
-          <div className="mt-3 text-center">
-            <div className="flex items-center justify-center gap-1">
-              {renderStars(mentor.ratingSummary?.average || 0)}
-            </div>
-            <div className="text-sm text-gray-700 mt-1">
-              Average Rating: {mentor.ratingSummary?.average?.toFixed(1) || '0.0'}
-            </div>
-            <div className="text-xs text-gray-500">
-              ({mentor.ratingSummary?.count || 0} reviews)
-            </div>
-          </div>
-
-
-        
-
-        {/* Buttons */}
-        {isAuthenticated && (
-          <div className="w-full space-y-3 mt-auto flex flex-col items-center">
-            <button
-              onClick={handleRequest}
-              disabled={sendRequest}
-              className={`w-full py-2 px-4 rounded-xl font-semibold transition-colors ${
-                sendRequest
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
-              }`}
-            >
-              {sendRequest ? 'Request Sent ✓' : 'Request Mentorship'}
-            </button>
-
-            {storedRole === 'student' && mentor.badgeRequest?.status === 'accepted' && (
-              <PayButton mentorId={mentor._id} accountId={mentor.accountId} />
-            )}
-            </div>
+      {/* Badges */}
+      <div className="flex flex-wrap justify-center gap-2 mt-1">
+        {isVerified && (
+          <span className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full shadow">
+            Verified
+          </span>
+        )}
+        {mentor.hasBadge && (
+          <span className="bg-orange-400 text-white text-xs px-3 py-1 rounded-md shadow">
+            Top Mentor
+          </span>
         )}
       </div>
-    </>
+
+      {/* Skills */}
+      <div className="flex flex-wrap justify-center gap-2 mt-4">
+        {skills.map((skill, index) => (
+          <span
+            key={index}
+            className="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+
+      {/* Rating */}
+      <div className="text-center mt-4">
+        <div className="flex justify-center">{renderStars(ratingSummary?.average || 0)}</div>
+        <p className="text-sm text-gray-600 mt-1">
+          {ratingSummary?.average?.toFixed(1) || '0.0'} ({ratingSummary?.count || 0} reviews)
+        </p>
+      </div>
+
+      {/* Buttons */}
+      {isAuthenticated && (
+        <div className="w-full mt-auto">
+          <button
+            onClick={handleRequest}
+            disabled={sendRequest}
+            className={`mt-6 w-full py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+              sendRequest
+                ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md'
+            }`}
+          >
+            {sendRequest ? 'Request Sent ✓' : 'Request Mentorship'}
+          </button>
+
+          {storedRole === 'student' && mentor.badgeRequest?.status === 'accepted' && (
+            <div className="mt-3">
+              <PayButton mentorId={mentor._id} accountId={mentor.accountId} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 
