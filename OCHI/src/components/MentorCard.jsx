@@ -42,18 +42,21 @@ const MentorCard = ({ mentor }) => {
       <h3 className="text-lg font-semibold text-gray-800 mt-4 truncate">{name}</h3>
 
       {/* Badges */}
-      <div className="flex flex-wrap justify-center gap-2 mt-1">
-        {isVerified && (
-          <span className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full shadow">
-            Verified
-          </span>
-        )}
-        {mentor.hasBadge && (
-          <span className="bg-orange-400 text-white text-xs px-3 py-1 rounded-md shadow">
-            Top Mentor ★
-          </span>
-        )}
-      </div>
+     {/* Badges */}
+<div className="flex flex-wrap justify-center gap-2 mt-1">
+  {isVerified && (
+    <span className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full shadow">
+      Verified
+    </span>
+  )}
+  {mentor.hasBadge && (
+    <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-md shadow flex items-center gap-1">
+      Top Mentor
+      <img src="/assets/boa.png" alt="Boa Badge" className="w-4 h-4" />
+    </span>
+  )}
+</div>
+
 
       {/* Skills */}
       <div className="flex flex-wrap justify-center gap-2 mt-4">
