@@ -50,7 +50,7 @@ const MentorCard = ({ mentor }) => {
         )}
         {mentor.hasBadge && (
           <span className="bg-orange-400 text-white text-xs px-3 py-1 rounded-md shadow">
-            Top Mentor
+            Top Mentor ★
           </span>
         )}
       </div>
