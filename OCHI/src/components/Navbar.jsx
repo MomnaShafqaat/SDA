@@ -156,7 +156,10 @@ function Navbar() {
                         </NavLink>
                     )}
 
-                    <NavLink
+                    {
+                        userRole != "student" && (
+                            <>
+                            <NavLink
                         to="/contact"
                         className={({ isActive }) =>
                             `block py-2 pr-4 pl-3 duration-200 text-lg ${isActive ? "text-orange-700" : "text-white-700"
@@ -174,6 +177,11 @@ function Navbar() {
                     >
                         About Us
                     </NavLink>
+                    </>
+                        )
+                    }
+
+                    
                 </>
 
                 {!isAuthenticated ? (

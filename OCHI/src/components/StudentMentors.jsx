@@ -2,19 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import studentService from '../services/studentServices';
 import PayButton from './payButton.jsx';
-import ReportModal from './reportModal.jsx';
-import ReviewForm from './ReviewForm.jsx';
 import { useAuth0 } from "@auth0/auth0-react";
 
 function ViewMentors() {
   const [mentors, setMentors] = useState([]);
-  //const [showModal, setShowModal] = useState(false);
-  const [reportingMentorId, setReportingMentorId] = useState(null);
-
-  const [activeReviewMentor, setActiveReviewMentor] = useState(null);
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState('');
   const { user, isAuthenticated } = useAuth0();
   const auth0Id = user?.sub;
 
@@ -35,30 +26,6 @@ function ViewMentors() {
   }, []);
 
   
-
-  const handleReviewSubmit = async (mentorId) => {
-    try {
-      if (!auth0Id) {
-        alert("User not authenticated");
-        return;
-      }
-
-      await studentService.submitReview(mentorId, { 
-        rating,
-        reviewText,
-        reviewerId:auth0Id
-      });
-
-      setRating(0);
-      setReviewText('');
-      setActiveReviewMentor(null);
-      setShowReviewForm(false);
-      alert('Review submitted successfully!');
-    } catch (error) {
-      console.error('Failed to submit review:', error);
-      alert('Failed to submit review.');
-    }
-  };
   const renderStars = (average) => {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
@@ -165,46 +132,7 @@ function ViewMentors() {
               ) : (
               <PayButton mentorId={mentor._id} accountId={mentor.accountId} />
                 )
-              }
-              
-
-              <button
-  onClick={() => setReportingMentorId(mentor._id)}
-  className="px-4 py-2.5 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-medium">
-  Report User
-</button>
-
-{reportingMentorId === mentor._id && (
-  <ReportModal
-    reportedId={mentor._id}
-    onClose={() => setReportingMentorId(null)}
-  />
-)}
-
-
-              <button
-                onClick={() => {
-                  setActiveReviewMentor(mentor._id); // important: use _id here
-                  setShowReviewForm(true);
-                }}
-                className="w-full mt-2 py-2 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold"
-              >
-                Write a Review
-              </button>
-
-              {showReviewForm && activeReviewMentor === mentor._id && (
-                <ReviewForm
-                  rating={rating}
-                  setRating={setRating}
-                  reviewText={reviewText}
-                  setReviewText={setReviewText}
-                  onSubmit={() => handleReviewSubmit(mentor._id)}
-                  onClose={() => {
-                    setShowReviewForm(false);
-                    setActiveReviewMentor(null);
-                  }}
-                />
-              )}
+              }             
             </div>
           </div>
         ))}
