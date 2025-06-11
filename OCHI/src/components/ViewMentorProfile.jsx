@@ -4,6 +4,7 @@ import axios from 'axios';
 import ReportModal from './reportModal.jsx';
 import ReviewForm from './ReviewForm.jsx';
 import studentService from '../services/studentServices';
+import ReviewSlider from './ReviewSlider.jsx';
 import { useAuth0 } from "@auth0/auth0-react";
 
 const ViewMentorProfile = () => {
@@ -167,21 +168,13 @@ const ViewMentorProfile = () => {
 
       <section>
         <h2 className="text-xl font-semibold border-b border-gray-300 pb-2 mb-4">Student Reviews</h2>
-        {reviews.length === 0 ? (
+        {mentor.reviews.length === 0 ? (
           <p className="text-gray-500">No reviews yet.</p>
-        ) : (
-          <div className="space-y-4">
-            {reviews.map((r, i) => (
-              <div key={i} className="bg-gray-50 p-4 rounded shadow-sm">
-                <p><span className="font-semibold">Student:</span> {r.studentName || 'Anonymous'}</p>
-                <p><span className="font-semibold">Rating:</span> {r.rating}/5</p>
-                <p><span className="font-semibold">Comment:</span> {r.comment}</p>
-                <p><span className="text-sm text-gray-500">{new Date(r.createdAt).toLocaleDateString()}</span></p>
-              </div>
-            ))}
-          </div>
-        )}
+        ) : <ReviewSlider mentor = {mentor} />
+        }
       </section>
+
+      
 
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
   <button
@@ -226,7 +219,7 @@ const ViewMentorProfile = () => {
                   }}
                 />
               )}
-
+              
     </div>
   );
 };
