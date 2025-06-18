@@ -1,4 +1,4 @@
-const CounterCard = ({ title, count }) => {
+/*const CounterCard = ({ title, count }) => {
   return (
     <div style={styles.card}>
       <h3>{title}</h3>
@@ -24,3 +24,15 @@ const styles = {
 };
 
 export default CounterCard;
+*/
+
+const CounterCard = ({ title, count }) => {
+  return (
+    <div className="p-6 bg-gray-50 rounded-xl shadow-lg w-48 text-center">
+      <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+      <p className="text-2xl font-bold text-emerald-600 mt-2">{count}</p>
+    </div>
+  )
+}
+
+export default CounterCard
