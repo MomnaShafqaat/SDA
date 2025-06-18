@@ -119,7 +119,7 @@ router.get('/profile', jwtCheck, async (req, res) => {
   }
 });
 
-/*POST (update or create) mentor profile
+//POST (update or create) mentor profile
 router.post('/profile', jwtCheck, async (req, res) => {
   try {
     const mentor = await Mentor.findOneAndUpdate(
@@ -132,7 +132,7 @@ router.post('/profile', jwtCheck, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-*/
+
 // GET /:mentorId/mentees (Get mentor's mentees)
 router.get('/:mentorId/mentees', authJwt, async (req, res) => {
   const { mentorId } = req.params;
