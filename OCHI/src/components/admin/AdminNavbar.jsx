@@ -21,13 +21,7 @@ const AdminNavbar = () => {
   return (
     <nav style={styles.nav}>
       <div style={styles.brand}>Admin Panel</div>
-      <div style={styles.links}>
-        {links.map(link => (
-          <Link key={link.name} to={link.path} style={styles.link}>
-            {link.name}
-          </Link>
-        ))}
-      </div>
+      
       <button onClick={handleLogout} style={styles.logout}>Logout</button>
     </nav>
   );

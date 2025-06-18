@@ -1,11 +1,11 @@
 const axios = require('axios');
+const { jsonrepair } = require('jsonrepair'); // Make sure to install this: npm install jsonrepair
 
 const analyzeCV = async (cvText) => {
-  const HF_API_KEY = "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";
-  const MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";
+  const OPENROUTER_API_KEY = "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";
+  const MODEL = "mistralai/mistral-7b-instruct";
 
   const CV_PROMPT = `
-[INST]
 You are a professional CV analyzer AI. Your task is to analyze CVs/resumes and provide detailed feedback in the following JSON format:
 
 {
@@ -30,37 +30,39 @@ Analysis Guidelines:
 7. Recommend suitable job roles based on experience
 
 CV Content:
-{{CV_CONTENT}}
+${cvText}
 
-Important: Return ONLY valid JSON without any additional text or explanations.
-[/INST]`;
+Important: Return ONLY valid JSON without any extra explanation or comment.`;
 
   try {
-    const prompt = CV_PROMPT.replace('{{CV_CONTENT}}', cvText);
-    
     const response = await axios.post(
-      MODEL_URL,
+      "https://openrouter.ai/api/v1/chat/completions",
       {
-        inputs: prompt,
-        parameters: {
-          max_new_tokens: 1500,
-          temperature: 0.3
-        }
+        model: MODEL,
+        messages: [
+          {
+            role: "user",
+            content: CV_PROMPT,
+          },
+        ],
+        max_tokens: 1500,
+        temperature: 0.3,
       },
       {
         headers: {
-          Authorization: `Bearer ${HF_API_KEY}`,
-          "Content-Type": "application/json"
-        }
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "http://localhost", // Optional but helps track usage
+        },
       }
     );
 
-    let result = response.data[0]?.generated_text || '';
-    result = result.split('[/INST]').pop().trim();
-    
-    return JSON.parse(result);
+    const output = response.data.choices[0]?.message?.content || '';
+    const cleanJson = JSON.parse(jsonrepair(output)); // Fixes any minor format issues
+
+    return cleanJson;
   } catch (error) {
-    console.error('CV Analysis Service Error:', error);
+    console.error("CV Analysis Service Error:", error.message);
     throw new Error("AI analysis failed");
   }
 };

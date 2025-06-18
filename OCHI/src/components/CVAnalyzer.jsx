@@ -48,7 +48,7 @@ const CVAnalyzer = () => {
   const OverallScoreGauge = ({ score }) => (
     <GaugeContainer>
       <Gauge>
-        <GaugeFill rotation={score * 1.8} />
+        <GaugeFill rotation={score * 10} />
         <GaugeCover />
         <GaugeCenter />
       </Gauge>
@@ -409,7 +409,7 @@ const GaugeCenter = styled.div`
   position: absolute;
   width: 20px;
   height: 20px;
-  background: #4361ee;
+  
   border-radius: 50%;
   top: 50%;
   left: 50%;
