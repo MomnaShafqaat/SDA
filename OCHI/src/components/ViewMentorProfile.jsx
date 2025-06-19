@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import ReportModal from './reportModal.jsx';
+import ReviewForm from './ReviewForm.jsx';
+import studentService from '../services/studentServices';
+import ReviewSlider from './ReviewSlider.jsx';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const ViewMentorProfile = () => {
   const { mentorId } = useParams();
@@ -8,6 +13,14 @@ const ViewMentorProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [reviews] = useState([]); // Placeholder for future reviews
+
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
+  const { user, isAuthenticated } = useAuth0();
+  const auth0Id = user?.sub;
+  const [reportingMentorId, setReportingMentorId] = useState(null);
+  const [activeReviewMentor, setActiveReviewMentor] = useState(null);
+  const [showReviewForm, setShowReviewForm] = useState(false);
 
   useEffect(() => {
     const fetchMentor = async () => {
@@ -27,6 +40,39 @@ const ViewMentorProfile = () => {
       fetchMentor();
     }
   }, [mentorId]);
+
+ const handleReviewSubmit = async (mentorId) => {
+    try {
+      if (!auth0Id) {
+        alert("User not authenticated");
+        return;
+      }
+
+      console.log('Submitting review:', {
+        mentorId,
+        auth0Id,
+        rating,
+        reviewText,
+        reviewerId: auth0Id
+      }
+      ) ;
+
+      await studentService.submitReview(mentorId, { 
+        rating,
+        reviewText,
+        reviewerId:auth0Id
+      });
+
+      setRating(0);
+      setReviewText('');
+      setActiveReviewMentor(null);
+      setShowReviewForm(false);
+      alert('Review submitted successfully!');
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+      alert('Failed to submit review.');
+    }
+  };
 
   if (loading) return <div className="max-w-3xl mx-auto p-8 text-center text-gray-700">Loading...</div>;
   if (error) return <div className="max-w-3xl mx-auto p-8 text-center text-red-500">{error}</div>;
@@ -116,31 +162,64 @@ const ViewMentorProfile = () => {
           <section className="mb-10">
             <h2 className="text-xl font-semibold border-b border-gray-300 pb-2 mb-4">Ratings</h2>
             <div>
-              <span className="font-semibold">Average Rating:</span>{' '}
-              {mentor.ratings?.average != null && !isNaN(mentor.ratings.average)
-                ? `${mentor.ratings.average}/5`
-                : 'Not provided'}{' '}
-              ({mentor.ratings?.count ?? 0} ratings)
+              <span className="font-semibold">Average Rating: {mentor.ratingSummary?.average?.toFixed(1) || '0.0'} </span>{' '} 
             </div>
           </section>
 
       <section>
         <h2 className="text-xl font-semibold border-b border-gray-300 pb-2 mb-4">Student Reviews</h2>
-        {reviews.length === 0 ? (
+        {mentor.reviews.length === 0 ? (
           <p className="text-gray-500">No reviews yet.</p>
-        ) : (
-          <div className="space-y-4">
-            {reviews.map((r, i) => (
-              <div key={i} className="bg-gray-50 p-4 rounded shadow-sm">
-                <p><span className="font-semibold">Student:</span> {r.studentName || 'Anonymous'}</p>
-                <p><span className="font-semibold">Rating:</span> {r.rating}/5</p>
-                <p><span className="font-semibold">Comment:</span> {r.comment}</p>
-                <p><span className="text-sm text-gray-500">{new Date(r.createdAt).toLocaleDateString()}</span></p>
-              </div>
-            ))}
-          </div>
-        )}
+        ) : <ReviewSlider mentor = {mentor} />
+        }
       </section>
+
+      
+
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
+  <button
+    onClick={() => setReportingMentorId(mentor._id)}
+    className="px-6 py-2 border-2 border-indigo-600 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-medium shadow-sm"
+  >
+    Report User
+  </button>
+
+  <button
+    onClick={() => {
+      setActiveReviewMentor(mentor._id);
+      setShowReviewForm(true);
+    }}
+    className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-sm"
+  >
+    Write a Review
+  </button>
+</div>
+
+
+{reportingMentorId === mentor._id && (
+  <ReportModal
+    reportedId={mentor._id}
+    onClose={() => setReportingMentorId(null)}
+  />
+)}
+
+
+              
+
+              {showReviewForm && activeReviewMentor === mentor._id && (
+                <ReviewForm
+                  rating={rating}
+                  setRating={setRating}
+                  reviewText={reviewText}
+                  setReviewText={setReviewText}
+                  onSubmit={() => handleReviewSubmit(mentor._id)}
+                  onClose={() => {
+                    setShowReviewForm(false);
+                    setActiveReviewMentor(null);
+                  }}
+                />
+              )}
+              
     </div>
   );
 };

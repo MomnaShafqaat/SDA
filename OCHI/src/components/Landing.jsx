@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 function Landing() {
+    const navigate = useNavigate();
     return (
         <div className='bg-gray-100 w-full h-screen pt-1'>
             <div className='textstructure mt-52 px-20'>
@@ -37,7 +39,11 @@ function Landing() {
                 )}
 
                 <div className='start'>
-                    <div className='px-5 py-2 border-[1px] border-zinc-700 rounded-full'>FIND MENTORS</div>
+                   <button onClick={() => navigate("/top-mentors")}
+    className="px-5 py-2 border border-zinc-700 rounded-full hover:bg-zinc-100 transition"
+  >
+    TOP MENTORS
+  </button>
                 </div>
             </div>
         </div>

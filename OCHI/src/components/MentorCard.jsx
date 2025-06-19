@@ -93,11 +93,6 @@ const MentorCard = ({ mentor }) => {
             {sendRequest ? 'Request Sent ✓' : 'Request Mentorship'}
           </button>
 
-          {storedRole === 'student' && mentor.badgeRequest?.status === 'accepted' && (
-            <div className="mt-3">
-              <PayButton mentorId={mentor._id} accountId={mentor.accountId} />
-            </div>
-          )}
         </div>
       )}
     </div>
